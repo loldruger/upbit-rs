@@ -8,3 +8,11 @@ pub use api::*;
 pub use api_quotation::*;
 pub use constant::*;
 pub use response::*;
+
+pub fn set_secret_key(secret_key: &str) {
+    
+}
+
+pub fn set_access_key(access_key: &str) {
+    
+}
