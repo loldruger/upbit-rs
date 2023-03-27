@@ -1,10 +1,5 @@
 use serde::Deserialize;
-
-#[derive(Deserialize, Debug)]
-pub struct ResponseErrorBodySource {
-    pub name: String,
-    pub message: String,
-}
+use super::super::response_source::ResponseErrorBodySource;
 
 #[derive(Deserialize, Debug)]
 pub struct ResponseErrorSource {

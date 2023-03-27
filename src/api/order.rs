@@ -5,7 +5,8 @@ use super::{
     super::{
         URL_ORDER, URL_SERVER,
         constant::{OrdSide, OrdType},
-        response::{OrderInfo, OrderInfoSource, ResponseErrorSource}
+        response::{OrderInfo, ResponseErrorSource},
+        response_source::{OrderInfoSource}
     },
     request::RequestWithQuery
 };

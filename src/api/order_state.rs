@@ -7,11 +7,13 @@ use super::{
     super::response::{
         OrderInfo,
         ResponseErrorSource,
-        ResponseErrorBodySource,
         OrderState,
-        OrderStateSource,
         ObjectTrades
     },
+    super::response_source::{
+        ResponseErrorBodySource,
+        OrderStateSource
+    }
 };
 
 impl RequestWithQuery for OrderState {}

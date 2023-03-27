@@ -8,9 +8,11 @@ use super::{
         AccountsInfo,
         ResponseErrorSource,
         OrderChance,
-        OrderChanceSource,
         ObjectMarket,
         ObjectAskBid
+    },
+    super::response_source:: {
+        OrderChanceSource
     }
 };
 
