@@ -1,4 +1,4 @@
-use super::super::request::{Request, RequestWithQuery};
+use crate::api::request::{Request, RequestWithQuery};
 use super::accounts_info::*;
 use serde::Deserialize;
 

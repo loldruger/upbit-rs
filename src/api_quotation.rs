@@ -1,11 +1,11 @@
-pub mod order_book;
-pub mod ticker_snapshot;
-pub mod trade_recent;
-pub mod market_state;
-pub mod candle_minute;
-pub mod candle_day;
-pub mod candle_month;
-pub mod candle_week;
+mod order_book;
+mod ticker_snapshot;
+mod trade_recent;
+mod market_state;
+mod candle_minute;
+mod candle_day;
+mod candle_month;
+mod candle_week;
 
 pub use order_book::OrderbookInfo;
 pub use ticker_snapshot::TickerSnapshot;

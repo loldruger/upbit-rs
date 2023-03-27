@@ -2,7 +2,7 @@ use serde::Deserialize;
 use super::order_info::*;
 
 //----------------Source----------------//
-#[derive(Deserialize, Debug, Clone, sqlx::Type)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct ObjectTrades {
     pub market: String,
     pub uuid: String,
@@ -25,7 +25,7 @@ pub struct ObjectTradesSource {
 }
 //------------------------------------//
 
-#[derive(Deserialize, Debug, sqlx::FromRow)]
+#[derive(Deserialize, Debug)]
 pub struct OrderState {
     #[serde(flatten)]
     pub order_info: OrderInfo,

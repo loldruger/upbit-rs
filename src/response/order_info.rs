@@ -1,4 +1,4 @@
-use super::super::request::{Request, RequestWithQuery};
+use crate::api::request::{Request, RequestWithQuery};
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
