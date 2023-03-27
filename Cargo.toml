@@ -1,5 +1,5 @@
 [package]
-name = "api"
+name = "rust_upbit_api"
 version = "0.1.0"
 edition = "2021"
 
