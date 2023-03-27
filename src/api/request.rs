@@ -7,11 +7,12 @@ use uuid::Uuid;
 
 pub trait Request {
     fn set_token() -> String {
-        let conf = ini::Ini::load_from_file("./rust_upbit_api/conf.ini").unwrap();
-        let section = conf.section(Some("Upbit")).unwrap();
-        let access_key = section.get("access_key").unwrap();
-        let secret_key = section.get("secret_key").unwrap();
-        
+        // let conf = ini::Ini::load_from_file("./rust_upbit_api/conf.ini").unwrap();
+        // let section = conf.section(Some("Upbit")).unwrap();
+        // let access_key = section.get("access_key").unwrap();
+        // let secret_key = section.get("secret_key").unwrap();
+        let access_key = envmnt::get_or_panic("ACCESS_KEY");
+        let secret_key = envmnt::get_or_panic("SECRET_KEY");
         let alg = Algorithm::new_hmac(AlgorithmID::HS256, secret_key).unwrap();
 
         let header = json!({ 
@@ -31,11 +32,12 @@ pub trait Request {
 
 pub trait RequestWithQuery {
     fn set_token_with_query(url: &str) -> String {
-        let conf = ini::Ini::load_from_file("./rust_upbit_api/conf.ini").unwrap();
-        let section = conf.section(Some("Upbit")).unwrap();
-        let access_key = section.get("access_key").unwrap();
-        let secret_key = section.get("secret_key").unwrap();
-        
+        // let conf = ini::Ini::load_from_file("./rust_upbit_api/conf.ini").unwrap();
+        // let section = conf.section(Some("Upbit")).unwrap();
+        // let access_key = section.get("access_key").unwrap();
+        // let secret_key = section.get("secret_key").unwrap();
+        let access_key = envmnt::get_or_panic("ACCESS_KEY");
+        let secret_key = envmnt::get_or_panic("SECRET_KEY");
         let url = Url::parse(url).ok().unwrap();
         let url_parsed = url.query();
 
