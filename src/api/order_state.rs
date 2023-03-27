@@ -6,12 +6,12 @@ use super::{
     super::constant::{URL_ORDER_STATE, URL_SERVER},
     super::response::{
         OrderInfo,
-        ResponseErrorSource,
         OrderState,
         ObjectTrades
     },
     super::response_source::{
         ResponseErrorBodySource,
+        ResponseErrorSource,
         OrderStateSource
     }
 };

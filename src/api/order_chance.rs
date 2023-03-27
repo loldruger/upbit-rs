@@ -6,12 +6,12 @@ use super::{
     super::constant::{URL_ORDER_CHANCE, URL_SERVER},
     super::response::{
         AccountsInfo,
-        ResponseErrorSource,
         OrderChance,
         ObjectMarket,
         ObjectAskBid
     },
     super::response_source:: {
+        ResponseErrorSource,
         OrderChanceSource
     }
 };

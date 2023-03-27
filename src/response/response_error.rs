@@ -1,10 +1,5 @@
 use serde::Deserialize;
-use super::super::response_source::ResponseErrorBodySource;
 
-#[derive(Deserialize, Debug)]
-pub struct ResponseErrorSource {
-    pub error: ResponseErrorBodySource
-}
 #[derive(Deserialize, Debug)]
 pub enum ResponseErrorState {
     JwtVerificationError, //"Failed to verify Jwt token."

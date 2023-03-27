@@ -1,6 +1,6 @@
 use super::{
     super::{URL_SERVER, UrlAssociates, CandleMinute},
-    super::ResponseErrorSource
+    super::response_source::ResponseErrorSource
 };
 
 use reqwest::{Url, Response};

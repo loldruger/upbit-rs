@@ -6,8 +6,8 @@ use reqwest::{
 
 use super::{
     super::constant::{URL_ORDER_STATE_LIST, URL_SERVER},
-    super::response::{OrderInfo, ResponseErrorSource},
-    super::response_source::{OrderInfoSource},
+    super::response::{OrderInfo},
+    super::response_source::{OrderInfoSource, ResponseErrorSource},
     request::Request
 };
 
