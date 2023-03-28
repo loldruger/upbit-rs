@@ -1,5 +1,5 @@
 use super::{
-    super::{URL_SERVER, UrlAssociates, CandleMinute},
+    super::constant::{URL_SERVER, UrlAssociates, CandleMinute},
     super::response_source::ResponseErrorSource
 };
 

@@ -1,6 +1,6 @@
 use crate::response_source::ResponseErrorSource;
 
-use super::super::{URL_SERVER, URL_TICKER};
+use super::super::constant::{URL_SERVER, URL_TICKER};
 
 use reqwest::Url;
 use reqwest::header::ACCEPT;

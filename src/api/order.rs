@@ -3,8 +3,7 @@ use reqwest::{Url, Response};
 
 use super::{
     super::{
-        URL_ORDER, URL_SERVER,
-        constant::{OrdSide, OrdType},
+        constant::{URL_ORDER, URL_SERVER, OrdSide, OrdType},
         response::{OrderInfo},
         response_source::{OrderInfoSource, ResponseErrorSource}
     },
