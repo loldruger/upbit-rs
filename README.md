@@ -1,6 +1,6 @@
 upbit-api on rust
 
-this crate depends on sqlx, tokio, postgres
+this crate is dependant on sqlx, tokio, postgres
 
 
 # Set access key and secret key
@@ -11,7 +11,7 @@ rust_upbit_api::set_access_key("");
 rust_upbit_api::set_secret_key("");
 ```
 
-# apis
+# Apis
 ```rust
 use rust_upbit_api::*;
 
