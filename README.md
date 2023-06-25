@@ -29,7 +29,8 @@ let asdf = api::CandleChartWeek::request_candle("KRW-ETH", 10, None).await;
 ```
 
 # Problem
-If you have trouble with installing this error: failed to run custom build command for `openssl-sys vX.X.XX`
+If you have trouble installing with this error: failed to run custom build command for `openssl-sys vX.X.XX`, 
+
 try
 ```
 macOS
