@@ -1,7 +1,7 @@
 upbit-api on rust
 
 this crate is dependant on sqlx, tokio, postgres
-
+this crate also requires openssl-sys package
 
 # Set access key and secret key
 ```rust
@@ -27,3 +27,21 @@ let asdf = api::CandleChartMinute::request_candle("KRW-ETH", None, 50, CandleMin
 let asdf = api::CandleChartDay::request_candle("KRW-ETH", 10, None, None).await;
 let asdf = api::CandleChartWeek::request_candle("KRW-ETH", 10, None).await;
 ```
+
+# Problem
+If you have trouble with installing this error: failed to run custom build command for `openssl-sys vX.X.XX`
+try
+```
+macOS
+$ brew install openssl@1.1
+
+Arch Linux
+$ sudo pacman -S pkg-config openssl
+
+Debian and Ubuntu
+$ sudo apt-get install pkg-config libssl-dev
+
+Fedora
+$ sudo dnf install pkg-config openssl-devel
+```
+referenced from https://github.com/sfackler/rust-openssl/issues/855#issuecomment-450057552

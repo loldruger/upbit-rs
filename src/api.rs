@@ -27,9 +27,7 @@ pub async fn order_by_price(
         identifier
     )
     .await
-    .map_err(|e| 
-        ResponseErrorState::from(e.error.name.as_str())
-    )
+    .map_err(|e| ResponseErrorState::from(e.error.name.as_str()))
 }
 
 pub async fn sell_by_market_price(market: &str, volume: f64, identifier: Option<&str>) -> Result<OrderInfo, ResponseErrorState> {
@@ -42,44 +40,37 @@ pub async fn sell_by_market_price(market: &str, volume: f64, identifier: Option<
         identifier
     )
     .await
-    .map_err(|e| 
-        ResponseErrorState::from(e.error.name.as_str())
-    )
+    .map_err(|e| ResponseErrorState::from(e.error.name.as_str()))
 }
 
 pub async fn cancel_order(uuid: Option<&str>, identifier: Option<&str>) -> Result<OrderInfo, ResponseErrorState> {
-    OrderInfo::delete_order(uuid, identifier).await
-        .map_err(|e| 
-            ResponseErrorState::from(e.error.name.as_str())
-        )
+    OrderInfo::delete_order(uuid, identifier)
+        .await
+        .map_err(|e| ResponseErrorState::from(e.error.name.as_str()))
 }
 
 pub async fn get_account_info() -> Result<Vec<AccountsInfo>, ResponseErrorState> {
-    AccountsInfo::get_account_info().await
-        .map_err(|e| 
-            ResponseErrorState::from(e.error.name.as_str())
-        )
+    AccountsInfo::get_account_info()
+        .await
+        .map_err(|e| ResponseErrorState::from(e.error.name.as_str()))
 }
 
 pub async fn get_order_chance(market_id: &str) -> Result<OrderChance, ResponseErrorState> {
-    OrderChance::get_order_chance(market_id).await
-        .map_err(|e| 
-            ResponseErrorState::from(e.error.name.as_str())
-        )
+    OrderChance::get_order_chance(market_id)
+        .await
+        .map_err(|e| ResponseErrorState::from(e.error.name.as_str()))
 }
 
 pub async fn get_order_state(uuid: Option<&str>, identifier: Option<&str>) -> Result<OrderState, ResponseErrorState> {
-    OrderState::get_order_state(uuid, identifier).await
-        .map_err(|e| 
-            ResponseErrorState::from(e.error.name.as_str())
-        )
+    OrderState::get_order_state(uuid, identifier)
+        .await
+        .map_err(|e| ResponseErrorState::from(e.error.name.as_str()))
 }
 
 pub async fn get_order_state_list() -> Result<Vec<OrderInfo>, ResponseErrorState> {
-    OrderInfo::get_order_state_list().await
-        .map_err(|e| 
-            ResponseErrorState::from(e.error.name.as_str())
-        )
+    OrderInfo::get_order_state_list()
+        .await
+        .map_err(|e| ResponseErrorState::from(e.error.name.as_str()))
 }
 
 fn price_checker(price: f64) -> f64 {
