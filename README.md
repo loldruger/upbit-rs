@@ -1,6 +1,7 @@
 upbit-api on rust
 
 this crate is dependant on `sqlx`, `tokio`, `postgres`
+
 it also requires `openssl-sys` package
 
 # Set access key and secret key
