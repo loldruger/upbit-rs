@@ -35,10 +35,13 @@ impl OrderInfo {
                     trades_count: x.trades_count(),
                 }
             })
-            .map_err(|_| {
+            .map_err(|x| {
                 ResponseError {
-                    state: ResponseErrorState::InternalReqwestError,
-                    error: serde_json::from_str(&res_serialized).unwrap()
+                    state: ResponseErrorState::InternalJsonParseError,
+                    error: ResponseErrorBody {
+                        name: "internal_json_parse_error".to_owned(),
+                        message: x.to_string()
+                    },
                 }
             })
     }

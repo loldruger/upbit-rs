@@ -7,6 +7,7 @@ pub enum ResponseErrorState {
     InternalReqwestError,
     InternalHmacError,
     InternalTokenEncodeError,
+    InternalJsonParseError,
     JwtVerificationError, //"Failed to verify Jwt token."
     ExpiredAccessKey,
     InvalidQueryPayload,

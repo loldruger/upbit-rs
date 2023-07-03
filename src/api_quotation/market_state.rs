@@ -41,7 +41,15 @@ impl MarketState {
                     })
                     .collect()
             })
-            .map_err(|_| serde_json::from_str(&res_serialized).unwrap())
+            .map_err(|x| {
+                ResponseError {
+                    state: ResponseErrorState::InternalJsonParseError,
+                    error: ResponseErrorBody {
+                        name: "internal_json_parse_error".to_owned(),
+                        message: x.to_string()
+                    },
+                }
+            })
     }
 
     async fn request(is_warning_shown: bool) -> Result<Response, ResponseError> {
