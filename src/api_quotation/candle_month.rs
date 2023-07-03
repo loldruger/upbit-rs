@@ -1,8 +1,8 @@
-use crate::response_source::ResponseErrorSource;
+use crate::response_source::{ResponseErrorSource, ResponseErrorBodySource};
 
 use super::super::constant::{URL_SERVER, UrlAssociates};
 
-use reqwest::Url;
+use reqwest::{Url, Response};
 use reqwest::header::ACCEPT;
 use serde::Deserialize;
 
@@ -23,23 +23,7 @@ pub struct CandleChartMonth {
 
 impl CandleChartMonth {
     pub async fn request_candle(market: &str, count: i32, last_candle_time: Option<String>) -> Result<Vec<Self>, ResponseErrorSource> {
-        let url_candle: String = UrlAssociates::UrlCandleMonth.into();
-        let mut url = Url::parse(&format!("{URL_SERVER}{url_candle}")).unwrap();
-        url.query_pairs_mut()
-            .append_pair("market", market)
-            .append_pair("count", count.to_string().as_str());
-
-        if last_candle_time.is_some() {
-            url.query_pairs_mut().append_pair("to", last_candle_time.unwrap().as_str());
-        }
-        
-        let res = reqwest::Client::new()
-            .get(url.as_str())
-            .header(ACCEPT, "application/json")
-            .send()
-            .await
-            .unwrap();
-        
+        let res = Self::request(market, count, last_candle_time).await?;
         let res_serialized = res.text().await.unwrap();
         
         serde_json::from_str(&res_serialized)
@@ -68,5 +52,31 @@ impl CandleChartMonth {
         
             serde_json::from_str(&res_serialized).unwrap()
         })
+    }
+
+    async fn request(market: &str, count: i32, last_candle_time: Option<String>) -> Result<Response, ResponseErrorSource> {
+        let url_candle: String = UrlAssociates::UrlCandleMonth.into();
+        let mut url = Url::parse(&format!("{URL_SERVER}{url_candle}")).unwrap();
+        url.query_pairs_mut()
+            .append_pair("market", market)
+            .append_pair("count", count.to_string().as_str());
+
+        if last_candle_time.is_some() {
+            url.query_pairs_mut().append_pair("to", last_candle_time.unwrap().as_str());
+        }
+        
+        reqwest::Client::new()
+            .get(url.as_str())
+            .header(ACCEPT, "application/json")
+            .send()
+            .await
+            .map_err(|x| {
+                ResponseErrorSource {
+                    error: ResponseErrorBodySource {
+                        name: "internal_reqwest_error".to_owned(),
+                        message: x.to_string()
+                    }
+                }
+            })
     }
 }

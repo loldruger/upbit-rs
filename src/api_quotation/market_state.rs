@@ -3,7 +3,7 @@ use reqwest::header::ACCEPT;
 use serde::Deserialize;
 
 use super::super::constant::{URL_SERVER, URL_MARKET_STATE};
-use crate::response_source::ResponseErrorSource;
+use crate::response_source::{ResponseErrorSource, ResponseErrorBodySource};
 
 #[derive(Deserialize, Debug)]
 pub struct MarketState {
@@ -23,7 +23,7 @@ pub struct MarketStateSource {
 
 impl MarketState {
     pub async fn get_market_state(is_warning_shown: bool) -> Result<Vec<Self>, ResponseErrorSource>  {
-        let res = Self::request(is_warning_shown).await;
+        let res = Self::request(is_warning_shown).await?;
         let res_serialized = res.text().await.unwrap();
         
         serde_json::from_str(&res_serialized)
@@ -43,7 +43,7 @@ impl MarketState {
             .map_err(|_| serde_json::from_str(&res_serialized).unwrap())
     }
 
-    async fn request(is_warning_shown: bool) -> Response {
+    async fn request(is_warning_shown: bool) -> Result<Response, ResponseErrorSource> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_MARKET_STATE}")).unwrap();
         url.query_pairs_mut().append_pair("isDetails", is_warning_shown.to_string().as_str());
 
@@ -52,6 +52,13 @@ impl MarketState {
             .header(ACCEPT, "application/json")
             .send()
             .await
-            .unwrap()
+            .map_err(|x| {
+                ResponseErrorSource {
+                    error: ResponseErrorBodySource {
+                        name: "internal_reqwest_error".to_owned(),
+                        message: x.to_string()
+                    }
+                }
+            })
     }
 }

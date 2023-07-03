@@ -2,7 +2,6 @@ use reqwest::Response;
 use reqwest::header::{ACCEPT, AUTHORIZATION};
 
 use super::{
-    request::RequestWithQuery,
     super::constant::{URL_ORDER_CHANCE, URL_SERVER},
     super::response::{
         AccountsInfo,
@@ -12,14 +11,16 @@ use super::{
     },
     super::response_source:: {
         ResponseErrorSource,
-        OrderChanceSource
-    }
+        OrderChanceSource,
+        ResponseErrorBodySource
+    },
+    request::RequestWithQuery,
 };
 
 impl RequestWithQuery for OrderChance {}
 impl OrderChance {
     pub async fn get_order_chance(market_id: &str) -> Result<Self, ResponseErrorSource> {
-        let res = Self::request(market_id).await;
+        let res = Self::request(market_id).await?;
         let res_serialized = res.text().await.unwrap();
         
         serde_json::from_str(&res_serialized)
@@ -66,9 +67,9 @@ impl OrderChance {
             .map_err(|_|  serde_json::from_str(&res_serialized).unwrap())
     }
 
-    async fn request(market_id: &str) -> Response {
+    async fn request(market_id: &str) -> Result<Response, ResponseErrorSource> {
         let url = format!("{URL_SERVER}{URL_ORDER_CHANCE}/?market={market_id}");
-        let token_string = Self::set_token_with_query(&url);
+        let token_string = Self::set_token_with_query(&url)?;
         let client = reqwest::Client::new();
         
         client
@@ -77,6 +78,13 @@ impl OrderChance {
             .header(AUTHORIZATION, &token_string)
             .send()
             .await
-            .unwrap()
+            .map_err(|x| {
+                ResponseErrorSource {
+                    error: ResponseErrorBodySource {
+                        name: "internal_reqwest_error".to_owned(),
+                        message: x.to_string()
+                    }
+                }
+            })
     }
 }

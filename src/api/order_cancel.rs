@@ -29,7 +29,7 @@ impl OrderInfo {
             });
         }
 
-        let res = Self::request_delete(uuid, identifier).await;
+        let res = Self::request_delete(uuid, identifier).await?;
         let res_serialized: String = res.text().await.unwrap();
         
         serde_json::from_str(&res_serialized)
@@ -55,7 +55,7 @@ impl OrderInfo {
             .map_err(|_| serde_json::from_str(&res_serialized).unwrap())
     }
 
-    async fn request_delete(uuid: Option<&str>, identifier: Option<&str>) -> Response {
+    async fn request_delete(uuid: Option<&str>, identifier: Option<&str>) -> Result<Response, ResponseErrorSource> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDER_STATE}")).unwrap();
 
         if uuid.is_some() {
@@ -66,7 +66,7 @@ impl OrderInfo {
             url.query_pairs_mut().append_pair("identifier", identifier.unwrap());
         }
 
-        let token_string = Self::set_token_with_query(url.as_str());
+        let token_string = Self::set_token_with_query(url.as_str())?;
         let client = reqwest::Client::new();
         
         client
@@ -75,6 +75,13 @@ impl OrderInfo {
             .header(AUTHORIZATION, &token_string)
             .send()
             .await
-            .unwrap()
+            .map_err(|x| {
+                ResponseErrorSource {
+                    error: ResponseErrorBodySource {
+                        name: "internal_reqwest_error".to_owned(),
+                        message: x.to_string()
+                    }
+                }
+            })
     }
 }

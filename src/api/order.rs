@@ -5,14 +5,14 @@ use super::{
     super::{
         constant::{URL_ORDER, URL_SERVER, OrdSide, OrdType},
         response::{OrderInfo},
-        response_source::{OrderInfoSource, ResponseErrorSource}
+        response_source::{OrderInfoSource, ResponseErrorSource, ResponseErrorBodySource}
     },
     request::RequestWithQuery
 };
 
 impl OrderInfo {
     pub async fn order(market_id: &str, side: OrdSide, volume: Option<f64>, price: Option<f64>, ord_type: OrdType, identifier: Option<&str>) -> Result<Self, ResponseErrorSource> {
-        let res = Self::request_order(market_id, side, volume, price, ord_type, identifier).await;
+        let res = Self::request_order(market_id, side, volume, price, ord_type, identifier).await?;
         let res_serialized = res.text().await.unwrap();
         
         serde_json::from_str(&res_serialized)
@@ -38,7 +38,7 @@ impl OrderInfo {
             .map_err(|_| serde_json::from_str(&res_serialized).unwrap())
     }
 
-    async fn request_order(market_id: &str, side: OrdSide, volume: Option<f64>, price: Option<f64>, ord_type: OrdType, identifier: Option<&str>) -> Response {
+    async fn request_order(market_id: &str, side: OrdSide, volume: Option<f64>, price: Option<f64>, ord_type: OrdType, identifier: Option<&str>) -> Result<Response, ResponseErrorSource> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDER}")).unwrap();
         
         url.query_pairs_mut()
@@ -65,13 +65,13 @@ impl OrderInfo {
             y = y.replace('&', ",");
             y.insert(0, '{');
             y.insert(y.len(), '}');
-            
+
             Some(y)
         } else {
             None
         };
 
-        let token_string = Self::set_token_with_query(url.as_str());
+        let token_string = Self::set_token_with_query(url.as_str())?;
         
         reqwest::Client::new()
             .post(url.as_str())
@@ -81,6 +81,13 @@ impl OrderInfo {
             .header(AUTHORIZATION, &token_string)
             .send()
             .await
-            .unwrap()
+            .map_err(|x| {
+                ResponseErrorSource {
+                    error: ResponseErrorBodySource {
+                        name: "internal_reqwest_error".to_owned(),
+                        message: x.to_string()
+                    }
+                }
+            })
     }
 }

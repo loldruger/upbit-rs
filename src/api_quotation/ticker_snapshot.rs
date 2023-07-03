@@ -1,4 +1,4 @@
-use crate::response_source::ResponseErrorSource;
+use crate::response_source::{ResponseErrorSource, ResponseErrorBodySource};
 
 use super::super::constant::{URL_SERVER, URL_TICKER};
 
@@ -38,16 +38,7 @@ pub struct TickerSnapshot {
 
 impl TickerSnapshot {
     pub async fn get_ticker_snapshot(market: &str) -> Result<Self, ResponseErrorSource> {
-        let mut url = Url::parse(&format!("{URL_SERVER}{URL_TICKER}")).unwrap();
-        url.query_pairs_mut().append_pair("markets", market);
-        
-        let res = reqwest::Client::new()
-            .get(url.as_str())
-            .header(ACCEPT, "application/json")
-            .send()
-            .await
-            .unwrap();
-        
+        let res = Self::request(market).await?;
         let res_serialized = res.text().await.unwrap();
         
         serde_json::from_str(&res_serialized)
@@ -83,5 +74,24 @@ impl TickerSnapshot {
                 }
             })
             .map_err(|_| serde_json::from_str(&res_serialized).unwrap())
+    }
+
+    async fn request(market: &str) -> Result<reqwest::Response, ResponseErrorSource> {
+        let mut url = Url::parse(&format!("{URL_SERVER}{URL_TICKER}")).unwrap();
+        url.query_pairs_mut().append_pair("markets", market);
+        
+        reqwest::Client::new()
+            .get(url.as_str())
+            .header(ACCEPT, "application/json")
+            .send()
+            .await
+            .map_err(|x| {
+                ResponseErrorSource {
+                    error: ResponseErrorBodySource {
+                        name: "internal_reqwest_error".to_owned(),
+                        message: x.to_string()
+                    }
+                }
+            })
     }
 }

@@ -1,4 +1,4 @@
-use crate::response_source::ResponseErrorSource;
+use crate::response_source::{ResponseErrorSource, ResponseErrorBodySource};
 
 use super::super::constant::{URL_SERVER, URL_ORDERBOOK};
 
@@ -25,13 +25,12 @@ pub struct OrderBookUnit {
 
 impl OrderbookInfo {
     pub async fn get_orderbook_info(market: &str) -> Result<Self, ResponseErrorSource> {       
-        let res = Self::request(market).await; 
+        let res = Self::request(market).await?; 
         let res_serialized = res.text().await.unwrap();
         
         serde_json::from_str(&res_serialized)
             .map(|mut x: Vec<Self>| {
                 let x = x.pop().unwrap();
-                
                 Self {
                     market: x.market,
                     timestamp: x.timestamp,
@@ -51,7 +50,7 @@ impl OrderbookInfo {
             .map_err(|_| serde_json::from_str(&res_serialized).unwrap())
     }
 
-    async fn request(market: &str) -> Response {
+    async fn request(market: &str) -> Result<Response, ResponseErrorSource> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDERBOOK}")).unwrap();
         url.query_pairs_mut().append_pair("markets", market);
 
@@ -60,6 +59,13 @@ impl OrderbookInfo {
             .header(ACCEPT, "application/json")
             .send()
             .await
-            .unwrap()
+            .map_err(|x| {
+                ResponseErrorSource {
+                    error: ResponseErrorBodySource {
+                        name: "internal_reqwest_error".to_owned(),
+                        message: x.to_string()
+                    }
+                }
+            })
     }
 }

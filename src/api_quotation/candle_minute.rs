@@ -1,6 +1,6 @@
 use super::{
     super::constant::{URL_SERVER, UrlAssociates, CandleMinute},
-    super::response_source::ResponseErrorSource
+    super::response_source::{ResponseErrorSource, ResponseErrorBodySource}
 };
 
 use reqwest::{Url, Response};
@@ -40,34 +40,34 @@ pub struct CandleChartMinuteSource {
 
 impl CandleChartMinute {
     pub async fn request_candle(market: &str, to: Option<String>, count: i32, candle_minute: CandleMinute) -> Result<Vec<Self>, ResponseErrorSource> {
-        let res = Self::request(market, to, count, candle_minute).await;
+        let res = Self::request(market, to, count, candle_minute).await?;
         let res_serialized = res.text().await.unwrap();
         
-            serde_json::from_str(&res_serialized)
-            .map(|x: Vec<CandleChartMinuteSource>| {
-                x
-                    .into_iter()
-                    .map(|i| {
-                        Self {
-                            market: i.market,
-                            candle_date_time_utc: chrono::NaiveDateTime::parse_from_str(&i.candle_date_time_utc, "%Y-%m-%dT%H:%M:%S").unwrap(),
-                            candle_date_time_kst: chrono::NaiveDateTime::parse_from_str(&i.candle_date_time_kst, "%Y-%m-%dT%H:%M:%S").unwrap(),
-                            opening_price: i.opening_price,
-                            high_price: i.high_price,
-                            low_price: i.low_price,
-                            trade_price: i.trade_price,
-                            timestamp: i.timestamp,
-                            candle_acc_trade_price: i.candle_acc_trade_price,
-                            candle_acc_trade_volume: i.candle_acc_trade_volume,
-                            unit: i.unit,
-                        }
-                    })
-                    .collect()
-            })
-            .map_err(|_| serde_json::from_str(&res_serialized).unwrap())
+        serde_json::from_str(&res_serialized)
+        .map(|x: Vec<CandleChartMinuteSource>| {
+            x
+                .into_iter()
+                .map(|i| {
+                    Self {
+                        market: i.market,
+                        candle_date_time_utc: chrono::NaiveDateTime::parse_from_str(&i.candle_date_time_utc, "%Y-%m-%dT%H:%M:%S").unwrap(),
+                        candle_date_time_kst: chrono::NaiveDateTime::parse_from_str(&i.candle_date_time_kst, "%Y-%m-%dT%H:%M:%S").unwrap(),
+                        opening_price: i.opening_price,
+                        high_price: i.high_price,
+                        low_price: i.low_price,
+                        trade_price: i.trade_price,
+                        timestamp: i.timestamp,
+                        candle_acc_trade_price: i.candle_acc_trade_price,
+                        candle_acc_trade_volume: i.candle_acc_trade_volume,
+                        unit: i.unit,
+                    }
+                })
+                .collect()
+        })
+        .map_err(|_| serde_json::from_str(&res_serialized).unwrap())
     }
 
-    async fn request(market: &str, to: Option<String>, count: i32, candle_minute: CandleMinute) -> Response {
+    async fn request(market: &str, to: Option<String>, count: i32, candle_minute: CandleMinute) -> Result<Response, ResponseErrorSource> {
         let url_candle: String = UrlAssociates::UrlCandleMinute(candle_minute).into();
         let mut url = Url::parse(&format!("{URL_SERVER}{url_candle}")).unwrap();
         url.query_pairs_mut()
@@ -83,6 +83,13 @@ impl CandleChartMinute {
             .header(ACCEPT, "application/json")
             .send()
             .await
-            .unwrap()
+            .map_err(|x| {
+                ResponseErrorSource {
+                    error: ResponseErrorBodySource {
+                        name: "internal_reqwest_error".to_owned(),
+                        message: x.to_string()
+                    }
+                }
+            })
     }
 }

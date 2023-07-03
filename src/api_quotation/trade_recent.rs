@@ -1,4 +1,4 @@
-use crate::response_source::ResponseErrorSource;
+use crate::response_source::{ResponseErrorSource, ResponseErrorBodySource};
 
 use super::super::constant::{URL_SERVER, URL_TRADES_TICKS};
 
@@ -21,7 +21,7 @@ pub struct TradeRecent {
 
 impl TradeRecent {
     pub async fn get_trade_recent(market: &str, hhmmss: Option<&str>, count: i32, cursor: String, days_ago: Option<i32>) -> Result<Self, ResponseErrorSource> {
-        let res = Self::request(market, hhmmss, count, cursor, days_ago).await;
+        let res = Self::request(market, hhmmss, count, cursor, days_ago).await?;
         let res_serialized = res.text().await.unwrap();
         
         serde_json::from_str(&res_serialized)
@@ -43,7 +43,7 @@ impl TradeRecent {
             .map_err(|_| serde_json::from_str(&res_serialized).unwrap())
     }
 
-    async fn request(market: &str, hhmmss: Option<&str>, count: i32, cursor: String, days_ago: Option<i32>) -> Response {
+    async fn request(market: &str, hhmmss: Option<&str>, count: i32, cursor: String, days_ago: Option<i32>) -> Result<Response, ResponseErrorSource> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_TRADES_TICKS}")).unwrap();
         url.query_pairs_mut()
             .append_pair("market", market)
@@ -63,6 +63,13 @@ impl TradeRecent {
             .header(ACCEPT, "application/json")
             .send()
             .await
-            .unwrap()
+            .map_err(|x| {
+                ResponseErrorSource {
+                    error: ResponseErrorBodySource {
+                        name: "internal_reqwest_error".to_owned(),
+                        message: x.to_string()
+                    }
+                }
+            })
     }
 }

@@ -5,8 +5,10 @@ use serde_json::json;
 use sha2::{Digest, Sha512};
 use uuid::Uuid;
 
+use crate::response_source::ResponseErrorSource;
+
 pub trait Request {
-    fn set_token() -> String {
+    fn set_token() -> Result<String, ResponseErrorSource> {
         let access_key = envmnt::get_or_panic("ACCESS_KEY");
         let secret_key = envmnt::get_or_panic("SECRET_KEY");
         let alg = Algorithm::new_hmac(AlgorithmID::HS256, secret_key).unwrap();
@@ -22,12 +24,12 @@ pub trait Request {
 
         let token = jwt::encode(&header, &payload, &alg).unwrap();
 
-        format!("Bearer {token}")
+        Ok(format!("Bearer {token}"))
     }
 }
 
 pub trait RequestWithQuery {
-    fn set_token_with_query(url: &str) -> String {
+    fn set_token_with_query(url: &str) -> Result<String, ResponseErrorSource> {
         let access_key = envmnt::get_or_panic("ACCESS_KEY");
         let secret_key = envmnt::get_or_panic("SECRET_KEY");
         let url = Url::parse(url).ok().unwrap();
@@ -48,6 +50,6 @@ pub trait RequestWithQuery {
 
         let token = jwt::encode(&header, &payload, &alg).unwrap();
 
-        format!("Bearer {token}")
+        Ok(format!("Bearer {token}"))
     }
 }
