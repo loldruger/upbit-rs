@@ -2,13 +2,17 @@ use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
 pub enum ResponseErrorState {
+    InternalNeitherParameterNull, //either parameter uuid or identifier must be specified.
+    InternalMoreParameterSpecified, //only one parameter of uuid and identifier must be specified.
+    InternalReqwestError,
+    InternalHmacError,
+    InternalTokenEncodeError,
     JwtVerificationError, //"Failed to verify Jwt token."
     ExpiredAccessKey,
     InvalidQueryPayload,
     CreateAskError,
     CreateBidError,
     InvalidAccessKey,
-    InvalidParameter,
     InvalideVolumeBid, //"주문수량 단위를 잘못 입력하셨습니다. 확인 후 시도해주세요."
     InvalidPriceBid, //"주문가격 단위를 잘못 입력하셨습니다. 확인 후 시도해주세요."
     OrderNotFound,
@@ -27,7 +31,11 @@ pub enum ResponseErrorState {
 impl From<&str> for ResponseErrorState {
     fn from(value: &str) -> Self {
         match value {
-            "internal_invalid_parameter" => ResponseErrorState::InvalidParameter,
+            "internal_invalid_parameter" => ResponseErrorState::InternalNeitherParameterNull,
+            "internal_more_parameter_specified" => ResponseErrorState::InternalMoreParameterSpecified,
+            "internal_reqwest_error" => ResponseErrorState::InternalReqwestError,
+            "internal_hmac_error" => ResponseErrorState::InternalHmacError,
+            "internal_token_encode_error" => ResponseErrorState::InternalTokenEncodeError,
             "jwt_verification" => ResponseErrorState::JwtVerificationError,
             "expired_access_key" => ResponseErrorState::ExpiredAccessKey,
             "invalid_query_payload" => ResponseErrorState::InvalidQueryPayload,
