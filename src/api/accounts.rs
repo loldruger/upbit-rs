@@ -7,7 +7,7 @@ use crate::response_source::ResponseErrorBody;
 use super::{
     super::constant::{URL_ACCOUNTS, URL_SERVER},
     super::response::{AccountsInfo},
-    super::response_source::{AccountsInfoSource, ResponseError},
+    super::response_source::{AccountsInfoSource, ResponseError, ResponseErrorSource},
     request::Request
 };
 
@@ -15,6 +15,20 @@ impl AccountsInfo {
     pub async fn get_account_info() -> Result<Vec<Self>, ResponseError> {
         let res = Self::request().await?;
         let res_serialized = res.text().await.unwrap();
+        
+        if res_serialized.contains("error") {
+            return Err(serde_json::from_str(&res_serialized)
+                .map(|e: ResponseErrorSource| {
+                    ResponseError {
+                        state: ResponseErrorState::from(e.error.name.as_str()),
+                        error: ResponseErrorBody {
+                            name: e.error.name,
+                            message: e.error.message
+                        },
+                    }
+                }).ok().unwrap())
+        }
+
         serde_json::from_str(&res_serialized)
             .map(|x: Vec<AccountsInfoSource>| {
                 x

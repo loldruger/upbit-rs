@@ -13,7 +13,8 @@ use super::{
     super::response_source:: {
         ResponseError,
         OrderChanceSource,
-        ResponseErrorBody
+        ResponseErrorBody,
+        ResponseErrorSource
     },
     request::RequestWithQuery,
 };
@@ -24,6 +25,19 @@ impl OrderChance {
         let res = Self::request(market_id).await?;
         let res_serialized = res.text().await.unwrap();
         
+        if res_serialized.contains("error") {
+            return Err(serde_json::from_str(&res_serialized)
+                .map(|e: ResponseErrorSource| {
+                    ResponseError {
+                        state: ResponseErrorState::from(e.error.name.as_str()),
+                        error: ResponseErrorBody {
+                            name: e.error.name,
+                            message: e.error.message
+                        },
+                    }
+                }).ok().unwrap())
+        }
+
         serde_json::from_str(&res_serialized)
             .map(|x: OrderChanceSource| {
                 Self {

@@ -8,7 +8,7 @@ use super::{
     request::RequestWithQuery,
     super::constant::{URL_ORDER_STATE, URL_SERVER},
     super::response::{OrderInfo, ResponseErrorState},
-    super::response_source::{OrderInfoSource, ResponseErrorBody, ResponseError}
+    super::response_source::{OrderInfoSource, ResponseErrorBody, ResponseError, ResponseErrorSource}
 };
 
 impl OrderInfo {
@@ -34,6 +34,19 @@ impl OrderInfo {
         let res = Self::request_delete(uuid, identifier).await?;
         let res_serialized: String = res.text().await.unwrap();
         
+        if res_serialized.contains("error") {
+            return Err(serde_json::from_str(&res_serialized)
+                .map(|e: ResponseErrorSource| {
+                    ResponseError {
+                        state: ResponseErrorState::from(e.error.name.as_str()),
+                        error: ResponseErrorBody {
+                            name: e.error.name,
+                            message: e.error.message
+                        },
+                    }
+                }).ok().unwrap())
+        }
+
         serde_json::from_str(&res_serialized)
             .map(|x: OrderInfoSource| {
                 Self {

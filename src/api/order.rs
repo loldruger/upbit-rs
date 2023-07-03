@@ -5,7 +5,7 @@ use super::{
     super::{
         constant::{URL_ORDER, URL_SERVER, OrdSide, OrdType},
         response::{OrderInfo, ResponseErrorState},
-        response_source::{OrderInfoSource, ResponseError, ResponseErrorBody}
+        response_source::{OrderInfoSource, ResponseError, ResponseErrorBody, ResponseErrorSource}
     },
     request::RequestWithQuery
 };
@@ -15,6 +15,19 @@ impl OrderInfo {
         let res = Self::request_order(market_id, side, volume, price, ord_type, identifier).await?;
         let res_serialized = res.text().await.unwrap();
         
+        if res_serialized.contains("error") {
+            return Err(serde_json::from_str(&res_serialized)
+                .map(|e: ResponseErrorSource| {
+                    ResponseError {
+                        state: ResponseErrorState::from(e.error.name.as_str()),
+                        error: ResponseErrorBody {
+                            name: e.error.name,
+                            message: e.error.message
+                        },
+                    }
+                }).ok().unwrap())
+        }
+
         serde_json::from_str(&res_serialized)
             .map(|x: OrderInfoSource| {
                 Self {

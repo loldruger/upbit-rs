@@ -12,7 +12,8 @@ use super::{
     super::response_source::{
         ResponseErrorBody,
         ResponseError,
-        OrderStateSource
+        OrderStateSource,
+        ResponseErrorSource
     },
     request::RequestWithQuery,
 };
@@ -41,6 +42,19 @@ impl OrderState {
         let res = Self::request(uuid, identifier).await?;
         let res_serialized = res.text().await.unwrap();
 
+        if res_serialized.contains("error") {
+            return Err(serde_json::from_str(&res_serialized)
+                .map(|e: ResponseErrorSource| {
+                    ResponseError {
+                        state: ResponseErrorState::from(e.error.name.as_str()),
+                        error: ResponseErrorBody {
+                            name: e.error.name,
+                            message: e.error.message
+                        },
+                    }
+                }).ok().unwrap())
+        }
+        
         serde_json::from_str(&res_serialized)
             .map(|x: OrderStateSource| {
                 Self {

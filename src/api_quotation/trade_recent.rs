@@ -1,5 +1,5 @@
 use crate::response::ResponseErrorState;
-use crate::response_source::{ResponseError, ResponseErrorBody};
+use crate::response_source::{ResponseError, ResponseErrorBody, ResponseErrorSource};
 
 use super::super::constant::{URL_SERVER, URL_TRADES_TICKS};
 
@@ -24,6 +24,19 @@ impl TradeRecent {
     pub async fn get_trade_recent(market: &str, hhmmss: Option<&str>, count: i32, cursor: String, days_ago: Option<i32>) -> Result<Self, ResponseError> {
         let res = Self::request(market, hhmmss, count, cursor, days_ago).await?;
         let res_serialized = res.text().await.unwrap();
+        
+        if res_serialized.contains("error") {
+            return Err(serde_json::from_str(&res_serialized)
+                .map(|e: ResponseErrorSource| {
+                    ResponseError {
+                        state: ResponseErrorState::from(e.error.name.as_str()),
+                        error: ResponseErrorBody {
+                            name: e.error.name,
+                            message: e.error.message
+                        },
+                    }
+                }).ok().unwrap())
+        }
         
         serde_json::from_str(&res_serialized)
             .map(|mut x: Vec<Self>| {

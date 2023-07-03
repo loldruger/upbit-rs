@@ -1,5 +1,5 @@
 use crate::response::ResponseErrorState;
-use crate::response_source::{ResponseError, ResponseErrorBody};
+use crate::response_source::{ResponseError, ResponseErrorBody, ResponseErrorSource};
 
 use super::super::constant::{URL_SERVER, UrlAssociates};
 
@@ -26,6 +26,19 @@ impl CandleChartWeek {
     pub async fn request_candle(market: &str, count: i32, last_candle_time: Option<String>) -> Result<Vec<Self>, ResponseError> {
         let res = Self::request(market, count, last_candle_time).await?;
         let res_serialized = res.text().await.unwrap();
+        
+        if res_serialized.contains("error") {
+            return Err(serde_json::from_str(&res_serialized)
+                .map(|e: ResponseErrorSource| {
+                    ResponseError {
+                        state: ResponseErrorState::from(e.error.name.as_str()),
+                        error: ResponseErrorBody {
+                            name: e.error.name,
+                            message: e.error.message
+                        },
+                    }
+                }).ok().unwrap())
+        }
         
         serde_json::from_str(&res_serialized)
             .map(|x: Vec<Self>| {       

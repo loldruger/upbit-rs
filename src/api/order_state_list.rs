@@ -10,7 +10,8 @@ use super::{
     super::response_source::{
         OrderInfoSource,
         ResponseError,
-        ResponseErrorBody
+        ResponseErrorBody,
+        ResponseErrorSource
     },
     request::Request
 };
@@ -20,6 +21,19 @@ impl OrderInfo {
         let res = Self::request().await?;
         let res_serialized = res.text().await.unwrap();
         
+        if res_serialized.contains("error") {
+            return Err(serde_json::from_str(&res_serialized)
+                .map(|e: ResponseErrorSource| {
+                    ResponseError {
+                        state: ResponseErrorState::from(e.error.name.as_str()),
+                        error: ResponseErrorBody {
+                            name: e.error.name,
+                            message: e.error.message
+                        },
+                    }
+                }).ok().unwrap())
+        }
+
         serde_json::from_str(&res_serialized)
             .map(|x: Vec<OrderInfoSource>| {
                 x
