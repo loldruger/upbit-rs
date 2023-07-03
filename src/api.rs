@@ -9,15 +9,30 @@ pub mod order_state_list;
 
 use crate::response_source::ResponseError;
 
-use super::constant::{OrdSide, OrdType};
+use super::constant::{OrderSide, OrderType};
 use super::response::{AccountsInfo, OrderInfo, OrderChance, OrderState};
+
+/// Make an order(buy or sell) with desired price 
+/// # Example
+/// ```
+/// let order_info = api::order_by_price("KRW-ETH", OrderSide::BID, 5000.0, 1_435_085.0, OrderType::LIMIT, None).await;
+/// ```
+/// # Response
+/// | field                  | description                   | type         |
+/// |:-----------------------|:------------------------------|:-------------|
+/// | currency               | 화폐를 의미하는 영문 대문자 코드 | String       |
+/// | balance                | 주문가능 금액/수량              | NumberString |
+/// | locked                 | 주문 중 묶여있는 금액/수량      | NumberString |
+/// | avg_buy_price          | 매수평균가                     | NumberString |
+/// | avg_buy_price_modified | 매수평균가 수정 여부            | Boolean     |
+/// | unit_currency          | 평단가 기준 화폐                | String      |
 
 pub async fn order_by_price(
     market: &str,
-    side: OrdSide,
+    side: OrderSide,
     price: f64,
     price_desired: f64,
-    ord_type: OrdType,
+    ord_type: OrderType,
     identifier: Option<&str>,
 ) -> Result<OrderInfo, ResponseError> {
     OrderInfo::order(
@@ -34,10 +49,10 @@ pub async fn order_by_price(
 pub async fn sell_by_market_price(market: &str, volume: f64, identifier: Option<&str>) -> Result<OrderInfo, ResponseError> {
     OrderInfo::order(
         market,
-        OrdSide::ASK,
+        OrderSide::ASK,
         Some(volume),
         None,
-        OrdType::MARKET,
+        OrderType::MARKET,
         identifier
     )
     .await

@@ -62,33 +62,33 @@ impl From<UrlAssociates> for String {
 // pub const URL_CANDLE_MONTH: &str = "/v1/candles/months";
 
 #[derive(Copy, Clone, PartialEq, Eq)]
-pub enum OrdSide {
+pub enum OrderSide {
     BID,
     ASK,
 }
 
-impl From<OrdSide> for &str {
-    fn from(order_side: OrdSide) -> &'static str {
+impl From<OrderSide> for &str {
+    fn from(order_side: OrderSide) -> &'static str {
         match order_side {
-            OrdSide::BID => "bid",
-            OrdSide::ASK => "ask",
+            OrderSide::BID => "bid",
+            OrderSide::ASK => "ask",
         }
     }
 }
 
 #[derive(Copy, Clone, PartialEq, Eq)]
-pub enum OrdType {
+pub enum OrderType {
     LIMIT,
     PRICE,
     MARKET,
 }
 
-impl From<OrdType> for &str {
-    fn from(order_type: OrdType) -> &'static str {
+impl From<OrderType> for &str {
+    fn from(order_type: OrderType) -> &'static str {
         match order_type {
-            OrdType::LIMIT => "limit",
-            OrdType::PRICE => "price",
-            OrdType::MARKET => "market",
+            OrderType::LIMIT => "limit",
+            OrderType::PRICE => "price",
+            OrderType::MARKET => "market",
         }
     }
 }
@@ -100,6 +100,7 @@ pub enum Currency {
 }
 
 pub enum CurrencyCrypto {
+    BTC,
     ETH,
     ATOM
 }

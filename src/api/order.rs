@@ -3,7 +3,7 @@ use reqwest::{Url, Response};
 
 use super::{
     super::{
-        constant::{URL_ORDER, URL_SERVER, OrdSide, OrdType},
+        constant::{URL_ORDER, URL_SERVER, OrderSide, OrderType},
         response::{OrderInfo, ResponseErrorState},
         response_source::{OrderInfoSource, ResponseError, ResponseErrorBody, ResponseErrorSource}
     },
@@ -11,7 +11,7 @@ use super::{
 };
 
 impl OrderInfo {
-    pub async fn order(market_id: &str, side: OrdSide, volume: Option<f64>, price: Option<f64>, ord_type: OrdType, identifier: Option<&str>) -> Result<Self, ResponseError> {
+    pub async fn order(market_id: &str, side: OrderSide, volume: Option<f64>, price: Option<f64>, ord_type: OrderType, identifier: Option<&str>) -> Result<Self, ResponseError> {
         let res = Self::request_order(market_id, side, volume, price, ord_type, identifier).await?;
         let res_serialized = res.text().await.unwrap();
         
@@ -59,7 +59,7 @@ impl OrderInfo {
             })
     }
 
-    async fn request_order(market_id: &str, side: OrdSide, volume: Option<f64>, price: Option<f64>, ord_type: OrdType, identifier: Option<&str>) -> Result<Response, ResponseError> {
+    async fn request_order(market_id: &str, side: OrderSide, volume: Option<f64>, price: Option<f64>, ord_type: OrderType, identifier: Option<&str>) -> Result<Response, ResponseError> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDER}")).unwrap();
         
         url.query_pairs_mut()
