@@ -16,7 +16,7 @@ pub use candle_day::CandleChartDay;
 pub use candle_week::CandleChartWeek;
 pub use candle_month::CandleChartMonth;
 
-use crate::{response::ResponseErrorState, constant::CandleMinute, response_source::ResponseError};
+use crate::{constant::CandleMinute, response_source::ResponseError};
 
 pub async fn get_order_book_info(market: &str) -> Result<OrderbookInfo, ResponseError> {
     OrderbookInfo::get_orderbook_info(market).await

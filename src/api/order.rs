@@ -35,7 +35,12 @@ impl OrderInfo {
                     trades_count: x.trades_count(),
                 }
             })
-            .map_err(|_| serde_json::from_str(&res_serialized).unwrap())
+            .map_err(|_| {
+                ResponseError {
+                    state: ResponseErrorState::InternalReqwestError,
+                    error: serde_json::from_str(&res_serialized).unwrap()
+                }
+            })
     }
 
     async fn request_order(market_id: &str, side: OrdSide, volume: Option<f64>, price: Option<f64>, ord_type: OrdType, identifier: Option<&str>) -> Result<Response, ResponseError> {
