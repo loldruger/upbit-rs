@@ -1,12 +1,15 @@
 use serde::Deserialize;
 
+use crate::response::ResponseErrorState;
+
 #[derive(Deserialize, Debug)]
-pub struct ResponseErrorSource {
-    pub error: ResponseErrorBodySource
+pub struct ResponseError {
+    pub state: ResponseErrorState,
+    pub error: ResponseErrorBody
 }
 
 #[derive(Deserialize, Debug)]
-pub struct ResponseErrorBodySource {
+pub struct ResponseErrorBody {
     pub name: String,
     pub message: String,
 }

@@ -7,22 +7,24 @@ use reqwest::{
 use super::{
     request::RequestWithQuery,
     super::constant::{URL_ORDER_STATE, URL_SERVER},
-    super::response::{OrderInfo},
-    super::response_source::{OrderInfoSource, ResponseErrorBodySource, ResponseErrorSource}
+    super::response::{OrderInfo, ResponseErrorState},
+    super::response_source::{OrderInfoSource, ResponseErrorBody, ResponseError}
 };
 
 impl OrderInfo {
-    pub async fn delete_order(uuid: Option<&str>, identifier: Option<&str>) -> Result<Self, ResponseErrorSource> {
+    pub async fn delete_order(uuid: Option<&str>, identifier: Option<&str>) -> Result<Self, ResponseError> {
         if uuid.is_none() && identifier.is_none() {
-            return Err(ResponseErrorSource {
-                error: ResponseErrorBodySource {
+            return Err(ResponseError {
+                state: ResponseErrorState::InternalNeitherParameterSpecified,
+                error: ResponseErrorBody {
                     name: "internal_neither_parameter_specified".to_owned(),
                     message: "either parameter uuid or identifier must be specified.".to_owned()
                 }
             });
         } else if uuid.is_some() && identifier.is_some() {
-            return Err(ResponseErrorSource {
-                error: ResponseErrorBodySource {
+            return Err(ResponseError {
+                state: ResponseErrorState::InternalMoreParameterSpecified,
+                error: ResponseErrorBody {
                     name: "internal_more_parameter_specified".to_owned(),
                     message: "only one parameter of uuid and identifier must be specified.".to_owned()
                 }
@@ -55,7 +57,7 @@ impl OrderInfo {
             .map_err(|_| serde_json::from_str(&res_serialized).unwrap())
     }
 
-    async fn request_delete(uuid: Option<&str>, identifier: Option<&str>) -> Result<Response, ResponseErrorSource> {
+    async fn request_delete(uuid: Option<&str>, identifier: Option<&str>) -> Result<Response, ResponseError> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDER_STATE}")).unwrap();
 
         if uuid.is_some() {
@@ -76,8 +78,9 @@ impl OrderInfo {
             .send()
             .await
             .map_err(|x| {
-                ResponseErrorSource {
-                    error: ResponseErrorBodySource {
+                ResponseError {
+                    state: ResponseErrorState::InternalReqwestError,
+                    error: ResponseErrorBody {
                         name: "internal_reqwest_error".to_owned(),
                         message: x.to_string()
                     }

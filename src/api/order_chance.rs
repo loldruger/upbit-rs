@@ -7,19 +7,20 @@ use super::{
         AccountsInfo,
         OrderChance,
         ObjectMarket,
-        ObjectAskBid
+        ObjectAskBid,
+        ResponseErrorState
     },
     super::response_source:: {
-        ResponseErrorSource,
+        ResponseError,
         OrderChanceSource,
-        ResponseErrorBodySource
+        ResponseErrorBody
     },
     request::RequestWithQuery,
 };
 
 impl RequestWithQuery for OrderChance {}
 impl OrderChance {
-    pub async fn get_order_chance(market_id: &str) -> Result<Self, ResponseErrorSource> {
+    pub async fn get_order_chance(market_id: &str) -> Result<Self, ResponseError> {
         let res = Self::request(market_id).await?;
         let res_serialized = res.text().await.unwrap();
         
@@ -67,7 +68,7 @@ impl OrderChance {
             .map_err(|_|  serde_json::from_str(&res_serialized).unwrap())
     }
 
-    async fn request(market_id: &str) -> Result<Response, ResponseErrorSource> {
+    async fn request(market_id: &str) -> Result<Response, ResponseError> {
         let url = format!("{URL_SERVER}{URL_ORDER_CHANCE}/?market={market_id}");
         let token_string = Self::set_token_with_query(&url)?;
         let client = reqwest::Client::new();
@@ -79,8 +80,9 @@ impl OrderChance {
             .send()
             .await
             .map_err(|x| {
-                ResponseErrorSource {
-                    error: ResponseErrorBodySource {
+                ResponseError {
+                    state: ResponseErrorState::InternalReqwestError,
+                    error: ResponseErrorBody {
                         name: "internal_reqwest_error".to_owned(),
                         message: x.to_string()
                     }

@@ -1,4 +1,5 @@
-use crate::response_source::{ResponseErrorSource, ResponseErrorBodySource};
+use crate::response::ResponseErrorState;
+use crate::response_source::{ResponseError, ResponseErrorBody};
 
 use super::super::constant::{URL_SERVER, URL_TRADES_TICKS};
 
@@ -20,7 +21,7 @@ pub struct TradeRecent {
 }
 
 impl TradeRecent {
-    pub async fn get_trade_recent(market: &str, hhmmss: Option<&str>, count: i32, cursor: String, days_ago: Option<i32>) -> Result<Self, ResponseErrorSource> {
+    pub async fn get_trade_recent(market: &str, hhmmss: Option<&str>, count: i32, cursor: String, days_ago: Option<i32>) -> Result<Self, ResponseError> {
         let res = Self::request(market, hhmmss, count, cursor, days_ago).await?;
         let res_serialized = res.text().await.unwrap();
         
@@ -43,7 +44,7 @@ impl TradeRecent {
             .map_err(|_| serde_json::from_str(&res_serialized).unwrap())
     }
 
-    async fn request(market: &str, hhmmss: Option<&str>, count: i32, cursor: String, days_ago: Option<i32>) -> Result<Response, ResponseErrorSource> {
+    async fn request(market: &str, hhmmss: Option<&str>, count: i32, cursor: String, days_ago: Option<i32>) -> Result<Response, ResponseError> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_TRADES_TICKS}")).unwrap();
         url.query_pairs_mut()
             .append_pair("market", market)
@@ -64,8 +65,9 @@ impl TradeRecent {
             .send()
             .await
             .map_err(|x| {
-                ResponseErrorSource {
-                    error: ResponseErrorBodySource {
+                ResponseError {
+                    state: ResponseErrorState::InternalReqwestError,
+                    error: ResponseErrorBody {
                         name: "internal_reqwest_error".to_owned(),
                         message: x.to_string()
                     }

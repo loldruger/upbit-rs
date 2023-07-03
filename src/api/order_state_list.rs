@@ -6,17 +6,17 @@ use reqwest::{
 
 use super::{
     super::constant::{URL_ORDER_STATE_LIST, URL_SERVER},
-    super::response::OrderInfo,
+    super::response::{OrderInfo, ResponseErrorState},
     super::response_source::{
         OrderInfoSource,
-        ResponseErrorSource,
-        ResponseErrorBodySource
+        ResponseError,
+        ResponseErrorBody
     },
     request::Request
 };
 
 impl OrderInfo {
-    pub async fn get_order_state_list() -> Result<Vec<Self>, ResponseErrorSource> {
+    pub async fn get_order_state_list() -> Result<Vec<Self>, ResponseError> {
         let res = Self::request().await?;
         let res_serialized = res.text().await.unwrap();
         
@@ -46,7 +46,7 @@ impl OrderInfo {
             }).map_err(|_| serde_json::from_str(&res_serialized).unwrap())
     }
 
-    async fn request() -> Result<Response, ResponseErrorSource> {
+    async fn request() -> Result<Response, ResponseError> {
         let url = Url::parse(&format!("{URL_SERVER}{URL_ORDER_STATE_LIST}")).unwrap();
         let token_string = Self::set_token()?;
         let client = reqwest::Client::new();
@@ -58,8 +58,9 @@ impl OrderInfo {
             .send()
             .await
             .map_err(|x| {
-                ResponseErrorSource {
-                    error: ResponseErrorBodySource {
+                ResponseError {
+                    state: ResponseErrorState::InternalReqwestError,
+                    error: ResponseErrorBody {
                         name: "internal_reqwest_error".to_owned(),
                         message: x.to_string()
                     }

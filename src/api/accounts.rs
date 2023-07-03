@@ -1,17 +1,18 @@
 use reqwest::Response;
 use reqwest::header::{ACCEPT, AUTHORIZATION};
 
-use crate::response_source::ResponseErrorBodySource;
+use crate::response::ResponseErrorState;
+use crate::response_source::ResponseErrorBody;
 
 use super::{
     super::constant::{URL_ACCOUNTS, URL_SERVER},
     super::response::{AccountsInfo},
-    super::response_source::{AccountsInfoSource, ResponseErrorSource},
+    super::response_source::{AccountsInfoSource, ResponseError},
     request::Request
 };
 
 impl AccountsInfo {
-    pub async fn get_account_info() -> Result<Vec<Self>, ResponseErrorSource> {
+    pub async fn get_account_info() -> Result<Vec<Self>, ResponseError> {
         let res = Self::request().await?;
         let res_serialized = res.text().await.unwrap();
         serde_json::from_str(&res_serialized)
@@ -31,7 +32,7 @@ impl AccountsInfo {
             .map_err(|_| serde_json::from_str(&res_serialized).unwrap())
     }
 
-    async fn request() -> Result<Response, ResponseErrorSource> {
+    async fn request() -> Result<Response, ResponseError> {
         let token_string = Self::set_token()?;
         
         reqwest::Client::new()
@@ -41,11 +42,12 @@ impl AccountsInfo {
             .send()
             .await
             .map_err(|x| {
-                ResponseErrorSource {
-                    error: ResponseErrorBodySource {
+                ResponseError {
+                    state: ResponseErrorState::InternalReqwestError,
+                    error: ResponseErrorBody {
                         name: "internal_reqwest_error".to_owned(),
                         message: x.to_string()
-                    }
+                    },
                 }
             })
     }

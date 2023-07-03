@@ -4,14 +4,14 @@ use reqwest::{Url, Response};
 use super::{
     super::{
         constant::{URL_ORDER, URL_SERVER, OrdSide, OrdType},
-        response::{OrderInfo},
-        response_source::{OrderInfoSource, ResponseErrorSource, ResponseErrorBodySource}
+        response::{OrderInfo, ResponseErrorState},
+        response_source::{OrderInfoSource, ResponseError, ResponseErrorBody}
     },
     request::RequestWithQuery
 };
 
 impl OrderInfo {
-    pub async fn order(market_id: &str, side: OrdSide, volume: Option<f64>, price: Option<f64>, ord_type: OrdType, identifier: Option<&str>) -> Result<Self, ResponseErrorSource> {
+    pub async fn order(market_id: &str, side: OrdSide, volume: Option<f64>, price: Option<f64>, ord_type: OrdType, identifier: Option<&str>) -> Result<Self, ResponseError> {
         let res = Self::request_order(market_id, side, volume, price, ord_type, identifier).await?;
         let res_serialized = res.text().await.unwrap();
         
@@ -38,7 +38,7 @@ impl OrderInfo {
             .map_err(|_| serde_json::from_str(&res_serialized).unwrap())
     }
 
-    async fn request_order(market_id: &str, side: OrdSide, volume: Option<f64>, price: Option<f64>, ord_type: OrdType, identifier: Option<&str>) -> Result<Response, ResponseErrorSource> {
+    async fn request_order(market_id: &str, side: OrdSide, volume: Option<f64>, price: Option<f64>, ord_type: OrdType, identifier: Option<&str>) -> Result<Response, ResponseError> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDER}")).unwrap();
         
         url.query_pairs_mut()
@@ -82,8 +82,9 @@ impl OrderInfo {
             .send()
             .await
             .map_err(|x| {
-                ResponseErrorSource {
-                    error: ResponseErrorBodySource {
+                ResponseError {
+                    state: ResponseErrorState::InternalReqwestError,
+                    error: ResponseErrorBody {
                         name: "internal_reqwest_error".to_owned(),
                         message: x.to_string()
                     }

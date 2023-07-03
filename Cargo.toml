@@ -1,8 +1,8 @@
 [package]
 name = "upbit"
-version = "1.1.0"
+version = "1.2.0"
 edition = "2021"
-description = "rust_upbit_api"
+description = "rust_upbit_api with upbit api version v1.3.4"
 license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

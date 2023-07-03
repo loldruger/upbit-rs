@@ -1,6 +1,8 @@
+use crate::response::ResponseErrorState;
+
 use super::{
     super::constant::{URL_SERVER, UrlAssociates, CandleMinute},
-    super::response_source::{ResponseErrorSource, ResponseErrorBodySource}
+    super::response_source::{ResponseError, ResponseErrorBody}
 };
 
 use reqwest::{Url, Response};
@@ -39,7 +41,7 @@ pub struct CandleChartMinuteSource {
 }
 
 impl CandleChartMinute {
-    pub async fn request_candle(market: &str, to: Option<String>, count: i32, candle_minute: CandleMinute) -> Result<Vec<Self>, ResponseErrorSource> {
+    pub async fn request_candle(market: &str, to: Option<String>, count: i32, candle_minute: CandleMinute) -> Result<Vec<Self>, ResponseError> {
         let res = Self::request(market, to, count, candle_minute).await?;
         let res_serialized = res.text().await.unwrap();
         
@@ -67,7 +69,7 @@ impl CandleChartMinute {
         .map_err(|_| serde_json::from_str(&res_serialized).unwrap())
     }
 
-    async fn request(market: &str, to: Option<String>, count: i32, candle_minute: CandleMinute) -> Result<Response, ResponseErrorSource> {
+    async fn request(market: &str, to: Option<String>, count: i32, candle_minute: CandleMinute) -> Result<Response, ResponseError> {
         let url_candle: String = UrlAssociates::UrlCandleMinute(candle_minute).into();
         let mut url = Url::parse(&format!("{URL_SERVER}{url_candle}")).unwrap();
         url.query_pairs_mut()
@@ -84,8 +86,9 @@ impl CandleChartMinute {
             .send()
             .await
             .map_err(|x| {
-                ResponseErrorSource {
-                    error: ResponseErrorBodySource {
+                ResponseError {
+                    state: ResponseErrorState::InternalReqwestError,
+                    error: ResponseErrorBody {
                         name: "internal_reqwest_error".to_owned(),
                         message: x.to_string()
                     }

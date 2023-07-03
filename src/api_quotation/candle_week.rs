@@ -1,4 +1,5 @@
-use crate::response_source::{ResponseErrorSource, ResponseErrorBodySource};
+use crate::response::ResponseErrorState;
+use crate::response_source::{ResponseError, ResponseErrorBody};
 
 use super::super::constant::{URL_SERVER, UrlAssociates};
 
@@ -22,7 +23,7 @@ pub struct CandleChartWeek {
 }
 
 impl CandleChartWeek {
-    pub async fn request_candle(market: &str, count: i32, last_candle_time: Option<String>) -> Result<Vec<Self>, ResponseErrorSource> {
+    pub async fn request_candle(market: &str, count: i32, last_candle_time: Option<String>) -> Result<Vec<Self>, ResponseError> {
         let res = Self::request(market, count, last_candle_time).await?;
         let res_serialized = res.text().await.unwrap();
         
@@ -55,7 +56,7 @@ impl CandleChartWeek {
         })
     }
 
-    async fn request(market: &str, count: i32, last_candle_time: Option<String>) -> Result<Response, ResponseErrorSource> {
+    async fn request(market: &str, count: i32, last_candle_time: Option<String>) -> Result<Response, ResponseError> {
         let url_candle: String = UrlAssociates::UrlCandleWeek.into();
         let mut url = Url::parse(&format!("{URL_SERVER}{url_candle}")).unwrap();
         url.query_pairs_mut()
@@ -72,8 +73,9 @@ impl CandleChartWeek {
             .send()
             .await
             .map_err(|x| {
-                ResponseErrorSource {
-                    error: ResponseErrorBodySource {
+                ResponseError {
+                    state: ResponseErrorState::InternalReqwestError,
+                    error: ResponseErrorBody {
                         name: "internal_reqwest_error".to_owned(),
                         message: x.to_string()
                     }

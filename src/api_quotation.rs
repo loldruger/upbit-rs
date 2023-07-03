@@ -16,52 +16,36 @@ pub use candle_day::CandleChartDay;
 pub use candle_week::CandleChartWeek;
 pub use candle_month::CandleChartMonth;
 
-use crate::{response::ResponseErrorState, constant::CandleMinute};
+use crate::{response::ResponseErrorState, constant::CandleMinute, response_source::ResponseError};
 
-pub async fn get_order_book_info(market: &str) -> Result<OrderbookInfo, ResponseErrorState> {
-    OrderbookInfo::get_orderbook_info(market)
-        .await
-        .map_err(|e| ResponseErrorState::from(e.error.name.as_str()))
+pub async fn get_order_book_info(market: &str) -> Result<OrderbookInfo, ResponseError> {
+    OrderbookInfo::get_orderbook_info(market).await
 }
 
-pub async fn get_ticker_snapshot(market: &str) ->Result<TickerSnapshot, ResponseErrorState> {
-    TickerSnapshot::get_ticker_snapshot(market)
-        .await
-        .map_err(|e| ResponseErrorState::from(e.error.name.as_str())) 
+pub async fn get_ticker_snapshot(market: &str) ->Result<TickerSnapshot, ResponseError> {
+    TickerSnapshot::get_ticker_snapshot(market).await
 }
 
-pub async fn get_trade_recent(market: &str, hhmmss: Option<&str>, count: i32, cursor: String, days_ago: Option<i32>) -> Result<TradeRecent, ResponseErrorState>{
-    TradeRecent::get_trade_recent(market, hhmmss, count, cursor, days_ago)
-        .await
-        .map_err(|e| ResponseErrorState::from(e.error.name.as_str())) 
+pub async fn get_trade_recent(market: &str, hhmmss: Option<&str>, count: i32, cursor: String, days_ago: Option<i32>) -> Result<TradeRecent, ResponseError>{
+    TradeRecent::get_trade_recent(market, hhmmss, count, cursor, days_ago).await
 }
 
-pub async fn get_market_state(is_warning_shown: bool) -> Result<Vec<MarketState>, ResponseErrorState> {
-    MarketState::get_market_state(is_warning_shown)
-        .await
-        .map_err(|e| ResponseErrorState::from(e.error.name.as_str())) 
+pub async fn get_market_state(is_warning_shown: bool) -> Result<Vec<MarketState>, ResponseError> {
+    MarketState::get_market_state(is_warning_shown).await
 }
 
-pub async fn get_candle_minute(market: &str, to: Option<String>, count: i32, candle_minute: CandleMinute) -> Result<Vec<CandleChartMinute>, ResponseErrorState> {
-    CandleChartMinute::request_candle(market, to, count, candle_minute)
-        .await
-        .map_err(|e| ResponseErrorState::from(e.error.name.as_str())) 
+pub async fn get_candle_minute(market: &str, to: Option<String>, count: i32, candle_minute: CandleMinute) -> Result<Vec<CandleChartMinute>, ResponseError> {
+    CandleChartMinute::request_candle(market, to, count, candle_minute).await
 }
 
-pub async fn get_candle_day(market: &str, count: i32, last_candle_time: Option<String>, price_unit: Option<String>) -> Result<Vec<CandleChartDay>, ResponseErrorState> {
-    CandleChartDay::request_candle(market, count, last_candle_time, price_unit)
-        .await
-        .map_err(|e| ResponseErrorState::from(e.error.name.as_str())) 
+pub async fn get_candle_day(market: &str, count: i32, last_candle_time: Option<String>, price_unit: Option<String>) -> Result<Vec<CandleChartDay>, ResponseError> {
+    CandleChartDay::request_candle(market, count, last_candle_time, price_unit).await
 }
 
-pub async fn get_candle_week(market: &str, count: i32, last_candle_time: Option<String>) -> Result<Vec<CandleChartWeek>, ResponseErrorState> {
-    CandleChartWeek::request_candle(market, count, last_candle_time)
-        .await
-        .map_err(|e| ResponseErrorState::from(e.error.name.as_str())) 
+pub async fn get_candle_week(market: &str, count: i32, last_candle_time: Option<String>) -> Result<Vec<CandleChartWeek>, ResponseError> {
+    CandleChartWeek::request_candle(market, count, last_candle_time).await
 }
 
-pub async fn get_candle_month(market: &str, count: i32, last_candle_time: Option<String>) -> Result<Vec<CandleChartMonth>, ResponseErrorState> {
-    CandleChartMonth::request_candle(market, count, last_candle_time)
-        .await
-        .map_err(|e| ResponseErrorState::from(e.error.name.as_str())) 
+pub async fn get_candle_month(market: &str, count: i32, last_candle_time: Option<String>) -> Result<Vec<CandleChartMonth>, ResponseError> {
+    CandleChartMonth::request_candle(market, count, last_candle_time).await 
 }
