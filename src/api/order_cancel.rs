@@ -17,14 +17,14 @@ impl OrderInfo {
             return Err(ResponseErrorSource {
                 error: ResponseErrorBodySource {
                     name: "internal_invalid_parameter".to_owned(),
-                    message: "either parameter uuid or identifier must to be specified.".to_owned()
+                    message: "either parameter uuid or identifier must be specified.".to_owned()
                 }
             });
         } else if uuid.is_some() && identifier.is_some() {
             return Err(ResponseErrorSource {
                 error: ResponseErrorBodySource {
                     name: "internal_invalid_parameter".to_owned(),
-                    message: "only one parameter of uuid and identifier must to be specified.".to_owned()
+                    message: "only one parameter of uuid and identifier must be specified.".to_owned()
                 }
             });
         }
