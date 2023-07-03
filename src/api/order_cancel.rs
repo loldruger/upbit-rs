@@ -16,7 +16,7 @@ impl OrderInfo {
         if uuid.is_none() && identifier.is_none() {
             return Err(ResponseErrorSource {
                 error: ResponseErrorBodySource {
-                    name: "internal_neither_parameter_null".to_owned(),
+                    name: "internal_neither_parameter_specified".to_owned(),
                     message: "either parameter uuid or identifier must be specified.".to_owned()
                 }
             });

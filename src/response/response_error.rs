@@ -2,7 +2,7 @@ use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
 pub enum ResponseErrorState {
-    InternalNeitherParameterNull, //either parameter uuid or identifier must be specified.
+    InternalNeitherParameterSpecified, //either parameter uuid or identifier must be specified.
     InternalMoreParameterSpecified, //only one parameter of uuid and identifier must be specified.
     InternalReqwestError,
     InternalHmacError,
@@ -31,7 +31,7 @@ pub enum ResponseErrorState {
 impl From<&str> for ResponseErrorState {
     fn from(value: &str) -> Self {
         match value {
-            "internal_invalid_parameter" => ResponseErrorState::InternalNeitherParameterNull,
+            "internal_neither_parameter_specified" => ResponseErrorState::InternalNeitherParameterSpecified,
             "internal_more_parameter_specified" => ResponseErrorState::InternalMoreParameterSpecified,
             "internal_reqwest_error" => ResponseErrorState::InternalReqwestError,
             "internal_hmac_error" => ResponseErrorState::InternalHmacError,
