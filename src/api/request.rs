@@ -5,7 +5,7 @@ use serde_json::json;
 use sha2::{Digest, Sha512};
 use uuid::Uuid;
 
-use crate::response_source::ResponseErrorSource;
+use crate::response_source::{ResponseErrorSource, ResponseErrorBodySource};
 
 pub trait Request {
     fn set_token() -> Result<String, ResponseErrorSource> {
@@ -39,7 +39,15 @@ pub trait RequestWithQuery {
         hasher.update(url_parsed.unwrap_or("").as_bytes());
 
         let hasher_hex = format!("{:x}", hasher.finalize());
-        let alg = Algorithm::new_hmac(AlgorithmID::HS256, secret_key).unwrap();
+        let alg = Algorithm::new_hmac(AlgorithmID::HS256, secret_key)
+            .map_err(|error| {
+                ResponseErrorSource {
+                    error: ResponseErrorBodySource {
+                        name: "internal_hmac_error".to_owned(),
+                        message: error.to_string()
+                    }
+                }
+            })?;
         let header = json!({ "alg": alg.name() });
         let payload = json!({
             "access_key": access_key,
@@ -48,7 +56,15 @@ pub trait RequestWithQuery {
             "query_hash_alg": "SHA512",
         });
 
-        let token = jwt::encode(&header, &payload, &alg).unwrap();
+        let token = jwt::encode(&header, &payload, &alg)
+            .map_err(|error| {
+                ResponseErrorSource {
+                    error: ResponseErrorBodySource {
+                        name: "internal_token_encode_error".to_owned(),
+                        message: error.to_string()
+                    }
+                }
+            })?;
 
         Ok(format!("Bearer {token}"))
     }
