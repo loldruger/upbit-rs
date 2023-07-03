@@ -16,10 +16,14 @@ rust_upbit_api::set_secret_key("");
 ```rust
 use rust_upbit_api::*;
 
-let asdf = api::get_order_state(None, None).await.unwrap();
-let asdf = api::order_by_price("KRW-ETH", OrdSide::BID, 5000.0, 1_435_085.0, OrdType::LIMIT, None).await.unwrap();
+let order_info = api::order_by_price("KRW-ETH", OrdSide::BID, 5000.0, 1_435_085.0, OrdType::LIMIT, None).await.unwrap();
+let order_info = api::sell_by_market_price("KRW-ETH", 1.0, "cdd92199-2897-4e14-9448-f923320408ad");
+let order_info = api::cancel_order("cdd92199-2897-4e14-9448-f923320408ad");
 
-let asdf = api::OrderbookInfo::get_orderbook_info("KRW-ETH").await;
+let account_info = rust_upbit_api::api::get_account_info().await;
+let order_state = api::get_order_state(None, None).await.unwrap();
+
+let order_book_info = api::OrderbookInfo::get_orderbook_info("KRW-ETH").await;
 let asdf = api::TickerSnapshot::request("KRW-ETH").await;
 let asdf = api::TradeRecent::request("KRW-ETH", None, 3, "0".to_string(), None).await;
 let asdf = api::MarketState::request(true).await;
@@ -29,7 +33,12 @@ let asdf = api::CandleChartDay::request_candle("KRW-ETH", 10, None, None).await;
 let asdf = api::CandleChartWeek::request_candle("KRW-ETH", 10, None).await;
 ```
 
-# Problem
+# TroubleShooting
+
+## You should have a static ip address to get issued your own access key and secret key
+
+## Failed to run custom build command for `openssl-sys vX.X.XX`
+
 If you have trouble installing with this error: failed to run custom build command for `openssl-sys vX.X.XX`, 
 
 try
