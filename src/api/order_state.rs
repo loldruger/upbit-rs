@@ -37,7 +37,6 @@ impl OrderState {
 
         let res = Self::request(uuid, identifier).await;
         let res_serialized = res.text().await.unwrap();
-        
 
         serde_json::from_str(&res_serialized)
             .map(|x: OrderStateSource| {
@@ -84,8 +83,7 @@ impl OrderState {
         }
 
         if identifier.is_some() {
-            url.query_pairs_mut()
-                .append_pair("identifier", identifier.unwrap());
+            url.query_pairs_mut().append_pair("identifier", identifier.unwrap());
         }
 
         let token_string = Self::set_token_with_query(url.as_str());

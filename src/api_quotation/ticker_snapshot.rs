@@ -42,19 +42,17 @@ impl TickerSnapshot {
         url.query_pairs_mut().append_pair("markets", market);
         
         let res = reqwest::Client::new()
-        .get(url.as_str())
-        .header(ACCEPT, "application/json")
-        .send()
-        .await
-        .unwrap();
+            .get(url.as_str())
+            .header(ACCEPT, "application/json")
+            .send()
+            .await
+            .unwrap();
         
         let res_serialized = res.text().await.unwrap();
         
-
         serde_json::from_str(&res_serialized)
             .map(|mut x: Vec<Self>| {
                 let x = x.pop().unwrap();
-                
                 Self {
                     market: x.market,
                     trade_date: x.trade_date,
@@ -84,11 +82,6 @@ impl TickerSnapshot {
                     timestamp: x.timestamp,
                 }
             })
-            .map_err(|_| {
-                let res_deserialized_error: ResponseErrorSource = serde_json::from_str(&res_serialized)
-                    .unwrap();
-
-                res_deserialized_error
-            })
+            .map_err(|_| serde_json::from_str(&res_serialized).unwrap())
     }
 }

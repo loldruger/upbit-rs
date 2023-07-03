@@ -33,8 +33,7 @@ pub trait RequestWithQuery {
         let url = Url::parse(url).ok().unwrap();
         let url_parsed = url.query();
 
-        let mut hasher 
-            = Sha512::new();
+        let mut hasher = Sha512::new();
         hasher.update(url_parsed.unwrap_or("").as_bytes());
 
         let hasher_hex = format!("{:x}", hasher.finalize());

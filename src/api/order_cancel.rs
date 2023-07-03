@@ -63,14 +63,12 @@ impl OrderInfo {
         }
 
         if identifier.is_some() {
-            url.query_pairs_mut()
-                .append_pair("identifier", identifier.unwrap());
+            url.query_pairs_mut().append_pair("identifier", identifier.unwrap());
         }
 
         let token_string = Self::set_token_with_query(url.as_str());
         let client = reqwest::Client::new();
         
-
         client
             .delete(url.as_str())
             .header(ACCEPT, "application/json")

@@ -42,25 +42,22 @@ impl OrderInfo {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDER}")).unwrap();
         
         url.query_pairs_mut()
-        .append_pair("market", market_id)
-        .append_pair("side", side.into())
-        .append_pair("ord_type", ord_type.into());
-        
+            .append_pair("market", market_id)
+            .append_pair("side", side.into())
+            .append_pair("ord_type", ord_type.into());
+            
         if price.is_some() {
-            let _price = format!("{:.8}", price.unwrap());
-            url.query_pairs_mut()
-                .append_pair("price", _price.as_str());
+            let price = format!("{:.8}", price.unwrap());
+            url.query_pairs_mut().append_pair("price", price.as_str());
         }
         
         if volume.is_some() {
-            let _volume = format!("{:.8}", volume.unwrap()); 
-            url.query_pairs_mut()
-                .append_pair("volume", _volume.as_str());
+            let volume = format!("{:.8}", volume.unwrap()); 
+            url.query_pairs_mut().append_pair("volume", volume.as_str());
         }
 
         if identifier.is_some() {
-            url.query_pairs_mut()
-                .append_pair("identifier", identifier.unwrap());
+            url.query_pairs_mut().append_pair("identifier", identifier.unwrap());
         }
 
         let asdf: Option<String> = if let Some(x) = url.query() {
@@ -68,6 +65,7 @@ impl OrderInfo {
             y = y.replace('&', ",");
             y.insert(0, '{');
             y.insert(y.len(), '}');
+            
             Some(y)
         } else {
             None

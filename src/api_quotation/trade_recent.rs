@@ -24,12 +24,9 @@ impl TradeRecent {
         let res = Self::request(market, hhmmss, count, cursor, days_ago).await;
         let res_serialized = res.text().await.unwrap();
         
-            
         serde_json::from_str(&res_serialized)
             .map(|mut x: Vec<Self>| {
-
                 let x = x.pop().unwrap();
-                
 
                 Self {
                     market: x.market,
@@ -43,19 +40,15 @@ impl TradeRecent {
                     ask_bid: x.ask_bid,
                 }
             })
-            .map_err(|_| {
-                let res_deserialized_error: ResponseErrorSource = serde_json::from_str(&res_serialized)
-                    .unwrap();
-
-                res_deserialized_error
-            })
+            .map_err(|_| serde_json::from_str(&res_serialized).unwrap())
     }
 
     async fn request(market: &str, hhmmss: Option<&str>, count: i32, cursor: String, days_ago: Option<i32>) -> Response {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_TRADES_TICKS}")).unwrap();
-        url.query_pairs_mut().append_pair("market", market);
-        url.query_pairs_mut().append_pair("count", count.to_string().as_str());
-        url.query_pairs_mut().append_pair("cursor", cursor.as_str());
+        url.query_pairs_mut()
+            .append_pair("market", market)
+            .append_pair("count", count.to_string().as_str())
+            .append_pair("cursor", cursor.as_str());
 
         if hhmmss.is_some() {
             url.query_pairs_mut().append_pair("to", hhmmss.unwrap());
@@ -64,8 +57,6 @@ impl TradeRecent {
         if days_ago.is_some() {
             url.query_pairs_mut().append_pair("daysAgo", days_ago.unwrap().to_string().as_str());
         }
-        
-        
         
         reqwest::Client::new()
             .get(url.as_str())

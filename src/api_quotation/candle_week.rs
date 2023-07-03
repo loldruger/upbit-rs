@@ -25,9 +25,10 @@ impl CandleChartWeek {
     pub async fn request_candle(market: &str, count: i32, last_candle_time: Option<String>) -> Result<Vec<Self>, ResponseErrorSource> {
         let url_candle: String = UrlAssociates::UrlCandleWeek.into();
         let mut url = Url::parse(&format!("{URL_SERVER}{url_candle}")).unwrap();
-        url.query_pairs_mut().append_pair("market", market);
-        url.query_pairs_mut().append_pair("count", count.to_string().as_str());
-
+        url.query_pairs_mut()
+            .append_pair("market", market)
+            .append_pair("count", count.to_string().as_str());
+            
         if last_candle_time.is_some() {
             url.query_pairs_mut().append_pair("to", last_candle_time.unwrap().as_str());
         }

@@ -28,7 +28,6 @@ impl OrderbookInfo {
         let res = Self::request(market).await; 
         let res_serialized = res.text().await.unwrap();
         
-
         serde_json::from_str(&res_serialized)
             .map(|mut x: Vec<Self>| {
                 let x = x.pop().unwrap();
@@ -49,19 +48,12 @@ impl OrderbookInfo {
                         .collect(),
                 }
             })
-            .map_err(|_| {
-                let res_deserialized_error: ResponseErrorSource = serde_json::from_str(&res_serialized)
-                    .unwrap();
-
-                res_deserialized_error
-            })
+            .map_err(|_| serde_json::from_str(&res_serialized).unwrap())
     }
 
     async fn request(market: &str) -> Response {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDERBOOK}")).unwrap();
         url.query_pairs_mut().append_pair("markets", market);
-
-        
 
         reqwest::Client::new()
             .get(url.as_str())

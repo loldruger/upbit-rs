@@ -11,5 +11,4 @@ pub struct AccountsInfo {
     pub unit_currency: String,
 }
 
-
 impl Request for AccountsInfo {}

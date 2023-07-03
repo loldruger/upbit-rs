@@ -70,8 +70,9 @@ impl CandleChartMinute {
     async fn request(market: &str, to: Option<String>, count: i32, candle_minute: CandleMinute) -> Response {
         let url_candle: String = UrlAssociates::UrlCandleMinute(candle_minute).into();
         let mut url = Url::parse(&format!("{URL_SERVER}{url_candle}")).unwrap();
-        url.query_pairs_mut().append_pair("market", market);
-        url.query_pairs_mut().append_pair("count", count.to_string().as_str());
+        url.query_pairs_mut()
+            .append_pair("market", market)
+            .append_pair("count", count.to_string().as_str());
         
         if to.is_some() {
             url.query_pairs_mut().append_pair("to", to.unwrap().as_str());
