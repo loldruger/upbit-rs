@@ -49,10 +49,13 @@ impl TickerSnapshot {
         .unwrap();
         
         let res_serialized = res.text().await.unwrap();
-        let res_deserialized = serde_json::from_str(&res_serialized)
-            .and_then(|mut x: Vec<Self>| {
+        
+
+        serde_json::from_str(&res_serialized)
+            .map(|mut x: Vec<Self>| {
                 let x = x.pop().unwrap();
-                let res = Self {
+                
+                Self {
                     market: x.market,
                     trade_date: x.trade_date,
                     trade_time: x.trade_time,
@@ -79,19 +82,13 @@ impl TickerSnapshot {
                     lowest_52_week_price: x.lowest_52_week_price,
                     lowest_52_week_date: x.lowest_52_week_date,
                     timestamp: x.timestamp,
-                };
-                Ok(res)
+                }
             })
             .map_err(|_| {
                 let res_deserialized_error: ResponseErrorSource = serde_json::from_str(&res_serialized)
-                    .and_then(|e: ResponseErrorSource| {
-                        Ok(e)
-                    })
                     .unwrap();
 
                 res_deserialized_error
-            });
-
-        res_deserialized
+            })
     }
 }

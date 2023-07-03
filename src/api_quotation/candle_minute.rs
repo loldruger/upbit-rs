@@ -42,9 +42,10 @@ impl CandleChartMinute {
     pub async fn request_candle(market: &str, to: Option<String>, count: i32, candle_minute: CandleMinute) -> Result<Vec<Self>, ResponseErrorSource> {
         let res = Self::request(market, to, count, candle_minute).await;
         let res_serialized = res.text().await.unwrap();
-        let res_deserialized = serde_json::from_str(&res_serialized)
-            .and_then(|x: Vec<CandleChartMinuteSource>| {
-                let res = x
+        
+            serde_json::from_str(&res_serialized)
+            .map(|x: Vec<CandleChartMinuteSource>| {
+                x
                     .into_iter()
                     .map(|i| {
                         Self {
@@ -61,24 +62,13 @@ impl CandleChartMinute {
                             unit: i.unit,
                         }
                     })
-                    .collect();
-
-                Ok(res)
+                    .collect()
             })
-            .map_err(|_| {
-                let res_deserialized_error: ResponseErrorSource = serde_json::from_str(&res_serialized)
-                    .and_then(|e: ResponseErrorSource| {
-                        Ok(e)
-                    })
-                    .unwrap();
-
-                res_deserialized_error
-            });
-            res_deserialized
+            .map_err(|_| serde_json::from_str(&res_serialized).unwrap())
     }
 
     async fn request(market: &str, to: Option<String>, count: i32, candle_minute: CandleMinute) -> Response {
-        let url_candle: String = UrlAssociates::UrlCandleMinute(candle_minute.into()).into();
+        let url_candle: String = UrlAssociates::UrlCandleMinute(candle_minute).into();
         let mut url = Url::parse(&format!("{URL_SERVER}{url_candle}")).unwrap();
         url.query_pairs_mut().append_pair("market", market);
         url.query_pairs_mut().append_pair("count", count.to_string().as_str());
@@ -87,13 +77,11 @@ impl CandleChartMinute {
             url.query_pairs_mut().append_pair("to", to.unwrap().as_str());
         }
 
-        let res = reqwest::Client::new()
+        reqwest::Client::new()
             .get(url.as_str())
             .header(ACCEPT, "application/json")
             .send()
             .await
-            .unwrap();
-
-        res
+            .unwrap()
     }
 }

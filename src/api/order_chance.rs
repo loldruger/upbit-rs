@@ -21,9 +21,10 @@ impl OrderChance {
     pub async fn get_order_chance(market_id: &str) -> Result<Self, ResponseErrorSource> {
         let res = Self::request(market_id).await;
         let res_serialized = res.text().await.unwrap();
-        let res_deserialized = serde_json::from_str(&res_serialized)
-            .and_then(|x: OrderChanceSource| {
-                let res = Self {
+        
+        serde_json::from_str(&res_serialized)
+            .map(|x: OrderChanceSource| {
+                Self {
                     bid_fee: x.bid_fee.parse().unwrap(),
                     ask_fee: x.ask_fee.parse().unwrap(),
                     market: ObjectMarket {
@@ -60,35 +61,22 @@ impl OrderChance {
                         avg_buy_price_modified: x.ask_account.avg_buy_price_modified(),
                         unit_currency: x.ask_account.unit_currency(),
                     },
-                };
-
-                Ok(res)
+                }
             })
-            .map_err(|_| {
-                let res_deserialized_error: ResponseErrorSource = serde_json::from_str(&res_serialized)
-                    .and_then(|e: ResponseErrorSource| {
-                        Ok(e)
-                    })
-                    .unwrap();
-
-                res_deserialized_error
-            });
-
-        res_deserialized
+            .map_err(|_|  serde_json::from_str(&res_serialized).unwrap())
     }
 
     async fn request(market_id: &str) -> Response {
         let url = format!("{URL_SERVER}{URL_ORDER_CHANCE}/?market={market_id}");
         let token_string = Self::set_token_with_query(&url);
         let client = reqwest::Client::new();
-        let res = client
+        
+        client
             .get(url)
             .header(ACCEPT, "application/json")
             .header(AUTHORIZATION, &token_string)
             .send()
             .await
-            .unwrap();
-
-        res
+            .unwrap()
     }
 }

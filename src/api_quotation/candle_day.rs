@@ -1,6 +1,6 @@
 use crate::response_source::ResponseErrorSource;
 
-use super::super::constant::{URL_SERVER, UrlAssociates, CandleMinute};
+use super::super::constant::{URL_SERVER, UrlAssociates};
 
 use reqwest::Url;
 use reqwest::header::ACCEPT;
@@ -47,9 +47,10 @@ impl CandleChartDay {
             .unwrap();
         
         let res_serialized = res.text().await.unwrap();
-        let res_deserialized = serde_json::from_str(&res_serialized)
-            .and_then(|x: Vec<Self>| {
-                let res = x
+        
+        serde_json::from_str(&res_serialized)
+            .map(|x: Vec<Self>| {         
+                x
                     .into_iter()
                     .map(|i| {
                         Self {
@@ -69,21 +70,11 @@ impl CandleChartDay {
                             converted_trade_price: i.converted_trade_price
                         }
                     })
-                    .collect();
-            
-            Ok(res)
+                    .collect()
         })
         .map_err(|error| {
-            eprintln!("{}", error.to_string());
-            let res_deserialized_error = serde_json::from_str(&res_serialized)
-                .and_then(|e: ResponseErrorSource| {
-                    Ok(e)
-                })
-                .unwrap();
-
-            res_deserialized_error
-        });
-
-        res_deserialized
+            eprintln!("{}", error);
+            serde_json::from_str(&res_serialized).unwrap()
+        })
     }
 }

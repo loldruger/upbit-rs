@@ -14,9 +14,10 @@ impl OrderInfo {
     pub async fn order(market_id: &str, side: OrdSide, volume: Option<f64>, price: Option<f64>, ord_type: OrdType, identifier: Option<&str>) -> Result<Self, ResponseErrorSource> {
         let res = Self::request_order(market_id, side, volume, price, ord_type, identifier).await;
         let res_serialized = res.text().await.unwrap();
-        let res_deserialized = serde_json::from_str(&res_serialized)
-            .and_then(|x: OrderInfoSource| {
-                let res = OrderInfo {
+        
+        serde_json::from_str(&res_serialized)
+            .map(|x: OrderInfoSource| {
+                Self {
                     uuid: x.uuid(),
                     side: x.side(),
                     ord_type: x.ord_type(),
@@ -32,21 +33,9 @@ impl OrderInfo {
                     locked: x.locked(),
                     executed_volume: x.executed_volume(),
                     trades_count: x.trades_count(),
-                };
-                
-                Ok(res)
+                }
             })
-            .map_err(|_| {
-                let res_deserialized_error: ResponseErrorSource = serde_json::from_str(&res_serialized)
-                    .and_then(|e: ResponseErrorSource| {
-                        Ok(e)
-                    })
-                    .unwrap();
-
-                res_deserialized_error
-            });
-
-        res_deserialized
+            .map_err(|_| serde_json::from_str(&res_serialized).unwrap())
     }
 
     async fn request_order(market_id: &str, side: OrdSide, volume: Option<f64>, price: Option<f64>, ord_type: OrdType, identifier: Option<&str>) -> Response {
@@ -75,17 +64,18 @@ impl OrderInfo {
         }
 
         let asdf: Option<String> = if let Some(x) = url.query() {
-            let mut y = x.replace("=", ":");
-            y = y.replace("&", ",");
-            y.insert_str(0, "{");
-            y.insert_str(y.len(), "}");
+            let mut y = x.replace('=', ":");
+            y = y.replace('&', ",");
+            y.insert(0, '{');
+            y.insert(y.len(), '}');
             Some(y)
         } else {
             None
         };
 
         let token_string = Self::set_token_with_query(url.as_str());
-        let res = reqwest::Client::new()
+        
+        reqwest::Client::new()
             .post(url.as_str())
             .json(&asdf)
             .header(ACCEPT, "application/json")
@@ -93,8 +83,6 @@ impl OrderInfo {
             .header(AUTHORIZATION, &token_string)
             .send()
             .await
-            .unwrap();
-
-        res
+            .unwrap()
     }
 }

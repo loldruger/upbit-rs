@@ -27,10 +27,13 @@ impl OrderbookInfo {
     pub async fn get_orderbook_info(market: &str) -> Result<Self, ResponseErrorSource> {       
         let res = Self::request(market).await; 
         let res_serialized = res.text().await.unwrap();
-        let res_deserialized = serde_json::from_str(&res_serialized)
-            .and_then(|mut x: Vec<Self>| {
+        
+
+        serde_json::from_str(&res_serialized)
+            .map(|mut x: Vec<Self>| {
                 let x = x.pop().unwrap();
-                let res = Self {
+                
+                Self {
                     market: x.market,
                     timestamp: x.timestamp,
                     total_ask_size: x.total_ask_size,
@@ -44,33 +47,27 @@ impl OrderbookInfo {
                             bid_size: unit.bid_size
                         })
                         .collect(),
-                };
-                Ok(res)
+                }
             })
             .map_err(|_| {
                 let res_deserialized_error: ResponseErrorSource = serde_json::from_str(&res_serialized)
-                    .and_then(|e: ResponseErrorSource| {
-                        Ok(e)
-                    })
                     .unwrap();
 
                 res_deserialized_error
-            });
-
-        res_deserialized
+            })
     }
 
     async fn request(market: &str) -> Response {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDERBOOK}")).unwrap();
         url.query_pairs_mut().append_pair("markets", market);
 
-        let res = reqwest::Client::new()
+        
+
+        reqwest::Client::new()
             .get(url.as_str())
             .header(ACCEPT, "application/json")
             .send()
             .await
-            .unwrap();
-
-        res
+            .unwrap()
     }
 }

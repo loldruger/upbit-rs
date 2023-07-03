@@ -37,9 +37,11 @@ impl OrderState {
 
         let res = Self::request(uuid, identifier).await;
         let res_serialized = res.text().await.unwrap();
-        let res_deserialized = serde_json::from_str(&res_serialized)
-            .and_then(|x: OrderStateSource| {
-                let res = Self {
+        
+
+        serde_json::from_str(&res_serialized)
+            .map(|x: OrderStateSource| {
+                Self {
                     order_info: OrderInfo {
                         uuid: x.order_info.uuid(),
                         side: x.order_info.side(),
@@ -69,20 +71,9 @@ impl OrderState {
                             created_at: object_trades.created_at,
                         })
                         .collect(),
-                };
-                Ok(res)
+                }
             })
-            .map_err(|_| {
-                let res_deserialized_error: ResponseErrorSource = serde_json::from_str(&res_serialized)
-                    .and_then(|e: ResponseErrorSource| {
-                        Ok(e)
-                    })
-                    .unwrap();
-
-                res_deserialized_error
-            });
-
-        res_deserialized
+            .map_err(|_| serde_json::from_str(&res_serialized).unwrap())
     }
 
     async fn request(uuid: Option<&str>, identifier: Option<&str>) -> Response {
@@ -98,16 +89,14 @@ impl OrderState {
         }
 
         let token_string = Self::set_token_with_query(url.as_str());
-
         let client = reqwest::Client::new();
-        let res = client
+        
+        client
             .get(url.as_str())
             .header(ACCEPT, "application/json")
             .header(AUTHORIZATION, &token_string)
             .send()
             .await
-            .unwrap();
-
-        res
+            .unwrap()
     }
 }

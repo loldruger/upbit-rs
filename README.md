@@ -1,4 +1,4 @@
-upbit-api on rust
+upbit-api on rust, with upbit api v1.3.4
 
 this crate is dependant on `sqlx`, `tokio`, `postgres`
 
@@ -38,9 +38,9 @@ let chart_by_month = api::CandleChartMonth::request_candle("KRW-ETH", 10, None).
 
 # TroubleShooting
 
-## You should have a static ip address to get issued your own access key and secret key
+### You should have a static ip address to get issued your own access key and secret key
 
-## Failed to run custom build command for `openssl-sys vX.X.XX`
+### Failed to run custom build command for `openssl-sys vX.X.XX`
 
 If you have trouble installing with this error: failed to run custom build command for `openssl-sys vX.X.XX`, 
 

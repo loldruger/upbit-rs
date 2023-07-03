@@ -12,9 +12,9 @@ impl AccountsInfo {
     pub async fn get_account_info() -> Result<Vec<Self>, ResponseErrorSource> {
         let res = Self::request().await;
         let res_serialized = res.text().await.unwrap();
-        let res_deserialized = serde_json::from_str(&res_serialized)
-            .and_then(|x: Vec<AccountsInfoSource>| {
-                let res = x
+        serde_json::from_str(&res_serialized)
+            .map(|x: Vec<AccountsInfoSource>| {
+                x
                     .into_iter()
                     .map(|x| Self {
                         currency: x.currency(),
@@ -24,33 +24,20 @@ impl AccountsInfo {
                         avg_buy_price_modified: x.avg_buy_price_modified(),
                         unit_currency: x.unit_currency()
                     })
-                    .collect::<Vec<Self>>();
-                
-                Ok(res)
+                    .collect::<Vec<Self>>()
             })
-            .map_err(|_| {
-                let res_deserialized_error: ResponseErrorSource = serde_json::from_str(&res_serialized)
-                    .and_then(|e: ResponseErrorSource| {
-                        Ok(e)
-                    })
-                    .unwrap();
-
-                res_deserialized_error
-            });
-
-        res_deserialized
+            .map_err(|_| serde_json::from_str(&res_serialized).unwrap())
     }
 
     async fn request() -> Response {
         let token_string = Self::set_token();
-        let res = reqwest::Client::new()
+        
+        reqwest::Client::new()
             .get(format!("{URL_SERVER}{URL_ACCOUNTS}"))
             .header(ACCEPT, "application/json")
             .header(AUTHORIZATION, &token_string)
             .send()
             .await
-            .unwrap();
-
-        res
+            .unwrap()
     }
 }

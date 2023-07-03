@@ -31,9 +31,10 @@ impl OrderInfo {
 
         let res = Self::request_delete(uuid, identifier).await;
         let res_serialized: String = res.text().await.unwrap();
-        let res_deserialized = serde_json::from_str(&res_serialized)
-            .and_then(|x: OrderInfoSource| {
-                let res = Self {
+        
+        serde_json::from_str(&res_serialized)
+            .map(|x: OrderInfoSource| {
+                Self {
                     uuid: x.uuid(),
                     side: x.side(),
                     ord_type: x.ord_type(),
@@ -49,21 +50,9 @@ impl OrderInfo {
                     locked: x.locked(),
                     executed_volume: x.executed_volume(),
                     trades_count: x.trades_count()
-                };
-
-                Ok(res)
+                }
             })
-            .map_err(|_| {
-                let res_deserialized_error: ResponseErrorSource = serde_json::from_str(&res_serialized)
-                    .and_then(|e: ResponseErrorSource| {
-                        Ok(e)
-                    })
-                    .unwrap();
-
-                res_deserialized_error
-            });
-
-        res_deserialized
+            .map_err(|_| serde_json::from_str(&res_serialized).unwrap())
     }
 
     async fn request_delete(uuid: Option<&str>, identifier: Option<&str>) -> Response {
@@ -80,14 +69,14 @@ impl OrderInfo {
 
         let token_string = Self::set_token_with_query(url.as_str());
         let client = reqwest::Client::new();
-        let res = client
+        
+
+        client
             .delete(url.as_str())
             .header(ACCEPT, "application/json")
             .header(AUTHORIZATION, &token_string)
             .send()
             .await
-            .unwrap();
-
-        res
+            .unwrap()
     }
 }

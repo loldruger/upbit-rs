@@ -23,11 +23,15 @@ impl TradeRecent {
     pub async fn get_trade_recent(market: &str, hhmmss: Option<&str>, count: i32, cursor: String, days_ago: Option<i32>) -> Result<Self, ResponseErrorSource> {
         let res = Self::request(market, hhmmss, count, cursor, days_ago).await;
         let res_serialized = res.text().await.unwrap();
-        let res_deserialized = serde_json::from_str(&res_serialized)
-            .and_then(|mut x: Vec<Self>| {
+        
+            
+        serde_json::from_str(&res_serialized)
+            .map(|mut x: Vec<Self>| {
 
                 let x = x.pop().unwrap();
-                let res = Self {
+                
+
+                Self {
                     market: x.market,
                     trade_date_utc: x.trade_date_utc,
                     trade_time_utc: x.trade_time_utc,
@@ -37,21 +41,14 @@ impl TradeRecent {
                     prev_closing_price: x.prev_closing_price,
                     chane_price: x.chane_price,
                     ask_bid: x.ask_bid,
-                };
-
-                Ok(res)
+                }
             })
             .map_err(|_| {
                 let res_deserialized_error: ResponseErrorSource = serde_json::from_str(&res_serialized)
-                    .and_then(|e: ResponseErrorSource| {
-                        Ok(e)
-                    })
                     .unwrap();
 
                 res_deserialized_error
-            });
-            
-        res_deserialized
+            })
     }
 
     async fn request(market: &str, hhmmss: Option<&str>, count: i32, cursor: String, days_ago: Option<i32>) -> Response {
@@ -68,13 +65,13 @@ impl TradeRecent {
             url.query_pairs_mut().append_pair("daysAgo", days_ago.unwrap().to_string().as_str());
         }
         
-        let res = reqwest::Client::new()
+        
+        
+        reqwest::Client::new()
             .get(url.as_str())
             .header(ACCEPT, "application/json")
             .send()
             .await
-            .unwrap();
-        
-        res
+            .unwrap()
     }
 }

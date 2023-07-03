@@ -1,6 +1,6 @@
 [package]
 name = "upbit"
-version = "1.0.6"
+version = "1.1.0"
 edition = "2021"
 description = "rust_upbit_api"
 license = "MIT"
