@@ -7,15 +7,15 @@ it also requires `openssl-sys` package
 
 # Set access key and secret key
 ```rust
-use rust_upbit_api::*;
+use upbit::*;
 
-rust_upbit_api::set_access_key("");
-rust_upbit_api::set_secret_key("");
+upbit::set_access_key("");
+upbit::set_secret_key("");
 ```
 
 # Apis
 ```rust
-use rust_upbit_api::*;
+use upbit::*;
 
 let order_info = api::order_by_price("KRW-ETH", OrdSide::BID, 5000.0, 1_435_085.0, OrdType::LIMIT, None).await.unwrap();
 let order_info = api::sell_by_market_price("KRW-ETH", 1.0, "cdd92199-2897-4e14-9448-f923320408ad").await;
