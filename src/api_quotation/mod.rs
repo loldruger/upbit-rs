@@ -195,7 +195,7 @@ pub async fn get_ticker_snapshot(market: &str) ->Result<TickerSnapshot, Response
 /// let recent_trade_list = api_quotation::get_trade_recent("KRW-ETH").await;
 /// ```
 /// - parameters
-/// > `market` etc) KRW-ETH<br>
+/// > `market` ex) KRW-ETH<br>
 /// > `hhmmss` format is "HHmmss" or "HH:mm:ss". if empty, latest data will be retrieved<br>
 /// > `count` count of trade<br>
 /// > `cursor` pagenation cursor. (sequential id)<br>
@@ -263,18 +263,209 @@ pub async fn get_market_state(is_warning_shown: bool) -> Result<Vec<MarketState>
     MarketState::get_market_state(is_warning_shown).await
 }
 
+/// 분봉 캔들 데이터를 요청한다. (inquire minute-unit candle data.)
+///
+/// # Example
+/// ```
+/// let candle_of_minute = api_quotation::get_candle_minute("KRW-ETH", None, CandleMinute::Min30).await;
+/// ```
+/// - parameters
+/// > `market` ex) KRW-ETH<br>
+/// > `to` the time moment of the last candle (exclusive). if empty, latest candle will be retrived. <br>
+/// >> ISO8061 format (yyyy-MM-dd'T'HH:mm:ss'Z' or yyyy-MM-dd HH:mm:ss). <br>
+/// >> though it is commonly UTC time criteria, you can request KST time using like 2023-01-01T00:00:00+09:00 format. <br>
+/// 
+/// > `count` the number of candle to request. maximum value: `200`<br>
+/// > `candle_minute` unit of minute
+/// >> `CandleMinute::Min1`<br>
+/// >> `CandleMinute::Min3`<br>
+/// >> `CandleMinute::Min5`<br>
+/// >> `CandleMinute::Min10`<br>
+/// >> `CandleMinute::Min15`<br>
+/// >> `CandleMinute::Min30`<br>
+/// >> `CandleMinute::Min60`<br>
+/// >> `CandleMinute::Min240`
+/// # Response
+/// ```json
+/// [
+///   {
+///     "market": "KRW-BTC",
+///     "candle_date_time_utc": "2018-04-18T10:16:00",
+///     "candle_date_time_kst": "2018-04-18T19:16:00",
+///     "opening_price": 8615000,
+///     "high_price": 8618000,
+///     "low_price": 8611000,
+///     "trade_price": 8616000,
+///     "timestamp": 1524046594584,
+///     "candle_acc_trade_price": 60018891.90054,
+///     "candle_acc_trade_volume": 6.96780929,
+///     "unit": 1
+///   }
+/// ]
+/// ```
+/// | field             | description                   | type         |
+/// |:------------------|:------------------------------|:-------------|
+/// | market | 마켓명 | String |
+/// | candle_date_time_utc | 캔들 기준 시각(UTC 기준) <br> 포맷: yyyy-MM-dd'T'HH:mm:ss | String |
+/// | candle_date_time_kst | 캔들 기준 시각(KST 기준) <br> 포맷: yyyy-MM-dd'T'HH:mm:ss | String |
+/// | opening_price | 시가 | Double |
+/// | high_price | 고가 | Double |
+/// | low_price | 저가 | Double |
+/// | trade_price | 종가 | Double |
+/// | timestamp | 해당 캔들에서 마지막 틱이 저장된 시각 | Long |
+/// | candle_acc_trade_price | 누적 거래 금액 | Double |
+/// | candle_acc_trade_volume | 누적 거래량 | Double |
+/// | unit | 분 단위(유닛) | Integer |
 pub async fn get_candle_minute(market: &str, to: Option<String>, count: i32, candle_minute: CandleMinute) -> Result<Vec<CandleChartMinute>, ResponseError> {
     CandleChartMinute::request_candle(market, to, count, candle_minute).await
 }
 
+/// 일봉 캔들 데이터를 요청한다. (inquire day-unit candle data.)
+///
+/// # Example
+/// ```
+/// let candle_of_day = api_quotation::get_candle_day("KRW-ETH", 10, None, None).await;
+/// ```
+/// - parameters
+/// > `market` ex) KRW-ETH<br>
+/// > `count` the number of candle to request. maximum value: `200`<br>
+/// > `last_candle_time` (optional) the time moment of the last candle (exclusive). if empty, latest candle will be retrived. <br>
+/// >> ISO8061 format (yyyy-MM-dd'T'HH:mm:ss'Z' or yyyy-MM-dd HH:mm:ss). <br>
+/// >> though it is commonly UTC time criteria, you can request KST time using like 2023-01-01T00:00:00+09:00 format. <br>
+/// 
+/// > `price_unit` (optional)
+/// # Response
+/// ```json
+/// [
+///   {
+///     "market": "KRW-BTC",
+///     "candle_date_time_utc": "2018-04-18T00:00:00",
+///     "candle_date_time_kst": "2018-04-18T09:00:00",
+///     "opening_price": 8450000,
+///     "high_price": 8679000,
+///     "low_price": 8445000,
+///     "trade_price": 8626000,
+///     "timestamp": 1524046650532,
+///     "candle_acc_trade_price": 107184005903.68721,
+///     "candle_acc_trade_volume": 12505.93101659,
+///     "prev_closing_price": 8450000,
+///     "change_price": 176000,
+///     "change_rate": 0.0208284024
+///   }
+/// ]
+/// ```
+/// | field             | description                   | type         |
+/// |:------------------|:------------------------------|:-------------|
+/// | market | 마켓명 | String |
+/// | candle_date_time_utc | 캔들 기준 시각(UTC 기준) <br> 포맷: yyyy-MM-dd'T'HH:mm:ss | String |
+/// | candle_date_time_kst | 캔들 기준 시각(KST 기준) <br> 포맷: yyyy-MM-dd'T'HH:mm:ss | String |
+/// | opening_price | 시가 | Double |
+/// | high_price | 고가 | Double |
+/// | low_price | 저가 | Double |
+/// | trade_price | 종가 | Double |
+/// | timestamp | 마지막 틱이 저장된 시각 | Long |
+/// | candle_acc_trade_price | 누적 거래 금액 | Double |
+/// | candle_acc_trade_volume | 누적 거래량 | Double |
+/// | prev_closing_price | 전일 종가(UTC 0시 기준) | Double |
+/// | change_price | 전일 종가 대비 변화 금액 | Double |
+/// | change_rate | 전일 종가 대비 변화량 | Double |
+/// | converted_trade_price | 종가 환산 화폐 단위로 환산된 가격(요청에 convertingPriceUnit 파라미터 없을 시 해당 필드 포함되지 않음.) | Double |
 pub async fn get_candle_day(market: &str, count: i32, last_candle_time: Option<String>, price_unit: Option<String>) -> Result<Vec<CandleChartDay>, ResponseError> {
     CandleChartDay::request_candle(market, count, last_candle_time, price_unit).await
 }
 
+/// 주봉 캔들 데이터를 요청한다. (inquire week-unit candle data.)
+///
+/// # Example
+/// ```
+/// let candle_of_week = api_quotation::get_candle_week("KRW-ETH", 10, None).await;
+/// ```
+/// - parameters
+/// > `market` ex) KRW-ETH<br>
+/// > `count` the number of candle to request. maximum value: `200`<br>
+/// > `last_candle_time` (optional) the time moment of the last candle (exclusive). if empty, latest candle will be retrived. <br>
+/// >> ISO8061 format (yyyy-MM-dd'T'HH:mm:ss'Z' or yyyy-MM-dd HH:mm:ss). <br>
+/// >> though it is commonly UTC time criteria, you can request KST time using like 2023-01-01T00:00:00+09:00 format. <br>
+/// 
+/// # Response
+/// ```json
+/// [
+///   {
+///     "market": "KRW-BTC",
+///     "candle_date_time_utc": "2018-04-16T00:00:00",
+///     "candle_date_time_kst": "2018-04-16T09:00:00",
+///     "opening_price": 8665000,
+///     "high_price": 8840000,
+///     "low_price": 8360000,
+///     "trade_price": 8611000,
+///     "timestamp": 1524046708995,
+///     "candle_acc_trade_price": 466989414916.1301,
+///     "candle_acc_trade_volume": 54410.56660813,
+///     "first_day_of_period": "2018-04-16"
+///   }
+/// ]
+/// ```
+/// | field             | description                   | type         |
+/// |:------------------|:------------------------------|:-------------|
+/// | market | 마켓명 | String |
+/// | candle_date_time_utc | 캔들 기준 시각(UTC 기준) <br> 포맷: yyyy-MM-dd'T'HH:mm:ss | String |
+/// | candle_date_time_kst | 캔들 기준 시각(KST 기준) <br> 포맷: yyyy-MM-dd'T'HH:mm:ss | String |
+/// | opening_price | 시가 | Double |
+/// | high_price | 고가 | Double |
+/// | low_price | 저가 | Double |
+/// | trade_price | 종가 | Double |
+/// | timestamp | 마지막 틱이 저장된 시각 | Long |
+/// | candle_acc_trade_price | 누적 거래 금액 | Double |
+/// | candle_acc_trade_volume | 누적 거래량 | Double |
+/// | first_day_of_period | 캔들 기간의 가장 첫 날 | String |
 pub async fn get_candle_week(market: &str, count: i32, last_candle_time: Option<String>) -> Result<Vec<CandleChartWeek>, ResponseError> {
     CandleChartWeek::request_candle(market, count, last_candle_time).await
 }
 
+/// 월봉 캔들 데이터를 요청한다. (inquire month-unit candle data.)
+///
+/// # Example
+/// ```
+/// let candle_of_month = api_quotation::get_candle_month("KRW-ETH", 10, None).await;
+/// ```
+/// - parameters
+/// > `market` ex) KRW-ETH<br>
+/// > `count` the number of candle to request. maximum value: `200`<br>
+/// > `last_candle_time` (optional) the time moment of the last candle (exclusive). if empty, latest candle will be retrived. <br>
+/// >> ISO8061 format (yyyy-MM-dd'T'HH:mm:ss'Z' or yyyy-MM-dd HH:mm:ss). <br>
+/// >> though it is commonly UTC time criteria, you can request KST time using like 2023-01-01T00:00:00+09:00 format. <br>
+/// 
+/// # Response
+/// ```json
+/// [
+///   {
+///     "market": "KRW-BTC",
+///     "candle_date_time_utc": "2018-04-01T00:00:00",
+///     "candle_date_time_kst": "2018-04-01T09:00:00",
+///     "opening_price": 7688000,
+///     "high_price": 8840000,
+///     "low_price": 7087000,
+///     "trade_price": 8614000,
+///     "timestamp": 1524046761201,
+///     "candle_acc_trade_price": 2665448149094.0195,
+///     "candle_acc_trade_volume": 336501.67751807,
+///     "first_day_of_period": "2018-04-01"
+///   }
+/// ]
+/// ```
+/// | field             | description                   | type         |
+/// |:------------------|:------------------------------|:-------------|
+/// | market | 마켓명 | String |
+/// | candle_date_time_utc | 캔들 기준 시각(UTC 기준) <br> 포맷: yyyy-MM-dd'T'HH:mm:ss | String |
+/// | candle_date_time_kst | 캔들 기준 시각(KST 기준) <br> 포맷: yyyy-MM-dd'T'HH:mm:ss | String |
+/// | opening_price | 시가 | Double |
+/// | high_price | 고가 | Double |
+/// | low_price | 저가 | Double |
+/// | trade_price | 종가 | Double |
+/// | timestamp | 마지막 틱이 저장된 시각 | Long |
+/// | candle_acc_trade_price | 누적 거래 금액 | Double |
+/// | candle_acc_trade_volume | 누적 거래량 | Double |
+/// | first_day_of_period | 캔들 기간의 가장 첫 날 | String |
 pub async fn get_candle_month(market: &str, count: i32, last_candle_time: Option<String>) -> Result<Vec<CandleChartMonth>, ResponseError> {
     CandleChartMonth::request_candle(market, count, last_candle_time).await 
 }

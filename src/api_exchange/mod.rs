@@ -241,7 +241,7 @@ pub async fn get_account_info() -> Result<Vec<AccountsInfo>, ResponseError> {
 /// let order_chance = api_exchange::get_order_chance("KRW-ETH").await;
 /// ```
 /// - parameters
-/// > `market` etc) KRW-ETH<br>
+/// > `market` ex) KRW-ETH<br>
 /// 
 /// # Response
 /// ```json
