@@ -1,4 +1,4 @@
-use crate::api::request::Request;
+use crate::api_exchange::request::Request;
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]

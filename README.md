@@ -13,7 +13,7 @@ upbit::set_access_key("");
 upbit::set_secret_key("");
 ```
 
-# Apis
+# APIs
 ```rust
 use upbit::*;
 
@@ -31,10 +31,10 @@ let asdf = api::TickerSnapshot::request("KRW-ETH").await;
 let asdf = api::TradeRecent::request("KRW-ETH", None, 3, "0".to_string(), None).await;
 let asdf = api::MarketState::request(true).await;
 
-let chart_by_minute = api::CandleChartMinute::request_candle("KRW-ETH", None, 50, CandleMinute::Min10).await;
-let chart_by_day = api::CandleChartDay::request_candle("KRW-ETH", 10, None, None).await;
-let chart_by_week = api::CandleChartWeek::request_candle("KRW-ETH", 10, None).await;
-let chart_by_month = api::CandleChartMonth::request_candle("KRW-ETH", 10, None).await;
+let chart_of_minute = api::CandleChartMinute::request_candle("KRW-ETH", None, 50, CandleMinute::Min10).await;
+let chart_of_day = api::CandleChartDay::request_candle("KRW-ETH", 10, None, None).await;
+let chart_of_week = api::CandleChartWeek::request_candle("KRW-ETH", 10, None).await;
+let chart_of_month = api::CandleChartMonth::request_candle("KRW-ETH", 10, None).await;
 
 ```
 
