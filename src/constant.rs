@@ -11,13 +11,15 @@ pub const URL_TICKER: &str = "/v1/ticker";
 pub const URL_TRADES_TICKS: &str = "/v1/trades/ticks";
 pub const URL_MARKET_STATE: &str = "/v1/market/all";
 
+pub const URL_WITHDRAWS: &str = "/v1/withdraws";
+
 pub enum CandleMinute {
     Min1,
     Min3,
     Min5,
     Min10,
     Min15,
-    MIn30,
+    Min30,
     Min60,
     Min240
 }
@@ -30,7 +32,7 @@ impl From<CandleMinute> for u8 {
             CandleMinute::Min5 => 5,
             CandleMinute::Min10 => 10,
             CandleMinute::Min15 => 15,
-            CandleMinute::MIn30 => 30,
+            CandleMinute::Min30 => 30,
             CandleMinute::Min60 => 60,
             CandleMinute::Min240 => 240,
         }
