@@ -8,14 +8,32 @@ pub mod order_status_list;
 use super::constant::{OrderSide, OrderType};
 use super::response::{AccountsInfo, OrderInfo, OrderChance, OrderStatus, ResponseError};
 
-/// 주문 요청을 한다.
+/// 주문 요청을 한다. (Make an order(buy or sell) with desired price )
 /// 
-///  Make an order(buy or sell) with desired price 
 /// # Example
 /// ```
 /// let order_info = api::order_by_price("KRW-ETH", OrderSide::BID, 5000.0, 1_435_085.0, OrderType::LIMIT, None).await;
 /// ```
 /// # Response
+/// ```json
+/// {
+///    "uuid": "cdd92199-2897-4e14-9448-f923320408ad",
+///    "side": "bid",
+///    "ord_type": "limit",
+///    "price": "100.0",
+///    "state": "wait",
+///    "market": "KRW-BTC",
+///    "created_at": "2018-04-10T15:42:23+09:00",
+///    "volume": "0.01",
+///    "remaining_volume": "0.01",
+///    "reserved_fee": "0.0015",
+///    "remaining_fee": "0.0015",
+///    "paid_fee": "0.0",
+///    "locked": "1.0015",
+///    "executed_volume": "0.0",
+///    "trades_count": 0
+///  }
+/// ```
 /// | field             | description                   | type         |
 /// |:------------------|:------------------------------|:-------------|
 /// | uuid              | 주문의 고유 아이디             | String |
@@ -53,14 +71,32 @@ pub async fn order_by_price(
     .await
 }
 
-/// 즉시 시장가 판매를 한다.
+/// 즉시 시장가 판매를 한다. (Sell immediately at market price with specific amount of volume.)
 /// 
-/// Sell immediately at market price with specific amount of volume
 /// # Example
 /// ```
 /// let order_info = api::sell_by_market_price("KRW-ETH", 1.0, "cdd92199-2897-4e14-9448-f923320408ad").await;
 /// ```
 /// # Response
+/// ```json
+/// {
+///    "uuid": "cdd92199-2897-4e14-9448-f923320408ad",
+///    "side": "bid",
+///    "ord_type": "limit",
+///    "price": "100.0",
+///    "state": "wait",
+///    "market": "KRW-BTC",
+///    "created_at": "2018-04-10T15:42:23+09:00",
+///    "volume": "0.01",
+///    "remaining_volume": "0.01",
+///    "reserved_fee": "0.0015",
+///    "remaining_fee": "0.0015",
+///    "paid_fee": "0.0",
+///    "locked": "1.0015",
+///    "executed_volume": "0.0",
+///    "trades_count": 0
+///  }
+/// ```
 /// | field             | description                   | type         |
 /// |:------------------|:------------------------------|:-------------|
 /// | uuid              | 주문의 고유 아이디             | String |
@@ -91,14 +127,32 @@ pub async fn sell_by_market_price(market: &str, volume: f64, identifier: Option<
     .await
 }
 
-/// 주문을 취소한다.
+/// 주문을 취소한다. (Cancel an order.)
 /// 
-/// Cancel an order
 /// # Example
 /// ```
 /// let order_info = api::cancel_order("cdd92199-2897-4e14-9448-f923320408ad").await;
 /// ```
 /// # Response
+/// ```json
+/// {
+///    "uuid": "cdd92199-2897-4e14-9448-f923320408ad",
+///    "side": "bid",
+///    "ord_type": "limit",
+///    "price": "100.0",
+///    "state": "wait",
+///    "market": "KRW-BTC",
+///    "created_at": "2018-04-10T15:42:23+09:00",
+///    "volume": "0.01",
+///    "remaining_volume": "0.01",
+///    "reserved_fee": "0.0015",
+///    "remaining_fee": "0.0015",
+///    "paid_fee": "0.0",
+///    "locked": "1.0015",
+///    "executed_volume": "0.0",
+///    "trades_count": 0
+///  }
+/// ```
 /// | field             | description                   | type         |
 /// |:------------------|:------------------------------|:-------------|
 /// | uuid              | 주문의 고유 아이디             | String |
@@ -120,14 +174,33 @@ pub async fn cancel_order(uuid: Option<&str>, identifier: Option<&str>) -> Resul
     OrderInfo::delete_order(uuid, identifier).await
 }
 
-/// 내가 보유한 자산 리스트를 보여줍니다.
+/// 내가 보유한 자산 리스트를 보여줍니다. (inquire your account info)
 /// 
-/// inquire your account info
 /// # Example
 /// ```
 /// let order_info = api::get_account_info().await;
 /// ```
 /// # Response
+/// ```json
+/// [
+///   {
+///     "currency":"KRW",
+///     "balance":"1000000.0",
+///     "locked":"0.0",
+///     "avg_buy_price":"0",
+///     "avg_buy_price_modified":false,
+///     "unit_currency": "KRW",
+///   },
+///   {
+///     "currency":"BTC",
+///     "balance":"2.0",
+///     "locked":"0.0",
+///     "avg_buy_price":"101000",
+///     "avg_buy_price_modified":false,
+///     "unit_currency": "KRW",
+///   }
+/// ]
+/// ```
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
 /// | currency               | 화폐를 의미하는 영문 대문자 코드 | String       |
@@ -140,11 +213,56 @@ pub async fn get_account_info() -> Result<Vec<AccountsInfo>, ResponseError> {
     AccountsInfo::get_account_info().await
 }
 
-/// 마켓별 주문 가능 정보를 확인한다.
+/// 마켓별 주문 가능 정보를 확인한다. (check specific market status.)
 /// ```
 /// let order_chance = api::get_order_chance("KRW-ETH").await;
 /// ```
 /// # Response
+/// ```json
+/// {
+///   "bid_fee": "0.0015",
+///   "ask_fee": "0.0015",
+///   "market": {
+///     "id": "KRW-BTC",
+///     "name": "BTC/KRW",
+///     "order_types": [
+///       "limit"
+///     ],
+///     "order_sides": [
+///       "ask",
+///       "bid"
+///     ],
+///     "bid": {
+///       "currency": "KRW",
+///       "price_unit": null,
+///       "min_total": 1000
+///     },
+///     "ask": {
+///       "currency": "BTC",
+///       "price_unit": null,
+///       "min_total": 1000
+///     },
+///     "max_total": "100000000.0",
+///     "state": "active",
+///   },
+///   "bid_account": {
+///     "currency": "KRW",
+///     "balance": "0.0",
+///     "locked": "0.0",
+///     "avg_buy_price": "0",
+///     "avg_buy_price_modified": false,
+///     "unit_currency": "KRW",
+///   },
+///   "ask_account": {
+///     "currency": "BTC",
+///     "balance": "10.0",
+///     "locked": "0.0",
+///     "avg_buy_price": "8042000",
+///     "avg_buy_price_modified": false,
+///     "unit_currency": "KRW",
+///   }
+/// }
+/// ```
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
 /// | bid_fee |매수 수수료 비율 | NumberString |
@@ -184,13 +302,41 @@ pub async fn get_order_chance(market_id: &str) -> Result<OrderChance, ResponseEr
     OrderChance::get_order_chance(market_id).await
 }
 
-/// 주문 UUID 를 통해 개별 주문건을 조회한다
+/// 주문 UUID 를 통해 개별 주문건을 조회한다. (inquire each order status via order UUID.)
 /// 
-/// inquire each order status via order UUID.
 /// ```
 /// let order_status = api::get_order_status("9ca023a5-851b-4fec-9f0a-48cd83c2eaae").await;
 /// ```
 /// # Response
+/// ```json
+/// {
+///   "uuid": "9ca023a5-851b-4fec-9f0a-48cd83c2eaae",
+///   "side": "ask",
+///   "ord_type": "limit",
+///   "price": "4280000.0",
+///   "state": "done",
+///   "market": "KRW-BTC",
+///   "created_at": "2019-01-04T13:48:09+09:00",
+///   "volume": "1.0",
+///   "remaining_volume": "0.0",
+///   "reserved_fee": "0.0",
+///   "remaining_fee": "0.0",
+///   "paid_fee": "2140.0",
+///   "locked": "0.0",
+///   "executed_volume": "1.0",
+///   "trades_count": 1,
+///   "trades": [
+///     {
+///       "market": "KRW-BTC",
+///       "uuid": "9e8f8eba-7050-4837-8969-cfc272cbe083",
+///       "price": "4280000.0",
+///       "volume": "1.0",
+///       "funds": "4280000.0",
+///       "side": "ask"
+///     }
+///   ]
+/// }
+/// ```
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
 /// | uuid | 주문의 고유 아이디	| String |
@@ -220,11 +366,32 @@ pub async fn get_order_status(uuid: Option<&str>, identifier: Option<&str>) -> R
     OrderStatus::get_order_state(uuid, identifier).await
 }
 
-/// 주문 리스트를 조회한다.
+/// 주문 리스트를 조회한다. (inquire every order status.)
 /// 
-/// inquire every order status
 /// ```
 /// let order_status = api::get_order_status_list().await;
+/// ```
+/// ```json
+/// [
+///   {
+///     "uuid": "9ca023a5-851b-4fec-9f0a-48cd83c2eaae",
+///     "side": "ask",
+///     "ord_type": "limit",
+///     "price": "4280000.0",
+///     "state": "done",
+///     "market": "KRW-BTC",
+///     "created_at": "2019-01-04T13:48:09+09:00",
+///     "volume": "1.0",
+///     "remaining_volume": "0.0",
+///     "reserved_fee": "0.0",
+///     "remaining_fee": "0.0",
+///     "paid_fee": "2140.0",
+///     "locked": "0.0",
+///     "executed_volume": "1.0",
+///     "trades_count": 1,
+///   }
+///   # ....
+/// ]
 /// ```
 /// # Response
 /// | field                  | description                   | type         |
