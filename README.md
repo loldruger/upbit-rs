@@ -31,10 +31,10 @@ let order_info = api_exchange::cancel_order("cdd92199-2897-4e14-9448-f923320408a
 let list_withdraw_info = api_withdraw::list_withdraw_info().await;
 
 // api_quotation
-let order_book_info = api_quotation::OrderbookInfo::get_orderbook_info("KRW-ETH").await;
-let ticker_snapshot = api_quotation::TickerSnapshot::request("KRW-ETH").await;
-let recent_trade_list = api_quotation::TradeRecent::request("KRW-ETH", None, 3, "0".to_string(), None).await;
-let market_state = api_quotation::MarketState::request(true).await;
+let order_book_info = api_quotation::get_orderbook_info("KRW-ETH").await;
+let ticker_snapshot = api_quotation::request("KRW-ETH").await;
+let recent_trade_list = api_quotation::request("KRW-ETH", None, 3, "0".to_string(), None).await;
+let market_state = api_quotation::request(true).await;
 
 let chart_of_minute = api_quotation::request_candle("KRW-ETH", None, 50, CandleMinute::Min10).await;
 let chart_of_day = api_quotation::request_candle("KRW-ETH", 10, None, None).await;
