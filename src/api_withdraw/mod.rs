@@ -3,7 +3,9 @@ use inquiry_withdraw::*;
 
 use super::response::{WithdrawInfo, ResponseError};
 
-/// 마켓별 주문 가능 정보를 확인한다.
+/// 출금 기록을 조회한다. (inquiry the records of withdraws.)
+/// 
+/// # Example
 /// ```rust
 /// let list_withdraw_info = api::list_withdraw_info().await;
 /// ```

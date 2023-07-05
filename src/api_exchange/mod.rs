@@ -12,8 +12,22 @@ use super::response::{AccountsInfo, OrderInfo, OrderChance, OrderStatus, Respons
 /// 
 /// # Example
 /// ```
-/// let order_info = api::order_by_price("KRW-ETH", OrderSide::BID, 5000.0, 1_435_085.0, OrderType::LIMIT, None).await;
+/// let order_info = api_exchange::order_by_price("KRW-ETH", OrderSide::BID, 5000.0, 1_435_085.0, OrderType::LIMIT, None).await;
 /// ```
+/// - parameters
+/// > `market` ex) "KRW-ETH" <br>
+/// > `side` 
+/// >> `OrderSide::BID`: 매수<br>
+/// >> `OrderSide::ASK`: 매도<br>
+/// 
+/// > `price` price that how much you want to buy<br>
+/// > `price_desired` price that you want to bid at<br>
+/// > `ord_type` 
+/// >> `OrderType::LIMIT`: 지정가 주문<br>
+/// >> `OrderType::PRICE`: 시장가 주문(매수)<br>
+/// >> `OrderType::MARKET`: 시장가 주문(매도)<br>
+/// 
+/// > `identifier` (optional) specific identifier you have tagged<br>
 /// # Response
 /// ```json
 /// {
@@ -71,12 +85,16 @@ pub async fn order_by_price(
     .await
 }
 
-/// 즉시 시장가 판매를 한다. (Sell immediately at market price with specific amount of volume.)
+/// 판매 주문을 한다. (Sell at market price with specific amount of volume.)
 /// 
 /// # Example
 /// ```
-/// let order_info = api::sell_by_market_price("KRW-ETH", 1.0, "cdd92199-2897-4e14-9448-f923320408ad").await;
+/// let order_info = api_exchange::sell_by_market_price("KRW-ETH", 1.0, "cdd92199-2897-4e14-9448-f923320408ad").await;
 /// ```
+/// - parameters
+/// > `market` ex) "KRW-ETH" <br>
+/// > `volume` volume you want to sell<br>
+/// > `identifier` (optional) specific identifier you have tagged<br>
 /// # Response
 /// ```json
 /// {
@@ -131,8 +149,13 @@ pub async fn sell_by_market_price(market: &str, volume: f64, identifier: Option<
 /// 
 /// # Example
 /// ```
-/// let order_info = api::cancel_order("cdd92199-2897-4e14-9448-f923320408ad").await;
+/// let order_info = api_exchange::cancel_order("cdd92199-2897-4e14-9448-f923320408ad", None).await;
 /// ```
+/// - parameters
+/// > `uuid` (optional) uuid of order to cancel <br>
+/// > `identifier` (optional) specific identifier you have tagged<br>
+/// 
+/// * One of the two parameter must be input. Error when both parameter are entered or neither parameter are entered.
 /// # Response
 /// ```json
 /// {
@@ -178,7 +201,7 @@ pub async fn cancel_order(uuid: Option<&str>, identifier: Option<&str>) -> Resul
 /// 
 /// # Example
 /// ```
-/// let order_info = api::get_account_info().await;
+/// let order_info = api_exchange::get_account_info().await;
 /// ```
 /// # Response
 /// ```json
@@ -215,8 +238,11 @@ pub async fn get_account_info() -> Result<Vec<AccountsInfo>, ResponseError> {
 
 /// 마켓별 주문 가능 정보를 확인한다. (check specific market status.)
 /// ```
-/// let order_chance = api::get_order_chance("KRW-ETH").await;
+/// let order_chance = api_exchange::get_order_chance("KRW-ETH").await;
 /// ```
+/// - parameters
+/// > `market` etc) KRW-ETH<br>
+/// 
 /// # Response
 /// ```json
 /// {
@@ -305,8 +331,13 @@ pub async fn get_order_chance(market_id: &str) -> Result<OrderChance, ResponseEr
 /// 주문 UUID 를 통해 개별 주문건을 조회한다. (inquire each order status via order UUID.)
 /// 
 /// ```
-/// let order_status = api::get_order_status("9ca023a5-851b-4fec-9f0a-48cd83c2eaae").await;
+/// let order_status = api_exchange::get_order_status("9ca023a5-851b-4fec-9f0a-48cd83c2eaae", None).await;
 /// ```
+/// - parameters
+/// > `uuid` (optional) uuid of order to cancel <br>
+/// > `identifier` (optional) specific identifier you have tagged<br>
+/// 
+/// * One of the two parameter must be input. Error when both parameter are entered or neither parameter are entered.
 /// # Response
 /// ```json
 /// {
@@ -369,7 +400,7 @@ pub async fn get_order_status(uuid: Option<&str>, identifier: Option<&str>) -> R
 /// 주문 리스트를 조회한다. (inquire every order status.)
 /// 
 /// ```
-/// let order_status = api::get_order_status_list().await;
+/// let order_status = api_exchange::get_order_status_list().await;
 /// ```
 /// ```json
 /// [

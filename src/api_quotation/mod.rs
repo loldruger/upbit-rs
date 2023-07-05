@@ -188,10 +188,77 @@ pub async fn get_ticker_snapshot(market: &str) ->Result<TickerSnapshot, Response
     TickerSnapshot::get_ticker_snapshot(market).await
 }
 
+/// 호가 정보를 조회한다. (Inquiry bid price and offered price.)
+/// 
+/// # Example
+/// ```rust
+/// let recent_trade_list = api_quotation::get_trade_recent("KRW-ETH").await;
+/// ```
+/// - parameters
+/// > `market` etc) KRW-ETH<br>
+/// > `hhmmss` format is "HHmmss" or "HH:mm:ss". if empty, latest data will be retrieved<br>
+/// > `count` count of trade<br>
+/// > `cursor` pagenation cursor. (sequential id)<br>
+/// > `days_ago`You can retrieve previous data within 7 days based on the recent transaction date. If left empty, the most recent transaction date is returned. (Range: 1 ~ 7))<br>
+/// # Response
+/// ```json
+/// [
+///   {
+///     "market": "KRW-BTC",
+///     "trade_date_utc": "2018-04-18",
+///     "trade_time_utc": "10:19:58",
+///     "timestamp": 1524046798000,
+///     "trade_price": 8616000,
+///     "trade_volume": 0.03060688,
+///     "prev_closing_price": 8450000,
+///     "chane_price": 166000,
+///     "ask_bid": "ASK"
+///   }
+/// ]
+/// ```
+/// | field             | description                   | type         |
+/// |:------------------|:------------------------------|:-------------|
+/// | market | 마켓 구분 코드 | String |
+/// | trade_date_utc | 체결 일자(UTC 기준) <br> 포맷: yyyy-MM-dd | String
+/// | trade_time_utc | 체결 시각(UTC 기준) <br> 포맷: HH:mm:ss | String
+/// | timestamp | 체결 타임스탬프 | Long |
+/// | trade_price | 체결 가격 | Double |
+/// | trade_volume | 체결량 | Double |
+/// | prev_closing_price | 전일 종가(UTC 0시 기준) | Double |
+/// | change_price | 변화량 | Double |
+/// | ask_bid | 매도/매수 | String |
+/// | sequential_id | 체결 번호(Unique) | Long |
+/// 
+/// * sequential_id 필드는 체결의 유일성 판단을 위한 근거로 쓰일 수 있습니다. 하지만 체결의 순서를 보장하지는 못합니다.
 pub async fn get_trade_recent(market: &str, hhmmss: Option<&str>, count: i32, cursor: String, days_ago: Option<i32>) -> Result<TradeRecent, ResponseError>{
     TradeRecent::get_trade_recent(market, hhmmss, count, cursor, days_ago).await
 }
 
+/// 업비트에서 거래 가능한 마켓 목록 (List of markets available on Upbit)
+/// 
+/// # Example
+/// ```
+/// let market_state = api_quotation::get_market_state(true).await;
+/// ```
+/// - parameters
+/// > `is_warning_shown` ex) 유의종목 필드과 같은 상세 정보 노출 여부(선택 파라미터) <br>
+/// # Response
+/// ```json
+/// [
+///     {
+///         "market": "KRW-BTC",
+///         "korean_name": "비트코인",
+///         "english_name": "Bitcoin"
+///     },
+///     ...
+/// ]
+/// ```
+/// | field             | description                   | type         |
+/// |:------------------|:------------------------------|:-------------|
+/// | market | 업비트에서 제공중인 시장 정보 | String |
+/// | korean_name |	거래 대상 디지털 자산 한글명 | String |
+/// | english_name | 거래 대상 디지털 자산 영문명 | String |
+/// | market_warning | 유의 종목 여부 <br> NONE: (해당 사항 없음), CAUTION(투자유의) | String |
 pub async fn get_market_state(is_warning_shown: bool) -> Result<Vec<MarketState>, ResponseError> {
     MarketState::get_market_state(is_warning_shown).await
 }
