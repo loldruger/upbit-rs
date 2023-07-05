@@ -17,24 +17,29 @@ upbit::set_secret_key("");
 ```rust
 use upbit::*;
 
-let account_info = api::get_account_info().await;
-let order_chance = api::get_order_chance("KRW-ETH").await;
-let order_status = api::get_order_status(None, None).await;
-let order_status_list = api::get_order_status_list().await;
+// api_exchange
+let account_info = api_exchange::get_account_info().await;
+let order_chance = api_exchange::get_order_chance("KRW-ETH").await;
+let order_status = api_exchange::get_order_status(None, None).await;
+let order_status_list = api_exchange::get_order_status_list().await;
 
-let order_info = api::order_by_price("KRW-ETH", OrderSide::BID, 5000.0, 1_435_085.0, OrderType::LIMIT, None).await;
-let order_info = api::sell_by_market_price("KRW-ETH", 1.0, "cdd92199-2897-4e14-9448-f923320408ad").await;
-let order_info = api::cancel_order("cdd92199-2897-4e14-9448-f923320408ad").await;
+let order_info = api_exchange::order_by_price("KRW-ETH", OrderSide::BID, 5000.0, 1_435_085.0, OrderType::LIMIT, None).await;
+let order_info = api_exchange::sell_by_market_price("KRW-ETH", 1.0, "cdd92199-2897-4e14-9448-f923320408ad").await;
+let order_info = api_exchange::cancel_order("cdd92199-2897-4e14-9448-f923320408ad").await;
 
-let order_book_info = api::OrderbookInfo::get_orderbook_info("KRW-ETH").await;
-let asdf = api::TickerSnapshot::request("KRW-ETH").await;
-let asdf = api::TradeRecent::request("KRW-ETH", None, 3, "0".to_string(), None).await;
-let asdf = api::MarketState::request(true).await;
+// api_withdraw
+let list_withdraw_info = api_withdraw::list_withdraw_info().await;
 
-let chart_of_minute = api::CandleChartMinute::request_candle("KRW-ETH", None, 50, CandleMinute::Min10).await;
-let chart_of_day = api::CandleChartDay::request_candle("KRW-ETH", 10, None, None).await;
-let chart_of_week = api::CandleChartWeek::request_candle("KRW-ETH", 10, None).await;
-let chart_of_month = api::CandleChartMonth::request_candle("KRW-ETH", 10, None).await;
+// api_quotation
+let order_book_info = api_quotation::OrderbookInfo::get_orderbook_info("KRW-ETH").await;
+let ticker_snapshot = api_quotation::TickerSnapshot::request("KRW-ETH").await;
+let recent_trade_list = api_quotation::TradeRecent::request("KRW-ETH", None, 3, "0".to_string(), None).await;
+let market_state = api_quotation::MarketState::request(true).await;
+
+let chart_of_minute = api_quotation::request_candle("KRW-ETH", None, 50, CandleMinute::Min10).await;
+let chart_of_day = api_quotation::request_candle("KRW-ETH", 10, None, None).await;
+let chart_of_week = api_quotation::request_candle("KRW-ETH", 10, None).await;
+let chart_of_month = api_quotation::request_candle("KRW-ETH", 10, None).await;
 
 ```
 
