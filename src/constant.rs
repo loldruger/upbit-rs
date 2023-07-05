@@ -2,8 +2,8 @@ pub const URL_SERVER: &str = "https://api.upbit.com";
 
 pub const URL_ACCOUNTS: &str = "/v1/accounts";
 pub const URL_ORDER_CHANCE: &str = "/v1/orders/chance";
-pub const URL_ORDER_STATE: &str = "/v1/order";
-pub const URL_ORDER_STATE_LIST: &str = "/v1/orders";
+pub const URL_ORDER_STATUS: &str = "/v1/order";
+pub const URL_ORDER_STATUS_LIST: &str = "/v1/orders";
 pub const URL_ORDER: &str = "/v1/orders";
 
 pub const URL_ORDERBOOK: &str = "/v1/orderbook";

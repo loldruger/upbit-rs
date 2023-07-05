@@ -2,24 +2,24 @@ use reqwest::header::{ACCEPT, AUTHORIZATION};
 use reqwest::{Url, Response};
 
 use super::{
-    super::constant::{URL_ORDER_STATE, URL_SERVER},
+    super::constant::{URL_ORDER_STATUS, URL_SERVER},
     super::response::{
         OrderInfo,
-        OrderState,
+        OrderStatus,
         ObjectTrades,
         ResponseErrorState
     },
     super::response_source::{
         ResponseErrorBody,
         ResponseError,
-        OrderStateSource,
+        OrderStatusSource,
         ResponseErrorSource
     },
     request::RequestWithQuery,
 };
 
-impl RequestWithQuery for OrderState {}
-impl OrderState {
+impl RequestWithQuery for OrderStatus {}
+impl OrderStatus {
     pub async fn get_order_state(uuid: Option<&str>, identifier: Option<&str>) -> Result<Self, ResponseError> {
         if uuid.is_none() && identifier.is_none() {
             return Err(ResponseError {
@@ -56,7 +56,7 @@ impl OrderState {
         }
         
         serde_json::from_str(&res_serialized)
-            .map(|x: OrderStateSource| {
+            .map(|x: OrderStatusSource| {
                 Self {
                     order_info: OrderInfo {
                         uuid: x.order_info.uuid(),
@@ -101,7 +101,7 @@ impl OrderState {
     }
 
     async fn request(uuid: Option<&str>, identifier: Option<&str>) -> Result<Response, ResponseError> {
-        let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDER_STATE}")).unwrap();
+        let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDER_STATUS}")).unwrap();
 
         if uuid.is_some() {
             url.query_pairs_mut().append_pair("uuid", uuid.unwrap());

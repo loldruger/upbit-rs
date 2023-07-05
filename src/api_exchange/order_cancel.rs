@@ -6,7 +6,7 @@ use reqwest::{
 
 use super::{
     request::RequestWithQuery,
-    super::constant::{URL_ORDER_STATE, URL_SERVER},
+    super::constant::{URL_ORDER_STATUS, URL_SERVER},
     super::response::{OrderInfo, ResponseErrorState},
     super::response_source::{OrderInfoSource, ResponseErrorBody, ResponseError, ResponseErrorSource}
 };
@@ -79,7 +79,7 @@ impl OrderInfo {
     }
 
     async fn request_delete(uuid: Option<&str>, identifier: Option<&str>) -> Result<Response, ResponseError> {
-        let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDER_STATE}")).unwrap();
+        let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDER_STATUS}")).unwrap();
 
         if uuid.is_some() {
             url.query_pairs_mut().append_pair("uuid", uuid.unwrap());

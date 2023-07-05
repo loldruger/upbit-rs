@@ -5,7 +5,7 @@ use reqwest::{
 };
 
 use super::{
-    super::constant::{URL_ORDER_STATE_LIST, URL_SERVER},
+    super::constant::{URL_ORDER_STATUS_LIST, URL_SERVER},
     super::response::{OrderInfo, ResponseErrorState},
     super::response_source::{
         OrderInfoSource,
@@ -70,7 +70,7 @@ impl OrderInfo {
     }
 
     async fn request() -> Result<Response, ResponseError> {
-        let url = Url::parse(&format!("{URL_SERVER}{URL_ORDER_STATE_LIST}")).unwrap();
+        let url = Url::parse(&format!("{URL_SERVER}{URL_ORDER_STATUS_LIST}")).unwrap();
         let token_string = Self::set_token()?;
         let client = reqwest::Client::new();
         

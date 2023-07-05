@@ -13,7 +13,7 @@ pub struct ObjectTradesSource {
 }
 
 #[derive(Deserialize, Debug)]
-pub struct OrderStateSource {
+pub struct OrderStatusSource {
     #[serde(flatten)]
     pub order_info: OrderInfoSource,
     pub trades: Vec<ObjectTradesSource>,

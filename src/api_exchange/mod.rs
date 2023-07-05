@@ -4,13 +4,13 @@ pub mod request;
 pub mod order;
 pub mod order_cancel;
 pub mod order_chance;
-pub mod order_state;
-pub mod order_state_list;
+pub mod order_status;
+pub mod order_status_list;
 
 use crate::response_source::ResponseError;
 
 use super::constant::{OrderSide, OrderType};
-use super::response::{AccountsInfo, OrderInfo, OrderChance, OrderState};
+use super::response::{AccountsInfo, OrderInfo, OrderChance, OrderStatus};
 
 /// 주문 요청을 한다.
 /// 
@@ -220,8 +220,8 @@ pub async fn get_order_chance(market_id: &str) -> Result<OrderChance, ResponseEr
 /// | trades.funds | 체결된 총 가격	| NumberString |
 /// | trades.side | 체결 종류	| String |
 /// | trades.created_at | 체결 시각	| DateString |
-pub async fn get_order_status(uuid: Option<&str>, identifier: Option<&str>) -> Result<OrderState, ResponseError> {
-    OrderState::get_order_state(uuid, identifier).await
+pub async fn get_order_status(uuid: Option<&str>, identifier: Option<&str>) -> Result<OrderStatus, ResponseError> {
+    OrderStatus::get_order_state(uuid, identifier).await
 }
 
 /// 주문 리스트를 조회한다.
