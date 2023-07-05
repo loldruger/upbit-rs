@@ -49,7 +49,7 @@ impl OrderInfoSource {
     pub fn price(&self) -> f64 { 
         self.price
             .as_ref()
-            .unwrap_or(&"0".to_owned())
+            .unwrap()
             .parse()
             .unwrap()
         }
