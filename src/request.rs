@@ -5,7 +5,7 @@ use serde_json::json;
 use sha2::{Digest, Sha512};
 use uuid::Uuid;
 
-use crate::{response_source::{ResponseError, ResponseErrorBody}, response::ResponseErrorState};
+use crate::{response::{ResponseError, ResponseErrorBody}, response::ResponseErrorState};
 
 pub trait Request {
     fn set_token() -> Result<String, ResponseError> {

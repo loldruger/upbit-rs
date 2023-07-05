@@ -60,3 +60,20 @@ impl From<&str> for ResponseErrorState {
         }
     }
 }
+
+#[derive(Deserialize, Debug)]
+pub struct ResponseError {
+    pub state: ResponseErrorState,
+    pub error: ResponseErrorBody
+}
+
+#[derive(Deserialize, Debug)]
+pub struct ResponseErrorSource {
+    pub error: ResponseErrorBody
+}
+
+#[derive(Deserialize, Debug)]
+pub struct ResponseErrorBody {
+    pub name: String,
+    pub message: String,
+}

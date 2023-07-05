@@ -3,12 +3,18 @@ use reqwest::{
     Url,
     header::{ACCEPT, AUTHORIZATION}
 };
+use crate::request::RequestWithQuery;
 
 use super::{
-    request::RequestWithQuery,
     super::constant::{URL_ORDER_STATUS, URL_SERVER},
-    super::response::{OrderInfo, ResponseErrorState},
-    super::response_source::{OrderInfoSource, ResponseErrorBody, ResponseError, ResponseErrorSource}
+    super::response::{
+        OrderInfo,
+        OrderInfoSource,
+        ResponseError,
+        ResponseErrorBody,
+        ResponseErrorState,
+        ResponseErrorSource
+    }
 };
 
 impl OrderInfo {

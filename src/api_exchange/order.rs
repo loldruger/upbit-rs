@@ -1,13 +1,20 @@
 use reqwest::header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE};
 use reqwest::{Url, Response};
 
+use crate::request::RequestWithQuery;
+
 use super::{
     super::{
         constant::{URL_ORDER, URL_SERVER, OrderSide, OrderType},
-        response::{OrderInfo, ResponseErrorState},
-        response_source::{OrderInfoSource, ResponseError, ResponseErrorBody, ResponseErrorSource}
-    },
-    request::RequestWithQuery
+        response::{
+            OrderInfo,
+            OrderInfoSource,
+            ResponseError,
+            ResponseErrorBody,
+            ResponseErrorState,
+            ResponseErrorSource
+        }
+    }
 };
 
 impl OrderInfo {

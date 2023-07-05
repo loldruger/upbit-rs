@@ -4,16 +4,18 @@ use reqwest::{
     Url
 };
 
+use crate::request::Request;
+
 use super::{
     super::constant::{URL_ORDER_STATUS_LIST, URL_SERVER},
-    super::response::{OrderInfo, ResponseErrorState},
-    super::response_source::{
+    super::response::{
+        OrderInfo,
         OrderInfoSource,
         ResponseError,
         ResponseErrorBody,
+        ResponseErrorState,
         ResponseErrorSource
-    },
-    request::Request
+    }
 };
 
 impl OrderInfo {

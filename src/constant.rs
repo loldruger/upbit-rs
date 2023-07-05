@@ -47,8 +47,7 @@ pub enum UrlAssociates {
 impl From<UrlAssociates> for String {
     fn from(value: UrlAssociates) -> Self {
         match value {
-            UrlAssociates::UrlCandleMinute(minute) => 
-                format!("/v1/candles/minutes/{}", Into::<u8>::into(minute)),
+            UrlAssociates::UrlCandleMinute(minute) => format!("/v1/candles/minutes/{}", Into::<u8>::into(minute)),
             UrlAssociates::UrlCandleWeek => "/v1/candles/weeks".to_owned(),
             UrlAssociates::UrlCandleDay => "/v1/candles/days".to_owned(),
             UrlAssociates::UrlCandleMonth => "/v1/candles/months".to_owned(),

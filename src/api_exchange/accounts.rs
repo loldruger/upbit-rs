@@ -1,14 +1,20 @@
 use reqwest::Response;
 use reqwest::header::{ACCEPT, AUTHORIZATION};
 
+use crate::request::Request;
 use crate::response::ResponseErrorState;
-use crate::response_source::ResponseErrorBody;
 
 use super::{
     super::constant::{URL_ACCOUNTS, URL_SERVER},
-    super::response::{AccountsInfo},
-    super::response_source::{AccountsInfoSource, ResponseError, ResponseErrorSource},
-    request::Request
+    super::response::{
+        AccountsInfo,
+        AccountsInfoSource
+    },
+    super::response::{
+        ResponseError,
+        ResponseErrorBody,
+        ResponseErrorSource
+    },
 };
 
 impl AccountsInfo {

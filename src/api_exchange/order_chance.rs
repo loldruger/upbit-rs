@@ -1,22 +1,20 @@
 use reqwest::Response;
 use reqwest::header::{ACCEPT, AUTHORIZATION};
 
+use crate::request::RequestWithQuery;
 use super::{
     super::constant::{URL_ORDER_CHANCE, URL_SERVER},
     super::response::{
         AccountsInfo,
         OrderChance,
+        OrderChanceSource,
         ObjectMarket,
         ObjectAskBid,
-        ResponseErrorState
-    },
-    super::response_source:: {
         ResponseError,
-        OrderChanceSource,
         ResponseErrorBody,
+        ResponseErrorState,
         ResponseErrorSource
     },
-    request::RequestWithQuery,
 };
 
 impl RequestWithQuery for OrderChance {}
