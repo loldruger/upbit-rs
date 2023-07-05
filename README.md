@@ -1,7 +1,7 @@
 upbit-api on rust, with upbit api v1.3.4
 
 
-this crate is dependant on `sqlx`, `tokio`, `postgres`
+this crate is dependant on `tokio`
 
 it also requires `openssl-sys` package
 
