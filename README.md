@@ -30,7 +30,7 @@ let order_info = api_exchange::cancel_order("cdd92199-2897-4e14-9448-f923320408a
 
 // api_withdraw
 let withdraw_info = api_withdraw::get_withdraw_info(None, Some("cdd92199-2897-4e14-9448-f923320408ad"), None).await;
-let list_withdraw_info = api_withdraw::list_withdraw_info().await;
+let list_withdraw_info = api_withdraw::list_withdraw_info("KRW", WithdrawState::Done, None, None, 10, 0, OrderBy::Asc).await;
 
 // api_quotation
 let order_book_info = api_quotation::get_orderbook_info("KRW-ETH").await;
