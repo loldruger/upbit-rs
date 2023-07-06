@@ -327,38 +327,38 @@ pub async fn get_account_info() -> Result<Vec<AccountsInfo>, ResponseError> {
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
 /// | bid_fee |매수 수수료 비율 | NumberString |
-/// | ask_fee|	매도 수수료 비율 | NumberString |
-/// | market|	마켓에 대한 정보 | Object |
-/// | market.id|	마켓의 유일 키 | String |
-/// | market.name|	마켓 이름 | String |
-/// | market.order_types|	지원 주문 방식 (만료)	|Array[[String]] |
-/// | ask_types|	매도 주문 지원 방식	|Array[[String]] |
-/// | bid_types|	매수 주문 지원 방식	|Array[[String]] |
-/// | market.order_sides|	지원 주문 종류	|Array[[String]] |
-/// | market.bid|	매수 시 제약사항	| Object |
-/// | market.bid.currency|	화폐를 의미하는 영문 대문자 코드	| String |
-/// | market.bid.price_unit|	주문금액 단위	| String |
-/// | market.bid.min_total|	최소 매도/매수 금액	| Number |
-/// | market.ask|	매도 시 제약사항	| Object |
-/// | market.ask.currency|	화폐를 의미하는 영문 대문자 코드	| String |
-/// | market.ask.price_unit|	주문금액 단위	| String |
-/// | market.ask.min_total|	최소 매도/매수 금액	| Number |
-/// | market.max_total|	최대 매도/매수 금액	| NumberString |
-/// | market.state|	마켓 운영 상태	| String |
-/// | bid_account|	매수 시 사용하는 화폐의 계좌 상태	| Object |
-/// | bid_account.currency|	화폐를 의미하는 영문 대문자 코드	| String |
-/// | bid_account.balance|	주문가능 금액/수량	| NumberString |
-/// | bid_account.locked|	주문 중 묶여있는 금액/수량	| NumberString |
-/// | bid_account.avg_buy_price|	매수평균가	| NumberString |
-/// | bid_account.avg_buy_price_modified|	매수평균가 수정 여부	| Boolean |
-/// | bid_account.unit_currency|	평단가 기준 화폐	| String |
-/// | ask_account|	매도 시 사용하는 화폐의 계좌 상태	| Object |
-/// | ask_account.currency|	화폐를 의미하는 영문 대문자 코드	| String |
-/// | ask_account.balance|	주문가능 금액/수량	| NumberString |
-/// | ask_account.locked|	주문 중 묶여있는 금액/수량	| NumberString |
-/// | ask_account.avg_buy_price|	매수평균가	| NumberString |
-/// | ask_account.avg_buy_price_modified|	매수평균가 수정 여부	| Boolean |
-/// | ask_account.unit_currency|	평단가 기준 화폐	| String |
+/// | ask_fee| 매도 수수료 비율 | NumberString |
+/// | market| 마켓에 대한 정보 | Object |
+/// | market.id| 마켓의 유일 키 | String |
+/// | market.name| 마켓 이름 | String |
+/// | market.order_types| 지원 주문 방식 (만료) |Array[[String]] |
+/// | ask_types| 매도 주문 지원 방식 |Array[[String]] |
+/// | bid_types| 매수 주문 지원 방식 |Array[[String]] |
+/// | market.order_sides| 지원 주문 종류 |Array[[String]] |
+/// | market.bid| 매수 시 제약사항 | Object |
+/// | market.bid.currency| 화폐를 의미하는 영문 대문자 코드 | String |
+/// | market.bid.price_unit| 주문금액 단위 | String |
+/// | market.bid.min_total| 최소 매도/매수 금액 | Number |
+/// | market.ask| 매도 시 제약사항 | Object |
+/// | market.ask.currency| 화폐를 의미하는 영문 대문자 코드 | String |
+/// | market.ask.price_unit| 주문금액 단위 | String |
+/// | market.ask.min_total| 최소 매도/매수 금액 | Number |
+/// | market.max_total| 최대 매도/매수 금액 | NumberString |
+/// | market.state| 마켓 운영 상태 | String |
+/// | bid_account| 매수 시 사용하는 화폐의 계좌 상태 | Object |
+/// | bid_account.currency| 화폐를 의미하는 영문 대문자 코드 | String |
+/// | bid_account.balance| 주문가능 금액/수량 | NumberString |
+/// | bid_account.locked| 주문 중 묶여있는 금액/수량 | NumberString |
+/// | bid_account.avg_buy_price| 매수평균가 | NumberString |
+/// | bid_account.avg_buy_price_modified| 매수평균가 수정 여부 | Boolean |
+/// | bid_account.unit_currency| 평단가 기준 화폐 | String |
+/// | ask_account| 매도 시 사용하는 화폐의 계좌 상태 | Object |
+/// | ask_account.currency| 화폐를 의미하는 영문 대문자 코드 | String |
+/// | ask_account.balance| 주문가능 금액/수량 | NumberString |
+/// | ask_account.locked| 주문 중 묶여있는 금액/수량 | NumberString |
+/// | ask_account.avg_buy_price| 매수평균가 | NumberString |
+/// | ask_account.avg_buy_price_modified| 매수평균가 수정 여부 | Boolean |
+/// | ask_account.unit_currency| 평단가 기준 화폐 | String |
 pub async fn get_order_chance(market_id: &str) -> Result<OrderChance, ResponseError> {
     OrderChance::get_order_chance(market_id).await
 }
@@ -406,29 +406,29 @@ pub async fn get_order_chance(market_id: &str) -> Result<OrderChance, ResponseEr
 /// ```
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
-/// | uuid | 주문의 고유 아이디	| String |
-/// | side | 주문 종류	| String |
-/// | ord_type | 주문 방식	| String |
-/// | price | 주문 당시 화폐 가격	| NumberString |
-/// | state | 주문 상태	| String |
-/// | market | 마켓의 유일키	| String |
-/// | created_at | 주문 생성 시간	| DateString |
-/// | volume | 사용자가 입력한 주문 양	| NumberString |
-/// | remaining_volume|체결 후 남은 주문 양	| NumberString |
-/// | reserved_fee|수수료로 예약된 비용	| NumberString |
-/// | remaining_fee|남은 수수료	| NumberString |
-/// | paid_fee|사용된 수수료	| NumberString |
-/// | locked|거래에 사용중인 비용	| NumberString |
-/// | executed_volume|체결된 양	| NumberString |
-/// | trades_count|해당 주문에 걸린 체결 수	| Integer |
-/// | trades | 체결|Array[[Object]] |
-/// | trades.market |마켓의 유일 키	| String |
-/// | trades.uuid | 체결의 고유 아이디	| String |
-/// | trades.price | 체결 가격	| NumberString |
-/// | trades.volume | 체결 양	| NumberString |
-/// | trades.funds | 체결된 총 가격	| NumberString |
-/// | trades.side | 체결 종류	| String |
-/// | trades.created_at | 체결 시각	| DateString |
+/// | uuid | 주문의 고유 아이디 | String |
+/// | side | 주문 종류 | String |
+/// | ord_type | 주문 방식 | String |
+/// | price | 주문 당시 화폐 가격 | NumberString |
+/// | state | 주문 상태 | String |
+/// | market | 마켓의 유일키 | String |
+/// | created_at | 주문 생성 시간 | DateString |
+/// | volume | 사용자가 입력한 주문 양 | NumberString |
+/// | remaining_volume |체결 후 남은 주문 양 | NumberString |
+/// | reserved_fee | 수수료로 예약된 비용 | NumberString |
+/// | remaining_fee | 남은 수수료 | NumberString |
+/// | paid_fee | 사용된 수수료 | NumberString |
+/// | locked | 거래에 사용중인 비용 | NumberString |
+/// | executed_volume | 체결된 양 | NumberString |
+/// | trades_count |해당 주문에 걸린 체결 수 | Integer |
+/// | trades | 체결 |Array[[Object]] |
+/// | trades.market |마켓의 유일 키 | String |
+/// | trades.uuid | 체결의 고유 아이디 | String |
+/// | trades.price | 체결 가격 | NumberString |
+/// | trades.volume | 체결 양 | NumberString |
+/// | trades.funds | 체결된 총 가격 | NumberString |
+/// | trades.side | 체결 종류 | String |
+/// | trades.created_at | 체결 시각 | DateString |
 pub async fn get_order_status(uuid: Option<&str>, identifier: Option<&str>) -> Result<OrderStatus, ResponseError> {
     OrderStatus::get_order_state(uuid, identifier).await
 }
