@@ -36,7 +36,7 @@ impl ToString for WithdrawState {
 /// // it returns withdraw list of currency "KRW", state "done" ordered by asc
 /// let list_withdraw_info = api_withdraw::list_withdraw_info("KRW", WithdrawState::Done, None, None, 10, 0, OrderBy::Asc).await;
 /// 
-/// // it returns withdraw list of currency "BTC", state "done", txid "98c15999..." ordered by asc
+/// // it returns withdraw list of currency "BTC", state "done", txid "98c15999..." ordered by desc
 /// let list_withdraw_info = api_withdraw::list_withdraw_info(
 ///     "BTC",
 ///     "done",
@@ -114,3 +114,4 @@ pub async fn list_withdraw_info(
 ) -> Result<Vec<WithdrawInfo>, ResponseError> {
     WithdrawInfo::inquiry_withdraw_list(currency, state, uuids, txids, limit, page, order_by).await
 }
+
