@@ -16,7 +16,51 @@ pub use candle_day::CandleChartDay;
 pub use candle_week::CandleChartWeek;
 pub use candle_month::CandleChartMonth;
 
-use crate::{constant::CandleMinute, response::ResponseError};
+use crate:: response::ResponseError;
+
+pub enum CandleMinute {
+    Min1,
+    Min3,
+    Min5,
+    Min10,
+    Min15,
+    Min30,
+    Min60,
+    Min240
+}
+
+impl From<CandleMinute> for u8 {
+    fn from(value: CandleMinute) -> Self {
+        match value {
+            CandleMinute::Min1 => 1,
+            CandleMinute::Min3 => 3,
+            CandleMinute::Min5 => 5,
+            CandleMinute::Min10 => 10,
+            CandleMinute::Min15 => 15,
+            CandleMinute::Min30 => 30,
+            CandleMinute::Min60 => 60,
+            CandleMinute::Min240 => 240,
+        }
+    }
+}
+
+pub enum UrlAssociates {
+    UrlCandleMinute(CandleMinute),
+    UrlCandleWeek,
+    UrlCandleDay,
+    UrlCandleMonth
+}
+
+impl From<UrlAssociates> for String {
+    fn from(value: UrlAssociates) -> Self {
+        match value {
+            UrlAssociates::UrlCandleMinute(minute) => format!("/v1/candles/minutes/{}", Into::<u8>::into(minute)),
+            UrlAssociates::UrlCandleWeek => "/v1/candles/weeks".to_owned(),
+            UrlAssociates::UrlCandleDay => "/v1/candles/days".to_owned(),
+            UrlAssociates::UrlCandleMonth => "/v1/candles/months".to_owned(),
+        }
+    }
+}
 
 /// 호가 정보를 조회한다. (Inquiry bid price and offered price.)
 /// 
