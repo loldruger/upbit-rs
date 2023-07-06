@@ -113,8 +113,8 @@ pub struct WithdrawLimitSource {
 
 impl WithdrawLimitSource {
     pub fn currency(&self) -> String { self.currency.clone() }
-    pub fn minimum(&self) -> Option<f64> { self.minimum.clone().and_then(|x| Some(x.parse::<f64>().unwrap())) }
-    pub fn onetime(&self) -> Option<f64> { self.onetime.clone().and_then(|x| Some(x.parse::<f64>().unwrap())) }
+    pub fn minimum(&self) -> Option<f64> { self.minimum.clone().map(|x| x.parse::<f64>().unwrap()) }
+    pub fn onetime(&self) -> Option<f64> { self.onetime.clone().map(|x| x.parse::<f64>().unwrap()) }
     pub fn daily(&self) -> f64 { self.daily.parse().unwrap() }
     pub fn remaining_daily(&self) -> f64 { self.remaining_daily.parse().unwrap() }
     pub fn remaining_daily_krw(&self) -> f64 { self.remaining_daily_krw.parse().unwrap() }

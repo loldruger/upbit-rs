@@ -101,7 +101,7 @@ impl WithdrawInfo {
             let uuids = uuids
                 .unwrap()
                 .join("&")
-                .split_inclusive("&")
+                .split_inclusive('&')
                 .map(|x| format!("uuids[]={x}"))
                 .collect::<String>();
             url = Url::parse(&format!("{}&{}", url.as_str(), uuids)).unwrap();

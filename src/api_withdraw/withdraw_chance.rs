@@ -91,7 +91,7 @@ impl WithdrawChance {
 
     async fn request(currency: &str, net_type: Option<&str>) -> Result<Response, ResponseError> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_WITHDRAW_CHANCE}?currency={currency}")).unwrap();
-        let token_string = Self::set_token_with_query(&url.as_str())?;
+        let token_string = Self::set_token_with_query(url.as_str())?;
 
         // url.query_pairs_mut().append_pair("currency", currency);
 
