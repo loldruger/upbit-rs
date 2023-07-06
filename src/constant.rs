@@ -13,6 +13,9 @@ pub const URL_MARKET_STATE: &str = "/v1/market/all";
 
 pub const URL_WITHDRAW: &str = "/v1/withdraw";
 pub const URL_WITHDRAWS: &str = "/v1/withdraws";
+pub const URL_WITHDRAWS_KRW: &str = "/v1/withdraws/krw";
+pub const URL_WITHDRAWS_COIN: &str = "/v1/withdraws/coin";
+pub const URL_WITHDRAWS_COIN_ADDRESS: &str = "v1/withdraws/coin_addresses";
 pub const URL_WITHDRAW_CHANCE: &str = "/v1/withdraws/chance";
 
 // pub const URL_CANDLE_MINUTE: &str = "/v1/candles/minutes/";
@@ -33,6 +36,8 @@ impl ToString for OrderBy {
         }
     }
 }
+
+
 
 pub enum Currency {
     KRW,

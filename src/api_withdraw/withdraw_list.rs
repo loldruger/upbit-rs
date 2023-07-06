@@ -20,7 +20,7 @@ use super::{
         ResponseErrorSource
     }, WithdrawState,
 };
-impl RequestWithQuery for WithdrawInfo {}
+
 impl WithdrawInfo {
     pub async fn inquiry_withdraw_list(
         currency: &str,

@@ -2,6 +2,55 @@ use serde::Deserialize;
 
 use super::{AccountsInfoSource, AccountsInfo};
 
+/// Deserialized derived WithdrawInfo data
+pub struct WithdrawInfoDerived {
+    pub r#type: String,
+    pub uuid: String,
+    pub currency: String,
+    pub net_type: Option<String>,
+    pub txid: String,
+    pub state: String,
+    pub created_at: chrono::NaiveDateTime,
+    pub done_at: Option<chrono::NaiveDateTime>,
+    pub amount: f64,
+    pub fee: f64,
+    pub krw_amount: f64,
+    pub transaction_type: String,
+}
+
+/// Raw derived withdraw info from serialized data
+#[derive(Deserialize)]
+pub struct WithdrawInfoDerivedSource {
+    r#type: String,
+    uuid: String,
+    currency: String,
+    net_type: Option<String>,
+    txid: String,
+    state: String,
+    created_at: String,
+    done_at: String,
+    amount: String,
+    fee: String,
+    krw_amount: String,
+    transaction_type: String
+}
+
+impl WithdrawInfoDerivedSource {
+    pub fn r#type(&self) -> String { self.r#type.clone() }
+    pub fn uuid(&self) -> String { self.uuid.clone() }
+    pub fn currency(&self) -> String {self.currency.clone()}
+    pub fn net_type(&self) -> Option<String> {self.net_type.clone()}
+    pub fn txid(&self) -> String { self.txid.clone() }
+    pub fn state(&self) -> String { self.state.clone() }
+    pub fn created_at(&self) -> chrono::NaiveDateTime {chrono::NaiveDateTime::parse_from_str(&self.created_at, "%Y-%m-%dT%H:%M:%S%z").unwrap()}
+    pub fn done_at(&self) -> Option<chrono::NaiveDateTime> {chrono::NaiveDateTime::parse_from_str(&self.done_at, "%Y-%m-%dT%H:%M:%S%z").ok()}
+    pub fn amount(&self) -> f64 { self.amount.parse().unwrap() }
+    pub fn fee(&self) -> f64 { self.fee.parse().unwrap() }
+    pub fn krw_amount(&self) -> f64 { self.krw_amount.parse().unwrap() }
+    pub fn transaction_type(&self) -> String { self.transaction_type.clone() }
+}
+
+/// Deserialized WithdrawInfo data
 #[derive(Debug)]
 pub struct WithdrawInfo {
     pub r#type: String,
@@ -17,6 +66,7 @@ pub struct WithdrawInfo {
     pub transaction_type: String,
 }
 
+/// Raw withdraw info from serialized data
 #[derive(Deserialize)]
 pub struct WithdrawInfoSource {
     r#type: String,
@@ -46,7 +96,7 @@ impl WithdrawInfoSource {
     pub fn transaction_type(&self) -> String { self.transaction_type.clone() }
 }
 
-
+/// Raw MemberLevel of WithdrawChanceSource from serialized data
 #[derive(Deserialize, Debug)]
 pub struct MemberLevel {
     pub security_level: i32,
@@ -59,6 +109,7 @@ pub struct MemberLevel {
     pub wallet_locked: bool,
 }
 
+/// Deserialized WithdrawCurrency of WithdrawChance data
 #[derive(Debug)]
 pub struct WithdrawCurrency {
     pub code: String,
@@ -86,6 +137,7 @@ impl WithdrawCurrencySource {
     pub fn wallet_support(&self) -> Vec<String> { self.wallet_support.clone() }
 }
 
+/// Deserialized WithdrawLimit of WithdrawChanceSource data
 #[derive(Debug)]
 pub struct WithdrawLimit {
     pub currency: String,
@@ -122,6 +174,7 @@ impl WithdrawLimitSource {
     pub fn can_withdraw(&self) -> bool { self.can_withdraw }
 }
 
+/// Deserialized WithdrawChance of WithdrawChanceSource data
 #[derive(Debug)]
 pub struct WithdrawChance {
     pub member_level: MemberLevel,
@@ -138,3 +191,4 @@ pub struct WithdrawChanceSource {
     pub account: AccountsInfoSource,
     pub withdraw_limit: WithdrawLimitSource
 }
+

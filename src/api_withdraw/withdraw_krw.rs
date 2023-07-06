@@ -1,25 +1,29 @@
-use reqwest::header::{ACCEPT, AUTHORIZATION};
+use reqwest::header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE};
 use reqwest::{Url, Response};
 
 use crate::request::RequestWithQuery;
-use crate::response::{WithdrawInfo, WithdrawInfoSource};
+use crate::response::WithdrawInfoDerivedSource;
 
 use super::{
-    super::constant::{URL_WITHDRAW, URL_SERVER},
-    super::response::{
-        ResponseError,
-        ResponseErrorBody,
-        ResponseErrorState,
-        ResponseErrorSource
+    TwoFactorType,
+    super::{
+        constant::{URL_WITHDRAWS_KRW, URL_SERVER},
+        response::{
+            WithdrawInfoDerived,
+            ResponseError,
+            ResponseErrorBody,
+            ResponseErrorState,
+            ResponseErrorSource
+        }
     }
 };
 
-impl RequestWithQuery for WithdrawInfo {}
-impl WithdrawInfo {
-    pub async fn get_withdraw_info(currency: Option<&str>, uuid: Option<&str>, txid: Option<&str>) -> Result<Self, ResponseError> {
-        let res = Self::get_request(currency, uuid, txid).await?;
-        let mut res_serialized = res.text().await.unwrap();
-
+impl RequestWithQuery for WithdrawInfoDerived {}
+impl WithdrawInfoDerived {
+    pub async fn withdraw_krw(amount: f64, two_factor_type: TwoFactorType) -> Result<Self, ResponseError> {
+        let res = Self::request_withdraw_krw(amount, two_factor_type).await?;
+        let res_serialized = res.text().await.unwrap();
+        
         if res_serialized.contains("error") {
             return Err(serde_json::from_str(&res_serialized)
                 .map(|e: ResponseErrorSource| {
@@ -32,11 +36,9 @@ impl WithdrawInfo {
                     }
                 }).ok().unwrap())
         }
-        
-        res_serialized = res_serialized.replace("null", "\"null\"");
 
         serde_json::from_str(&res_serialized)
-            .map(|x: WithdrawInfoSource| {
+            .map(|x: WithdrawInfoDerivedSource| {
                 Self {
                     r#type: x.r#type(),
                     uuid: x.uuid(),
@@ -48,6 +50,7 @@ impl WithdrawInfo {
                     done_at: x.done_at(),
                     amount: x.amount(),
                     fee: x.fee(),
+                    krw_amount: x.krw_amount(),
                     transaction_type: x.transaction_type(),
                 }
             })
@@ -62,26 +65,35 @@ impl WithdrawInfo {
             })
     }
 
-    async fn get_request(currency: Option<&str>, uuid: Option<&str>, txid: Option<&str>) -> Result<Response, ResponseError> {
-        let mut url = Url::parse(&format!("{URL_SERVER}{URL_WITHDRAW}")).unwrap();
+    async fn request_withdraw_krw(amount: f64, two_factor_type: TwoFactorType) -> Result<Response, ResponseError> {
+        let mut url = Url::parse(&format!("{URL_SERVER}{URL_WITHDRAWS_KRW}")).unwrap();
+        
+        // url.query_pairs_mut()
+        //     .append_pair("market", market_id)
+        //     .append_pair("side", &side.to_string())
+        //     .append_pair("ord_type", &ord_type.to_string());
+            
+        // if price.is_some() {
+        //     let price = format!("{:.8}", price.unwrap());
+        //     url.query_pairs_mut().append_pair("price", price.as_str());
+        // }
+        
+        // if volume.is_some() {
+        //     let volume = format!("{:.8}", volume.unwrap()); 
+        //     url.query_pairs_mut().append_pair("volume", volume.as_str());
+        // }
 
-        if currency.is_some() {
-            url.query_pairs_mut().append_pair("currency", currency.unwrap());
-        }
-
-        if uuid.is_some() {
-            url.query_pairs_mut().append_pair("uuid", uuid.unwrap());
-        }
-
-        if txid.is_some() {
-            url.query_pairs_mut().append_pair("txid", txid.unwrap());
-        }
+        // if identifier.is_some() {
+        //     url.query_pairs_mut().append_pair("identifier", identifier.unwrap());
+        // }
 
         let token_string = Self::set_token_with_query(url.as_str())?;
-
+        
         reqwest::Client::new()
-            .get(url.as_str())
+            .post(url.as_str())
+            // .json(&asdf)
             .header(ACCEPT, "application/json")
+            .header(CONTENT_TYPE, "application/json")
             .header(AUTHORIZATION, &token_string)
             .send()
             .await
