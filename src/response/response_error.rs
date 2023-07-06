@@ -25,7 +25,7 @@ pub enum ResponseErrorState {
     NonceUsed,
     NoAuthorizationIp,
     OutOfScope,
-    WithdrawAddressNotRegisterd,
+    WithdrawAddressNotRegisterd, // "등록된 출금 주소가 아닙니다."
     NotSupportedOrdType, //"현재 해당 마켓에서 지원하지 않는 주문입니다. 주문 조건을 다시 확인해주시기 바랍니다."
     ServerError,
     UnexpectedError
@@ -55,7 +55,7 @@ impl From<&str> for ResponseErrorState {
             "nonce_used" => ResponseErrorState::NonceUsed,
             "no_authorization_i_p" => ResponseErrorState::NoAuthorizationIp,
             "out_of_scope" => ResponseErrorState::OutOfScope,
-            "withdraw_address_not_registerd" => ResponseErrorState::WithdrawAddressNotRegisterd,
+            "withdraw_address_not_registered" => ResponseErrorState::WithdrawAddressNotRegisterd,
             "order_not_found" => ResponseErrorState::OrderNotFound,
             "not_supported_ord_type" => ResponseErrorState::NotSupportedOrdType, 
             "server_error" => ResponseErrorState::ServerError,
