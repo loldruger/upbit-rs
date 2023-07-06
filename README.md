@@ -35,14 +35,14 @@ let withdraw_chance = api_withdraw::get_withdraw_chance("KRW", None).await;
 
 // api_quotation
 let order_book_info = api_quotation::get_orderbook_info("KRW-ETH").await;
-let ticker_snapshot = api_quotation::request("KRW-ETH").await;
-let recent_trade_list = api_quotation::request("KRW-ETH", None, 3, "0".to_string(), None).await;
-let market_state = api_quotation::request(true).await;
+let ticker_snapshot = api_quotation::get_ticker_snapshot("KRW-ETH").await;
+let recent_trade_list = api_quotation::list_trade_recent("KRW-ETH", None, 3, "0".to_string(), None).await;
+let market_state = api_quotation::get_market_state(true).await;
 
-let chart_of_minute = api_quotation::request_candle("KRW-ETH", None, 50, CandleMinute::Min10).await;
-let chart_of_day = api_quotation::request_candle("KRW-ETH", 10, None, None).await;
-let chart_of_week = api_quotation::request_candle("KRW-ETH", 10, None).await;
-let chart_of_month = api_quotation::request_candle("KRW-ETH", 10, None).await;
+let chart_of_minute = api_quotation::get_candle_minute("KRW-ETH", None, 50, CandleMinute::Min10).await;
+let chart_of_day = api_quotation::get_candle_day("KRW-ETH", 10, None, None).await;
+let chart_of_week = api_quotation::get_candle_week("KRW-ETH", 10, None).await;
+let chart_of_month = api_quotation::get_candle_month("KRW-ETH", 10, None).await;
 
 ```
 
