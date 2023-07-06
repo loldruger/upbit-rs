@@ -5,7 +5,7 @@ use crate::request::RequestWithQuery;
 use crate::response::{WithdrawInfo, WithdrawInfoSource};
 
 use super::{
-    super::constant::{URL_ORDER_STATUS, URL_SERVER},
+    super::constant::{URL_WITHDRAW, URL_SERVER},
     super::response::{
         ResponseError,
         ResponseErrorBody,
@@ -17,7 +17,7 @@ use super::{
 impl WithdrawInfo {
     pub async fn get_withdraw_info(currency: Option<&str>, uuid: Option<&str>, txid: Option<&str>) -> Result<Self, ResponseError> {
         let res = Self::get_request(currency, uuid, txid).await?;
-        let res_serialized = res.text().await.unwrap();
+        let mut res_serialized = res.text().await.unwrap();
 
         if res_serialized.contains("error") {
             return Err(serde_json::from_str(&res_serialized)
@@ -32,6 +32,8 @@ impl WithdrawInfo {
                 }).ok().unwrap())
         }
         
+        res_serialized = res_serialized.replace("null", "\"null\"");
+
         serde_json::from_str(&res_serialized)
             .map(|x: WithdrawInfoSource| {
                 Self {
@@ -60,7 +62,7 @@ impl WithdrawInfo {
     }
 
     async fn get_request(currency: Option<&str>, uuid: Option<&str>, txid: Option<&str>) -> Result<Response, ResponseError> {
-        let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDER_STATUS}")).unwrap();
+        let mut url = Url::parse(&format!("{URL_SERVER}{URL_WITHDRAW}")).unwrap();
 
         if currency.is_some() {
             url.query_pairs_mut().append_pair("currency", currency.unwrap());

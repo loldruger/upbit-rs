@@ -11,6 +11,7 @@ pub const URL_TICKER: &str = "/v1/ticker";
 pub const URL_TRADES_TICKS: &str = "/v1/trades/ticks";
 pub const URL_MARKET_STATE: &str = "/v1/market/all";
 
+pub const URL_WITHDRAW: &str = "/v1/withdraw";
 pub const URL_WITHDRAWS: &str = "/v1/withdraws";
 
 // pub const URL_CANDLE_MINUTE: &str = "/v1/candles/minutes/";

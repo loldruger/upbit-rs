@@ -19,6 +19,7 @@ use upbit::*;
 
 // api_exchange
 let account_info = api_exchange::get_account_info().await;
+
 let order_chance = api_exchange::get_order_chance("KRW-ETH").await;
 let order_status = api_exchange::get_order_status(None, None).await;
 let order_status_list = api_exchange::get_order_status_list().await;
@@ -28,6 +29,7 @@ let order_info = api_exchange::sell_by_market_price("KRW-ETH", 1.0, "cdd92199-28
 let order_info = api_exchange::cancel_order("cdd92199-2897-4e14-9448-f923320408ad").await;
 
 // api_withdraw
+let withdraw_info = api_withdraw::get_withdraw_info(None, Some("cdd92199-2897-4e14-9448-f923320408ad"), None).await;
 let list_withdraw_info = api_withdraw::list_withdraw_info().await;
 
 // api_quotation
