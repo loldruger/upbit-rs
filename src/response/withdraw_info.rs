@@ -127,6 +127,7 @@ pub struct WithdrawChance {
     pub withdraw_limit: WithdrawLimit
 }
 
+/// Raw withdraw chance info from serialized data
 #[derive(Deserialize)]
 pub struct WithdrawChanceSource {
     pub member_level: MemberLevel,
