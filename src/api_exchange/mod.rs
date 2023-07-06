@@ -270,6 +270,8 @@ pub async fn get_account_info() -> Result<Vec<AccountsInfo>, ResponseError> {
 }
 
 /// 마켓별 주문 가능 정보를 확인한다. (check specific market status.)
+/// 
+/// # Example
 /// ```
 /// let order_chance = api_exchange::get_order_chance("KRW-ETH").await;
 /// ```
@@ -363,6 +365,7 @@ pub async fn get_order_chance(market_id: &str) -> Result<OrderChance, ResponseEr
 
 /// 주문 UUID 를 통해 개별 주문건을 조회한다. (inquire each order status via order UUID.)
 /// 
+/// # Example
 /// ```
 /// let order_status = api_exchange::get_order_status("9ca023a5-851b-4fec-9f0a-48cd83c2eaae", None).await;
 /// ```
@@ -432,6 +435,7 @@ pub async fn get_order_status(uuid: Option<&str>, identifier: Option<&str>) -> R
 
 /// 주문 리스트를 조회한다. (inquire every order status.)
 /// 
+/// # Example
 /// ```
 /// let order_status = api_exchange::get_order_status_list().await;
 /// ```

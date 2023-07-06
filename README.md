@@ -21,10 +21,10 @@ use upbit::*;
 let account_info = api_exchange::get_account_info().await;
 
 let order_chance = api_exchange::get_order_chance("KRW-ETH").await;
-let order_status = api_exchange::get_order_status(None, None).await;
+let order_status = api_exchange::get_order_status(Some("9ca023a5-851b-4fec-9f0a-48cd83c2eaae"), None).await;
 let order_status_list = api_exchange::get_order_status_list().await;
 
-let order_info = api_exchange::order_by_price("KRW-ETH", OrderSide::BID, 5000.0, 1_435_085.0, OrderType::LIMIT, None).await;
+let order_info = api_exchange::order_by_price("KRW-ETH", OrderSide::Bid, 5000.0, 1_435_085.0, OrderType::Limit, None).await;
 let order_info = api_exchange::sell_by_market_price("KRW-ETH", 1.0, "cdd92199-2897-4e14-9448-f923320408ad").await;
 let order_info = api_exchange::cancel_order("cdd92199-2897-4e14-9448-f923320408ad").await;
 
