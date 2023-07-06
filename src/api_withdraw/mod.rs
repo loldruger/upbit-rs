@@ -1,4 +1,5 @@
 mod inquiry_withdraw_list;
+mod inquiry_withdraw;
 
 use crate::constant::OrderBy;
 use super::response::{WithdrawInfo, ResponseError};
@@ -115,3 +116,6 @@ pub async fn list_withdraw_info(
     WithdrawInfo::inquiry_withdraw_list(currency, state, uuids, txids, limit, page, order_by).await
 }
 
+pub async fn get_withdraw_info(currency: Option<&str>, uuid: Option<&str>, txid: Option<&str>) -> Result<WithdrawInfo, ResponseError> {
+    WithdrawInfo::get_withdraw_info(currency, uuid, txid).await
+}

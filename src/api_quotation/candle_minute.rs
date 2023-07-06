@@ -9,7 +9,6 @@ use reqwest::{Url, Response};
 use reqwest::header::ACCEPT;
 use serde::Deserialize;
 
-#[derive(Debug)]
 pub struct CandleChartMinute {
     pub market: String,
     pub candle_date_time_utc: chrono::NaiveDateTime,

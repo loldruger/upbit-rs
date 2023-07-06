@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub enum ResponseErrorState {
     InternalNeitherParameterSpecified, //either parameter uuid or identifier must be specified.
     InternalMoreParameterSpecified, //only one parameter of uuid and identifier must be specified.
@@ -16,7 +16,8 @@ pub enum ResponseErrorState {
     InvalidAccessKey,
     InvalideVolumeBid, //"주문수량 단위를 잘못 입력하셨습니다. 확인 후 시도해주세요."
     InvalidPriceBid, //"주문가격 단위를 잘못 입력하셨습니다. 확인 후 시도해주세요."
-    OrderNotFound,
+    InvalidParameter, // "잘못된 파라미터"
+    OrderNotFound, // "주문을 찾지 못했습니다."
     UnderMinTotalAsk, //"최소주문금액 이상으로 주문해주세요"
     UnderMinTotalBid, //"최소주문금액 이상으로 주문해주세요"
     InsufficientFundsAsk,
@@ -43,6 +44,7 @@ impl From<&str> for ResponseErrorState {
             "invalid_access_key" => ResponseErrorState::InvalidAccessKey,
             "invalid_volume_bid" => ResponseErrorState::InvalideVolumeBid,
             "invalid_price_bid" => ResponseErrorState::InvalidPriceBid,
+            "invalid_parameter" => ResponseErrorState::InvalidParameter,
             "under_min_total_ask" => ResponseErrorState::UnderMinTotalAsk,
             "under_min_total_bid" => ResponseErrorState::UnderMinTotalBid,
             "insufficient_funds_ask" => ResponseErrorState::InsufficientFundsAsk,
@@ -61,18 +63,18 @@ impl From<&str> for ResponseErrorState {
     }
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct ResponseError {
     pub state: ResponseErrorState,
     pub error: ResponseErrorBody
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct ResponseErrorSource {
     pub error: ResponseErrorBody
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct ResponseErrorBody {
     pub name: String,
     pub message: String,
