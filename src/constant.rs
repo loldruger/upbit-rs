@@ -13,6 +13,7 @@ pub const URL_MARKET_STATE: &str = "/v1/market/all";
 
 pub const URL_WITHDRAW: &str = "/v1/withdraw";
 pub const URL_WITHDRAWS: &str = "/v1/withdraws";
+pub const URL_WITHDRAW_CHANCE: &str = "/v1/withdraws/chance";
 
 // pub const URL_CANDLE_MINUTE: &str = "/v1/candles/minutes/";
 // pub const URL_CANDLE_DAY: &str = "/v1/candles/days";

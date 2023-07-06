@@ -33,7 +33,7 @@ pub trait RequestWithQuery {
         let access_key = envmnt::get_or_panic("ACCESS_KEY");
         let secret_key = envmnt::get_or_panic("SECRET_KEY");
         let url = Url::parse(url).ok().unwrap();
-        let url_parsed = url.query().unwrap();
+        let url_parsed = url.query().unwrap_or("");
 
         let mut hasher = Sha512::new();
         hasher.update(url_parsed.as_bytes());

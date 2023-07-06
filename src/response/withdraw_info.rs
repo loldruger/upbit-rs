@@ -46,25 +46,28 @@ impl WithdrawInfoSource {
     pub fn transaction_type(&self) -> String { self.transaction_type.clone() }
 }
 
-pub struct WithdrawMemberLevel {
-    security_level: i32,
-    fee_level: i32,
-    email_verified: bool,
-    identity_auth_verified: bool,
-    bank_account_verified: bool,
-    kakao_pay_auth_verified: bool,
-    locked: bool,
-    wallet_locked: bool,
+#[derive(Deserialize, Debug)]
+pub struct MemberLevel {
+    pub security_level: i32,
+    pub fee_level: i32,
+    pub email_verified: bool,
+    pub identity_auth_verified: bool,
+    pub bank_account_verified: bool,
+    pub kakao_pay_auth_verified: bool,
+    pub locked: bool,
+    pub wallet_locked: bool,
 }
 
+#[derive(Debug)]
 pub struct WithdrawCurrency {
-    code: String,
-    withdraw_fee: f64,
-    is_coin: bool,
-    wallet_state: String,
-    wallet_support: Vec<String>
+    pub code: String,
+    pub withdraw_fee: f64,
+    pub is_coin: bool,
+    pub wallet_state: String,
+    pub wallet_support: Vec<String>
 }
 
+#[derive(Deserialize)]
 pub struct WithdrawCurrencySource {
     code: String,
     withdraw_fee: String,
@@ -73,17 +76,27 @@ pub struct WithdrawCurrencySource {
     wallet_support: Vec<String>
 }
 
-pub struct WithdrawLimit {
-    currency: String,
-    minimum: Option<f64>,
-    onetime: Option<f64>,
-    daily: f64,
-    remaining_daily: f64,
-    remaining_daily_krw: f64,
-    fixed: Option<i32>,
-    can_withdraw: bool
+impl WithdrawCurrencySource {
+    pub fn code(&self) -> String { self.code.clone() }
+    pub fn withdraw_fee(&self) -> f64 { self.withdraw_fee.parse().unwrap() }
+    pub fn is_coin(&self) -> bool { self.is_coin }
+    pub fn wallet_state(&self) -> String { self.wallet_state.clone() }
+    pub fn wallet_support(&self) -> Vec<String> { self.wallet_support.clone() }
 }
 
+#[derive(Debug)]
+pub struct WithdrawLimit {
+    pub currency: String,
+    pub minimum: Option<f64>,
+    pub onetime: Option<f64>,
+    pub daily: f64,
+    pub remaining_daily: f64,
+    pub remaining_daily_krw: f64,
+    pub fixed: Option<i32>,
+    pub can_withdraw: bool
+}
+
+#[derive(Deserialize)]
 pub struct WithdrawLimitSource {
     currency: String,
     minimum: Option<String>,
@@ -95,16 +108,29 @@ pub struct WithdrawLimitSource {
     can_withdraw: bool
 }
 
-pub struct WithdrawChance {
-    member_level: WithdrawMemberLevel,
-    currency: WithdrawCurrency,
-    account: AccountsInfo,
-    withdraw_limit: WithdrawLimit
+impl WithdrawLimitSource {
+    pub fn currency(&self) -> String { self.currency.clone() }
+    pub fn minimum(&self) -> Option<f64> { self.minimum.clone().and_then(|x| Some(x.parse::<f64>().unwrap())) }
+    pub fn onetime(&self) -> Option<f64> { self.onetime.clone().and_then(|x| Some(x.parse::<f64>().unwrap())) }
+    pub fn daily(&self) -> f64 { self.daily.parse().unwrap() }
+    pub fn remaining_daily(&self) -> f64 { self.remaining_daily.parse().unwrap() }
+    pub fn remaining_daily_krw(&self) -> f64 { self.remaining_daily_krw.parse().unwrap() }
+    pub fn fixed(&self) -> Option<i32> { self.fixed }
+    pub fn can_withdraw(&self) -> bool { self.can_withdraw }
 }
 
+#[derive(Debug)]
+pub struct WithdrawChance {
+    pub member_level: MemberLevel,
+    pub currency: WithdrawCurrency,
+    pub account: AccountsInfo,
+    pub withdraw_limit: WithdrawLimit
+}
+
+#[derive(Deserialize)]
 pub struct WithdrawChanceSource {
-    member_level: WithdrawMemberLevel,
-    currency: WithdrawCurrencySource,
-    account: AccountsInfoSource,
-    withdraw_limit: WithdrawLimitSource
+    pub member_level: MemberLevel,
+    pub currency: WithdrawCurrencySource,
+    pub account: AccountsInfoSource,
+    pub withdraw_limit: WithdrawLimitSource
 }
