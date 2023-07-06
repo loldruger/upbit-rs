@@ -331,10 +331,10 @@ pub async fn get_account_info() -> Result<Vec<AccountsInfo>, ResponseError> {
 /// | market| 마켓에 대한 정보 | Object |
 /// | market.id| 마켓의 유일 키 | String |
 /// | market.name| 마켓 이름 | String |
-/// | market.order_types| 지원 주문 방식 (만료) |Array[[String]] |
-/// | ask_types| 매도 주문 지원 방식 |Array[[String]] |
-/// | bid_types| 매수 주문 지원 방식 |Array[[String]] |
-/// | market.order_sides| 지원 주문 종류 |Array[[String]] |
+/// | market.order_types| 지원 주문 방식 (만료) | Array[[String]] |
+/// | ask_types| 매도 주문 지원 방식 | Array[[String]] |
+/// | bid_types| 매수 주문 지원 방식 | Array[[String]] |
+/// | market.order_sides| 지원 주문 종류 | Array[[String]] |
 /// | market.bid| 매수 시 제약사항 | Object |
 /// | market.bid.currency| 화폐를 의미하는 영문 대문자 코드 | String |
 /// | market.bid.price_unit| 주문금액 단위 | String |

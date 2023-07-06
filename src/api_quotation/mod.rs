@@ -289,7 +289,7 @@ pub async fn list_trade_recent(market: &str, hhmmss: Option<&str>, count: i32, c
 /// let market_state = api_quotation::get_market_state(true).await;
 /// ```
 /// - parameters
-/// > `is_detailed` ex) 유의종목 필드과 같은 상세 정보 노출 여부(선택 파라미터) <br>
+/// > `is_detailed` 유의종목 필드과 같은 상세 정보 노출 여부(선택 파라미터) <br>
 /// # Response
 /// ```json
 /// [

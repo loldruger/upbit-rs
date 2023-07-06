@@ -1,4 +1,4 @@
-mod withdraw;
+mod withdraw_info;
 mod withdraw_list;
 mod withdraw_chance;
 
@@ -248,4 +248,8 @@ pub async fn get_withdraw_info(currency: Option<&str>, uuid: Option<&str>, txid:
 /// | withdraw_limit.can_withdraw | 출금 지원 여부 | Boolean |
 pub async fn get_withdraw_chance(currency: &str, net_type: Option<&str>) -> Result<WithdrawChance, ResponseError> {
     WithdrawChance::get_withdraw_chance(currency, net_type).await
+}
+
+pub async fn withdraw_coin() -> Result<WithdrawChance, ResponseError> {
+    todo!()
 }
