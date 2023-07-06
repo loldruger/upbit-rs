@@ -3,6 +3,7 @@ use serde::Deserialize;
 use super::{AccountsInfoSource, AccountsInfo};
 
 /// Deserialized derived WithdrawInfo data
+#[derive(Debug)]
 pub struct WithdrawInfoDerived {
     pub r#type: String,
     pub uuid: String,

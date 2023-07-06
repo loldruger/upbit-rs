@@ -18,7 +18,6 @@ use super::{
     }
 };
 
-impl RequestWithQuery for WithdrawInfoDerived {}
 impl WithdrawInfoDerived {
     pub async fn withdraw_krw(amount: f64, two_factor_type: TwoFactorType) -> Result<Self, ResponseError> {
         let res = Self::request_withdraw_krw(amount, two_factor_type).await?;

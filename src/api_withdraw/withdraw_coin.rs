@@ -3,12 +3,13 @@ use reqwest::{Url, Response};
 
 use crate::request::RequestWithQuery;
 
+use super::TransactionType;
 use super::{
     super::{
         constant::{URL_WITHDRAWS_COIN, URL_SERVER},
         response::{
-            WithdrawInfo,
-            WithdrawInfoSource,
+            WithdrawInfoDerived,
+            WithdrawInfoDerivedSource,
             ResponseError,
             ResponseErrorBody,
             ResponseErrorState,
@@ -17,9 +18,17 @@ use super::{
     }
 };
 
-impl WithdrawInfo {
-    pub async fn withdraw_coin() -> Result<Self, ResponseError> {
-        let res = Self::request_withdraw_coin().await?;
+impl RequestWithQuery for WithdrawInfoDerived {}
+impl WithdrawInfoDerived {
+    pub async fn withdraw_coin(
+        currency: &str,
+        net_type: &str,
+        amount: f64,
+        address: &str,
+        secondary_address: Option<&str>,
+        transaction_type: TransactionType
+    ) -> Result<Self, ResponseError> {
+        let res = Self::request_withdraw_coin(currency, net_type, amount, address, secondary_address, transaction_type).await?;
         let res_serialized = res.text().await.unwrap();
         
         if res_serialized.contains("error") {
@@ -36,7 +45,7 @@ impl WithdrawInfo {
         }
 
         serde_json::from_str(&res_serialized)
-            .map(|x: WithdrawInfoSource| {
+            .map(|x: WithdrawInfoDerivedSource| {
                 Self {
                     r#type: x.r#type(),
                     uuid: x.uuid(),
@@ -48,6 +57,7 @@ impl WithdrawInfo {
                     done_at: x.done_at(),
                     amount: x.amount(),
                     fee: x.fee(),
+                    krw_amount: x.krw_amount(),
                     transaction_type: x.transaction_type(),
                 }
             })
@@ -62,13 +72,21 @@ impl WithdrawInfo {
             })
     }
 
-    async fn request_withdraw_coin() -> Result<Response, ResponseError> {
+    async fn request_withdraw_coin(
+        currency: &str,
+        net_type: &str,
+        amount: f64,
+        address: &str,
+        secondary_address: Option<&str>,
+        transaction_type: TransactionType
+    ) -> Result<Response, ResponseError> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_WITHDRAWS_COIN}")).unwrap();
         
-        // url.query_pairs_mut()
-        //     .append_pair("market", market_id)
-        //     .append_pair("side", &side.to_string())
-        //     .append_pair("ord_type", &ord_type.to_string());
+        url.query_pairs_mut()
+            .append_pair("net_type", net_type)
+            .append_pair("currency", currency)
+            .append_pair("amount", &format!("{amount}"))
+            .append_pair("address", address);
             
         // if price.is_some() {
         //     let price = format!("{:.8}", price.unwrap());
@@ -84,13 +102,24 @@ impl WithdrawInfo {
         //     url.query_pairs_mut().append_pair("identifier", identifier.unwrap());
         // }
 
+        // let asdf: Option<String> = if let Some(x) = url.query() {
+        //     let mut y = x.replace('=', ":");
+        //     y = y.replace('&', ",");
+        //     y.insert(0, '{');
+        //     y.insert(y.len(), '}');
+
+        //     Some(y)
+        // } else {
+        //     None
+        // };
+
         let token_string = Self::set_token_with_query(url.as_str())?;
         
         reqwest::Client::new()
             .post(url.as_str())
             // .json(&asdf)
             .header(ACCEPT, "application/json")
-            .header(CONTENT_TYPE, "application/json")
+            // .header(CONTENT_TYPE, "application/json")
             .header(AUTHORIZATION, &token_string)
             .send()
             .await

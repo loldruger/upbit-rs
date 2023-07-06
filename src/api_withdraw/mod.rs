@@ -5,7 +5,7 @@ mod withdraw_coin;
 mod withdraw_krw;
 
 use crate::{constant::OrderBy, response::WithdrawChance};
-use super::response::{WithdrawInfo, ResponseError};
+use super::response::{WithdrawInfo, WithdrawInfoDerived, ResponseError};
 
 /// Kind of tow factor type
 pub enum TwoFactorType {
@@ -287,7 +287,7 @@ pub async fn get_withdraw_chance(currency: &str, net_type: Option<&str>) -> Resu
 /// 
 /// # Example
 /// ```rust
-/// let result = api_withdraw::withdraw_coin("BTC", "net_type", 1.0, "0x40268F1e99F76b658c6D52d89166EE289EfC225d", None, TransactionType::Default).await;
+/// let result = api_withdraw::withdraw_coin("BTC", "BTC", 0.05, "0x40268F1e99F76b658c6D52d89166EE289EfC225d", None, TransactionType::Default).await;
 /// ```
 /// - parameters
 /// > `currency` ex) KRW, BTC, ETH etc. <br>
@@ -330,11 +330,18 @@ pub async fn get_withdraw_chance(currency: &str, net_type: Option<&str>) -> Resu
 /// | transaction_type| 출금 유형 | String |
 pub async fn withdraw_coin(
     currency: &str,
-    net_type: Option<&str>,
+    net_type: &str,
     amount: f64,
     address: &str,
     secondary_address: Option<&str>,
     transaction_type: TransactionType
-) -> Result<WithdrawChance, ResponseError> {
-    todo!()
+) -> Result<WithdrawInfoDerived, ResponseError> {
+    WithdrawInfoDerived::withdraw_coin(
+        currency,
+        net_type,
+        amount,
+        address,
+        secondary_address,
+        transaction_type,
+    ).await
 }
