@@ -27,6 +27,7 @@ pub enum ResponseErrorState {
     OutOfScope,
     WithdrawAddressNotRegisterd,
     NotSupportedOrdType, //"현재 해당 마켓에서 지원하지 않는 주문입니다. 주문 조건을 다시 확인해주시기 바랍니다."
+    ServerError,
     UnexpectedError
 }
 
@@ -57,7 +58,7 @@ impl From<&str> for ResponseErrorState {
             "withdraw_address_not_registerd" => ResponseErrorState::WithdrawAddressNotRegisterd,
             "order_not_found" => ResponseErrorState::OrderNotFound,
             "not_supported_ord_type" => ResponseErrorState::NotSupportedOrdType, 
-            "server_error" => ResponseErrorState::UnexpectedError,
+            "server_error" => ResponseErrorState::ServerError,
             _ => ResponseErrorState::UnexpectedError
         }
     }
