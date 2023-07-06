@@ -33,10 +33,10 @@ pub trait RequestWithQuery {
         let access_key = envmnt::get_or_panic("ACCESS_KEY");
         let secret_key = envmnt::get_or_panic("SECRET_KEY");
         let url = Url::parse(url).ok().unwrap();
-        let url_parsed = url.query();
+        let url_parsed = url.query().unwrap();
 
         let mut hasher = Sha512::new();
-        hasher.update(url_parsed.unwrap_or("").as_bytes());
+        hasher.update(url_parsed.as_bytes());
 
         let hasher_hex = format!("{:x}", hasher.finalize());
         let alg = Algorithm::new_hmac(AlgorithmID::HS256, secret_key)

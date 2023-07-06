@@ -1,5 +1,5 @@
-mod inquiry_withdraw_list;
-mod inquiry_withdraw;
+mod withdraw_list;
+mod withdraw;
 
 use crate::constant::OrderBy;
 use super::response::{WithdrawInfo, ResponseError};
