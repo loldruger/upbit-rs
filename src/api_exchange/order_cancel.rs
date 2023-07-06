@@ -29,7 +29,7 @@ impl OrderInfo {
             });
         } else if uuid.is_some() && identifier.is_some() {
             return Err(ResponseError {
-                state: ResponseErrorState::InternalMoreParameterSpecified,
+                state: ResponseErrorState::InternalTooManyParameterSpecified,
                 error: ResponseErrorBody {
                     name: "internal_more_parameter_specified".to_owned(),
                     message: "only one parameter of uuid and identifier must be specified.".to_owned()
