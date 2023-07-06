@@ -5,14 +5,47 @@ pub mod order_chance;
 pub mod order_status;
 pub mod order_status_list;
 
-use super::constant::{OrderSide, OrderType};
 use super::response::{AccountsInfo, OrderInfo, OrderChance, OrderStatus, ResponseError};
+
+/// Side of order
+#[derive(Copy, Clone, PartialEq, Eq)]
+pub enum OrderSide {
+    Bid, // 매수
+    Ask, // 매도
+}
+
+impl ToString for OrderSide {
+    fn to_string(&self) -> String {
+        match self {
+            OrderSide::Bid => "bid".to_owned(),
+            OrderSide::Ask => "ask".to_owned(),
+        }
+    }
+}
+
+/// Type of order
+#[derive(Copy, Clone, PartialEq, Eq)]
+pub enum OrderType {
+    Limit,
+    Price,
+    Market,
+}
+
+impl ToString for OrderType {
+    fn to_string(&self) -> String {
+        match self {
+            OrderType::Limit => "limit".to_owned(),
+            OrderType::Price => "price".to_owned(),
+            OrderType::Market => "market".to_owned(),
+        }
+    }
+}
 
 /// 주문 요청을 한다. (Make an order(buy or sell) with desired price )
 /// 
 /// # Example
 /// ```
-/// let order_info = api_exchange::order_by_price("KRW-ETH", OrderSide::BID, 5000.0, 1_435_085.0, OrderType::LIMIT, None).await;
+/// let order_info = api_exchange::order_by_price("KRW-ETH", OrderSide::Bid, 5000.0, 1_435_085.0, OrderType::Limit, None).await;
 /// ```
 /// - parameters
 /// > `market` ex) "KRW-ETH" <br>
@@ -136,10 +169,10 @@ pub async fn order_by_price(
 pub async fn sell_by_market_price(market: &str, volume: f64, identifier: Option<&str>) -> Result<OrderInfo, ResponseError> {
     OrderInfo::order(
         market,
-        OrderSide::ASK,
+        OrderSide::Ask,
         Some(volume),
         None,
-        OrderType::MARKET,
+        OrderType::Market,
         identifier
     )
     .await

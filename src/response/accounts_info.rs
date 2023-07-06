@@ -1,6 +1,7 @@
 use crate::request::Request;
 use serde::Deserialize;
 
+/// Deserialized and parsed account info data
 #[derive(Deserialize, Debug)]
 pub struct AccountsInfo {
     pub currency: String,
@@ -13,6 +14,7 @@ pub struct AccountsInfo {
 
 impl Request for AccountsInfo {}
 
+/// Raw account info from serialized data
 #[derive(Deserialize, Debug)]
 pub struct AccountsInfoSource {
     currency: String,

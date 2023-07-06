@@ -1,7 +1,5 @@
 use serde::Deserialize;
 
-use crate::request::Request;
-
 #[derive(Debug)]
 pub struct WithdrawInfo {
     pub r#type: String,
@@ -16,8 +14,6 @@ pub struct WithdrawInfo {
     pub fee: f64,
     pub transaction_type: String,
 }
-
-impl Request for WithdrawInfo {}
 
 #[derive(Deserialize, Debug)]
 pub struct WithdrawInfoSource {

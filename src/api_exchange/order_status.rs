@@ -111,9 +111,8 @@ impl OrderStatus {
         }
 
         let token_string = Self::set_token_with_query(url.as_str())?;
-        let client = reqwest::Client::new();
-        
-        client
+
+        reqwest::Client::new()
             .get(url.as_str())
             .header(ACCEPT, "application/json")
             .header(AUTHORIZATION, &token_string)

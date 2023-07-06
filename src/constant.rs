@@ -62,34 +62,16 @@ impl From<UrlAssociates> for String {
 // pub const URL_CANDLE_WEEK: &str = "/v1/candles/weeks";
 // pub const URL_CANDLE_MONTH: &str = "/v1/candles/months";
 
-#[derive(Copy, Clone, PartialEq, Eq)]
-pub enum OrderSide {
-    BID,
-    ASK,
+pub enum OrderBy {
+    Asc,
+    Desc
 }
 
-impl From<OrderSide> for &str {
-    fn from(order_side: OrderSide) -> &'static str {
-        match order_side {
-            OrderSide::BID => "bid",
-            OrderSide::ASK => "ask",
-        }
-    }
-}
-
-#[derive(Copy, Clone, PartialEq, Eq)]
-pub enum OrderType {
-    LIMIT,
-    PRICE,
-    MARKET,
-}
-
-impl From<OrderType> for &str {
-    fn from(order_type: OrderType) -> &'static str {
-        match order_type {
-            OrderType::LIMIT => "limit",
-            OrderType::PRICE => "price",
-            OrderType::MARKET => "market",
+impl ToString for OrderBy {
+    fn to_string(&self) -> String {
+        match self {
+            OrderBy::Asc => "asc".to_owned(),
+            OrderBy::Desc => "desc".to_owned(),
         }
     }
 }

@@ -74,9 +74,8 @@ impl OrderInfo {
     async fn request() -> Result<Response, ResponseError> {
         let url = Url::parse(&format!("{URL_SERVER}{URL_ORDER_STATUS_LIST}")).unwrap();
         let token_string = Self::set_token()?;
-        let client = reqwest::Client::new();
-        
-        client
+
+        reqwest::Client::new()
             .get(url.as_str())
             .header(ACCEPT, "application/json")
             .header(AUTHORIZATION, &token_string)

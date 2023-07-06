@@ -91,9 +91,8 @@ impl OrderChance {
     async fn request(market_id: &str) -> Result<Response, ResponseError> {
         let url = format!("{URL_SERVER}{URL_ORDER_CHANCE}/?market={market_id}");
         let token_string = Self::set_token_with_query(&url)?;
-        let client = reqwest::Client::new();
-        
-        client
+
+        reqwest::Client::new()
             .get(url)
             .header(ACCEPT, "application/json")
             .header(AUTHORIZATION, &token_string)

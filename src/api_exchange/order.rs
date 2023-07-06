@@ -4,8 +4,10 @@ use reqwest::{Url, Response};
 use crate::request::RequestWithQuery;
 
 use super::{
+    OrderType,
+    OrderSide,
     super::{
-        constant::{URL_ORDER, URL_SERVER, OrderSide, OrderType},
+        constant::{URL_ORDER, URL_SERVER},
         response::{
             OrderInfo,
             OrderInfoSource,
@@ -71,8 +73,8 @@ impl OrderInfo {
         
         url.query_pairs_mut()
             .append_pair("market", market_id)
-            .append_pair("side", side.into())
-            .append_pair("ord_type", ord_type.into());
+            .append_pair("side", &side.to_string())
+            .append_pair("ord_type", &ord_type.to_string());
             
         if price.is_some() {
             let price = format!("{:.8}", price.unwrap());
