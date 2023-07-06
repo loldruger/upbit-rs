@@ -6,7 +6,7 @@ use reqwest::Url;
 use reqwest::header::ACCEPT;
 use serde::Deserialize;
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 pub struct TickerSnapshot {
     market: String,
     trade_date: String,

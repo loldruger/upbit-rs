@@ -6,7 +6,7 @@ use reqwest::{Url, Response};
 use reqwest::header::ACCEPT;
 use serde::Deserialize;
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 pub struct OrderbookInfo {
     market: String,
     timestamp: i64,
@@ -15,7 +15,7 @@ pub struct OrderbookInfo {
     orderbook_units: Vec<OrderBookUnit>
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 pub struct OrderBookUnit {
     ask_price: f64,
     bid_price: f64,

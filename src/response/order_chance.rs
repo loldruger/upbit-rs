@@ -3,7 +3,7 @@ use serde::Deserialize;
 use super::accounts_info::*;
 use super::accounts_info::AccountsInfoSource;
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 pub struct ObjectMarket {
     pub id: String,
     pub name: String,
@@ -15,14 +15,14 @@ pub struct ObjectMarket {
     pub state: String,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 pub struct ObjectAskBid {
     pub currency: String,
     pub price_unit: Option<String>,
     pub min_total: u32,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 pub struct OrderChance {
     pub bid_fee: f32,
     pub ask_fee: f32,
@@ -31,7 +31,7 @@ pub struct OrderChance {
     pub ask_account: AccountsInfo,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 pub struct ObjectMarketSource {
     pub id: String,
     pub name: String,
@@ -43,14 +43,14 @@ pub struct ObjectMarketSource {
     pub state: String,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 pub struct ObjectAskBidSource {
     pub currency: String,
     pub price_unit: Option<String>,
     pub min_total: String,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 pub struct OrderChanceSource {
     pub bid_fee: String,
     pub ask_fee: String,

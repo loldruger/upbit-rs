@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 pub enum ResponseErrorState {
     InternalNeitherParameterSpecified, //either parameter uuid or identifier must be specified.
     InternalMoreParameterSpecified, //only one parameter of uuid and identifier must be specified.
@@ -61,18 +61,18 @@ impl From<&str> for ResponseErrorState {
     }
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 pub struct ResponseError {
     pub state: ResponseErrorState,
     pub error: ResponseErrorBody
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 pub struct ResponseErrorSource {
     pub error: ResponseErrorBody
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 pub struct ResponseErrorBody {
     pub name: String,
     pub message: String,

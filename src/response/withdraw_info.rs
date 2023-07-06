@@ -15,7 +15,7 @@ pub struct WithdrawInfo {
     pub transaction_type: String,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 pub struct WithdrawInfoSource {
     r#type: String,
     uuid: String,

@@ -1,7 +1,7 @@
 use crate::request::{Request, RequestWithQuery};
 use serde::Deserialize;
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 pub struct OrderInfo {
     pub uuid: String,
     pub side: String,
@@ -23,7 +23,7 @@ pub struct OrderInfo {
 impl Request for OrderInfo {}
 impl RequestWithQuery for OrderInfo {}
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 pub struct OrderInfoSource {
     uuid: String,
     side: String,

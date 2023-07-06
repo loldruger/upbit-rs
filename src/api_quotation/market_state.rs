@@ -5,7 +5,7 @@ use serde::Deserialize;
 use super::super::constant::{URL_SERVER, URL_MARKET_STATE};
 use crate::response::{ResponseError, ResponseErrorBody, ResponseErrorState, ResponseErrorSource};
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 pub struct MarketState {
     market: String,
     korean_name: String,
@@ -13,7 +13,7 @@ pub struct MarketState {
     market_warning: Option<bool>,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 pub struct MarketStateSource {
     market: String,
     korean_name: String,

@@ -24,7 +24,7 @@ pub struct CandleChartMinute {
     pub unit: i64
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 pub struct CandleChartMinuteSource {
     market: String,
     candle_date_time_utc: String,

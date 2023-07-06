@@ -6,7 +6,7 @@ use reqwest::{Url, Response};
 use reqwest::header::ACCEPT;
 use serde::Deserialize;
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 pub struct TradeRecent {
     market: String,
     trade_date_utc: String,
