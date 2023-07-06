@@ -20,7 +20,7 @@ pub struct TradeRecent {
 }
 
 impl TradeRecent {
-    pub async fn get_trade_recent(market: &str, hhmmss: Option<&str>, count: i32, cursor: String, days_ago: Option<i32>) -> Result<Self, ResponseError> {
+    pub async fn list_trade_recent(market: &str, hhmmss: Option<&str>, count: i32, cursor: String, days_ago: Option<i32>) -> Result<Self, ResponseError> {
         let res = Self::request(market, hhmmss, count, cursor, days_ago).await?;
         let res_serialized = res.text().await.unwrap();
         

@@ -240,7 +240,7 @@ pub async fn get_ticker_snapshot(market: &str) ->Result<TickerSnapshot, Response
 /// 
 /// # Example
 /// ```rust
-/// let recent_trade_list = api_quotation::get_trade_recent("KRW-ETH").await;
+/// let recent_trade_list = api_quotation::list_trade_recent("KRW-ETH").await;
 /// ```
 /// - parameters
 /// > `market` ex) KRW-ETH<br>
@@ -278,8 +278,8 @@ pub async fn get_ticker_snapshot(market: &str) ->Result<TickerSnapshot, Response
 /// | sequential_id | 체결 번호(Unique) | Long |
 /// 
 /// * sequential_id 필드는 체결의 유일성 판단을 위한 근거로 쓰일 수 있습니다. 하지만 체결의 순서를 보장하지는 못합니다.
-pub async fn get_trade_recent(market: &str, hhmmss: Option<&str>, count: i32, cursor: String, days_ago: Option<i32>) -> Result<TradeRecent, ResponseError>{
-    TradeRecent::get_trade_recent(market, hhmmss, count, cursor, days_ago).await
+pub async fn list_trade_recent(market: &str, hhmmss: Option<&str>, count: i32, cursor: String, days_ago: Option<i32>) -> Result<TradeRecent, ResponseError>{
+    TradeRecent::list_trade_recent(market, hhmmss, count, cursor, days_ago).await
 }
 
 /// 업비트에서 거래 가능한 마켓 목록 (List of markets available on Upbit)

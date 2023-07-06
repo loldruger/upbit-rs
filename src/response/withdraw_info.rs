@@ -46,6 +46,7 @@ impl WithdrawInfoSource {
     pub fn transaction_type(&self) -> String { self.transaction_type.clone() }
 }
 
+
 #[derive(Deserialize, Debug)]
 pub struct MemberLevel {
     pub security_level: i32,
@@ -67,6 +68,7 @@ pub struct WithdrawCurrency {
     pub wallet_support: Vec<String>
 }
 
+/// Raw withdraw currency from serialized data
 #[derive(Deserialize)]
 pub struct WithdrawCurrencySource {
     code: String,
@@ -96,6 +98,7 @@ pub struct WithdrawLimit {
     pub can_withdraw: bool
 }
 
+/// Raw withdraw limit from serialized data
 #[derive(Deserialize)]
 pub struct WithdrawLimitSource {
     currency: String,
