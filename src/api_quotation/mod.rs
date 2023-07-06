@@ -68,6 +68,8 @@ impl From<UrlAssociates> for String {
 /// ```rust
 /// let order_book_info = api_quotation::get_order_book_info("KRW-ETH").await;
 /// ```
+/// - parameters
+/// > `market` ex) KRW-ETH<br>
 /// # Response
 ///  * orderbook_unit 리스트에는 15호가 정보가 들어가며 차례대로 1호가, 2호가 ... 15호가의 정보를 담고 있습니다.
 ///  * orderbook_unit list contains information of 15 quotes of bid/ask price, in order, 1st, 2nd .. 15th quote 
@@ -165,6 +167,8 @@ pub async fn get_order_book_info(market: &str) -> Result<OrderbookInfo, Response
 /// ```rust
 /// let ticker_snapshot = api_quotation::get_ticker_snapshot("KRW-ETH").await;
 /// ```
+/// - parameters
+/// > `market` ex) KRW-ETH<br>
 /// # Response
 /// * 아래 응답의 `change`, `change_price`, `change_rate`, `signed_change_price`, `signed_change_rate` 필드들은 전일종가 대비 값입니다.
 /// * The fields `change`, `change_price`, `change_rate`, `signed_change_price`, and `signed_change_rate` in the response below are values compared to the previous day’s closing price.
