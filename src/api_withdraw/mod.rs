@@ -1,8 +1,6 @@
 mod inquiry_withdraw;
-use inquiry_withdraw::*;
 
 use crate::constant::OrderBy;
-
 use super::response::{WithdrawInfo, ResponseError};
 
 /// list of withdraw state
@@ -36,10 +34,10 @@ impl ToString for WithdrawState {
 /// use api_withdraw::WithdrawState;
 /// 
 /// // it returns withdraw list of currency "KRW", state "done" ordered by asc
-/// let list_withdraw_info = api::list_withdraw_info("KRW", WithdrawState::Done, None, None, 10, 0, OrderBy::Asc).await;
+/// let list_withdraw_info = api_withdraw::list_withdraw_info("KRW", WithdrawState::Done, None, None, 10, 0, OrderBy::Asc).await;
 /// 
 /// // it returns withdraw list of currency "BTC", state "done", txid "98c15999..." ordered by asc
-/// let list_withdraw_info = api::list_withdraw_info(
+/// let list_withdraw_info = api_withdraw::list_withdraw_info(
 ///     "BTC",
 ///     "done",
 ///     None,

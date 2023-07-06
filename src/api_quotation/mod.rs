@@ -241,7 +241,7 @@ pub async fn get_trade_recent(market: &str, hhmmss: Option<&str>, count: i32, cu
 /// let market_state = api_quotation::get_market_state(true).await;
 /// ```
 /// - parameters
-/// > `is_warning_shown` ex) 유의종목 필드과 같은 상세 정보 노출 여부(선택 파라미터) <br>
+/// > `is_detailed` ex) 유의종목 필드과 같은 상세 정보 노출 여부(선택 파라미터) <br>
 /// # Response
 /// ```json
 /// [
@@ -259,8 +259,8 @@ pub async fn get_trade_recent(market: &str, hhmmss: Option<&str>, count: i32, cu
 /// | korean_name |	거래 대상 디지털 자산 한글명 | String |
 /// | english_name | 거래 대상 디지털 자산 영문명 | String |
 /// | market_warning | 유의 종목 여부 <br> NONE: (해당 사항 없음), CAUTION(투자유의) | String |
-pub async fn get_market_state(is_warning_shown: bool) -> Result<Vec<MarketState>, ResponseError> {
-    MarketState::get_market_state(is_warning_shown).await
+pub async fn get_market_state(is_detailed: bool) -> Result<Vec<MarketState>, ResponseError> {
+    MarketState::get_market_state(is_detailed).await
 }
 
 /// 분봉 캔들 데이터를 요청한다. (inquire minute-unit candle data.)

@@ -22,8 +22,8 @@ pub struct MarketStateSource {
 }
 
 impl MarketState {
-    pub async fn get_market_state(is_warning_shown: bool) -> Result<Vec<Self>, ResponseError>  {
-        let res = Self::request(is_warning_shown).await?;
+    pub async fn get_market_state(is_detailed: bool) -> Result<Vec<Self>, ResponseError>  {
+        let res = Self::request(is_detailed).await?;
         let res_serialized = res.text().await.unwrap();
         
         if res_serialized.contains("error") {
@@ -64,9 +64,9 @@ impl MarketState {
             })
     }
 
-    async fn request(is_warning_shown: bool) -> Result<Response, ResponseError> {
+    async fn request(is_detailed: bool) -> Result<Response, ResponseError> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_MARKET_STATE}")).unwrap();
-        url.query_pairs_mut().append_pair("isDetails", is_warning_shown.to_string().as_str());
+        url.query_pairs_mut().append_pair("isDetails", is_detailed.to_string().as_str());
 
         reqwest::Client::new()
             .get(url.as_str())

@@ -3,7 +3,7 @@ use reqwest::{
     Response, 
     Url
 };
-use crate::request::{Request, RequestWithQuery};
+use crate::request::RequestWithQuery;
 
 use super::{
     super::constant::{
