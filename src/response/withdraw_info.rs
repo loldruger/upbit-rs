@@ -197,7 +197,7 @@ pub struct WithdrawChanceSource {
     pub withdraw_limit: WithdrawLimitSource
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct WithdrawCoinAddress {
     pub currency: String,
     pub net_type: String,
