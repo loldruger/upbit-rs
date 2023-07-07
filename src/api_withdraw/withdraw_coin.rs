@@ -1,12 +1,11 @@
-use reqwest::header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE};
+use reqwest::header::{ACCEPT, AUTHORIZATION};
 use reqwest::{Url, Response};
 
-use crate::request::RequestWithQuery;
-
-use super::TransactionType;
 use super::{
+    TransactionType,
     super::{
         constant::{URL_WITHDRAWS_COIN, URL_SERVER},
+        request::RequestWithQuery,
         response::{
             WithdrawInfoDerived,
             WithdrawInfoDerivedSource,
@@ -86,32 +85,12 @@ impl WithdrawInfoDerived {
             .append_pair("net_type", net_type)
             .append_pair("currency", currency)
             .append_pair("amount", &format!("{amount}"))
-            .append_pair("address", address);
+            .append_pair("address", address)
+            .append_pair("transaction_type", &transaction_type.to_string());
             
-        // if price.is_some() {
-        //     let price = format!("{:.8}", price.unwrap());
-        //     url.query_pairs_mut().append_pair("price", price.as_str());
-        // }
-        
-        // if volume.is_some() {
-        //     let volume = format!("{:.8}", volume.unwrap()); 
-        //     url.query_pairs_mut().append_pair("volume", volume.as_str());
-        // }
-
-        // if identifier.is_some() {
-        //     url.query_pairs_mut().append_pair("identifier", identifier.unwrap());
-        // }
-
-        // let asdf: Option<String> = if let Some(x) = url.query() {
-        //     let mut y = x.replace('=', ":");
-        //     y = y.replace('&', ",");
-        //     y.insert(0, '{');
-        //     y.insert(y.len(), '}');
-
-        //     Some(y)
-        // } else {
-        //     None
-        // };
+        if secondary_address.is_some() {
+            url.query_pairs_mut().append_pair("secondary_address", secondary_address.unwrap());
+        }
 
         let token_string = Self::set_token_with_query(url.as_str())?;
         

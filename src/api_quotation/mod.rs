@@ -320,19 +320,19 @@ pub async fn get_market_state(is_detailed: bool) -> Result<Vec<MarketState>, Res
 /// - parameters
 /// > `market` ex) KRW-ETH<br>
 /// > `to` the time moment of the last candle (exclusive). if empty, latest candle will be retrived. <br>
-/// >> ISO8061 format (yyyy-MM-dd'T'HH:mm:ss'Z' or yyyy-MM-dd HH:mm:ss). <br>
-/// >> though it is commonly UTC time criteria, you can request KST time using like 2023-01-01T00:00:00+09:00 format. <br>
+///  >> *  ISO8061 format (yyyy-MM-dd'T'HH:mm:ss'Z' or yyyy-MM-dd HH:mm:ss). <br>
+///  >> *  though it is commonly UTC time criteria, you can request KST time using like 2023-01-01T00:00:00+09:00 format. <br>
 /// 
 /// > `count` the number of candle to request. maximum value: `200`<br>
 /// > `candle_minute` unit of minute
-/// >> `CandleMinute::Min1`<br>
-/// >> `CandleMinute::Min3`<br>
-/// >> `CandleMinute::Min5`<br>
-/// >> `CandleMinute::Min10`<br>
-/// >> `CandleMinute::Min15`<br>
-/// >> `CandleMinute::Min30`<br>
-/// >> `CandleMinute::Min60`<br>
-/// >> `CandleMinute::Min240`
+///  >> *  `CandleMinute::Min1`<br>
+///  >> *  `CandleMinute::Min3`<br>
+///  >> *  `CandleMinute::Min5`<br>
+///  >> *  `CandleMinute::Min10`<br>
+///  >> *  `CandleMinute::Min15`<br>
+///  >> *  `CandleMinute::Min30`<br>
+///  >> *  `CandleMinute::Min60`<br>
+///  >> *  `CandleMinute::Min240`
 /// # Response
 /// ```json
 /// [
@@ -378,8 +378,8 @@ pub async fn get_candle_minute(market: &str, to: Option<String>, count: i32, can
 /// > `market` ex) KRW-ETH<br>
 /// > `count` the number of candle to request. maximum value: `200`<br>
 /// > `last_candle_time` (optional) the time moment of the last candle (exclusive). if empty, latest candle will be retrived. <br>
-/// >> ISO8061 format (yyyy-MM-dd'T'HH:mm:ss'Z' or yyyy-MM-dd HH:mm:ss). <br>
-/// >> though it is commonly UTC time criteria, you can request KST time using like 2023-01-01T00:00:00+09:00 format. <br>
+/// >> * ISO8061 format (yyyy-MM-dd'T'HH:mm:ss'Z' or yyyy-MM-dd HH:mm:ss). <br>
+/// >> * though it is commonly UTC time criteria, you can request KST time using like 2023-01-01T00:00:00+09:00 format. <br>
 /// 
 /// > `price_unit` (optional)
 /// # Response
@@ -432,8 +432,8 @@ pub async fn get_candle_day(market: &str, count: i32, last_candle_time: Option<S
 /// > `market` ex) KRW-ETH<br>
 /// > `count` the number of candle to request. maximum value: `200`<br>
 /// > `last_candle_time` (optional) the time moment of the last candle (exclusive). if empty, latest candle will be retrived. <br>
-/// >> ISO8061 format (yyyy-MM-dd'T'HH:mm:ss'Z' or yyyy-MM-dd HH:mm:ss). <br>
-/// >> though it is commonly UTC time criteria, you can request KST time using like 2023-01-01T00:00:00+09:00 format. <br>
+///  >> *  ISO8061 format (yyyy-MM-dd'T'HH:mm:ss'Z' or yyyy-MM-dd HH:mm:ss). <br>
+///  >> *  though it is commonly UTC time criteria, you can request KST time using like 2023-01-01T00:00:00+09:00 format. <br>
 /// 
 /// # Response
 /// ```json
@@ -480,8 +480,8 @@ pub async fn get_candle_week(market: &str, count: i32, last_candle_time: Option<
 /// > `market` ex) KRW-ETH<br>
 /// > `count` the number of candle to request. maximum value: `200`<br>
 /// > `last_candle_time` (optional) the time moment of the last candle (exclusive). if empty, latest candle will be retrived. <br>
-/// >> ISO8061 format (yyyy-MM-dd'T'HH:mm:ss'Z' or yyyy-MM-dd HH:mm:ss). <br>
-/// >> though it is commonly UTC time criteria, you can request KST time using like 2023-01-01T00:00:00+09:00 format. <br>
+///  >> *  ISO8061 format (yyyy-MM-dd'T'HH:mm:ss'Z' or yyyy-MM-dd HH:mm:ss). <br>
+///  >> *  though it is commonly UTC time criteria, you can request KST time using like 2023-01-01T00:00:00+09:00 format. <br>
 /// 
 /// # Response
 /// ```json

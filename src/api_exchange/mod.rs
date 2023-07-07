@@ -50,15 +50,15 @@ impl ToString for OrderType {
 /// - parameters
 /// > `market` ex) "KRW-ETH" <br>
 /// > `side` 
-/// >> `OrderSide::BID`: 매수<br>
-/// >> `OrderSide::ASK`: 매도<br>
+///  >> *  `OrderSide::BID`: 매수<br>
+///  >> *  `OrderSide::ASK`: 매도<br>
 /// 
 /// > `price` price that how much you want to buy<br>
 /// > `price_desired` price that you want to bid at<br>
 /// > `ord_type` 
-/// >> `OrderType::LIMIT`: 지정가 주문<br>
-/// >> `OrderType::PRICE`: 시장가 주문(매수)<br>
-/// >> `OrderType::MARKET`: 시장가 주문(매도)<br>
+///  >> *  `OrderType::LIMIT`: 지정가 주문<br>
+///  >> *  `OrderType::PRICE`: 시장가 주문(매수)<br>
+///  >> *  `OrderType::MARKET`: 시장가 주문(매도)<br>
 /// 
 /// > `identifier` (optional) specific identifier you have tagged<br>
 /// # Response
