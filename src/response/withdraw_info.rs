@@ -1,5 +1,7 @@
 use serde::Deserialize;
 
+use crate::request::{Request, RequestWithQuery};
+
 use super::{AccountsInfoSource, AccountsInfo};
 
 /// Deserialized derived WithdrawInfo data
@@ -66,6 +68,8 @@ pub struct WithdrawInfo {
     pub fee: f64,
     pub transaction_type: String,
 }
+
+impl RequestWithQuery for WithdrawInfo {}
 
 /// Raw withdraw info from serialized data
 #[derive(Deserialize)]
@@ -193,3 +197,13 @@ pub struct WithdrawChanceSource {
     pub withdraw_limit: WithdrawLimitSource
 }
 
+#[derive(Deserialize)]
+pub struct WithdrawCoinAddress {
+    pub currency: String,
+    pub net_type: String,
+    pub network_name: String,
+    pub withdraw_address: String,
+    pub secondary_address: Option<String>
+}
+
+impl Request for WithdrawCoinAddress {}

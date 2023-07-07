@@ -3,8 +3,9 @@ mod withdraw_list;
 mod withdraw_chance;
 mod withdraw_coin;
 mod withdraw_krw;
+mod withdraw_address;
 
-use crate::{constant::OrderBy, response::WithdrawChance};
+use crate::{constant::OrderBy, response::{WithdrawChance, WithdrawCoinAddress}};
 use super::response::{WithdrawInfo, WithdrawInfoDerived, ResponseError};
 
 /// Kind of tow factor type
@@ -389,4 +390,8 @@ pub async fn withdraw_coin(
 /// | transaction_type| 출금 유형 | String |
 pub async fn withdraw_krw(amount: f64, two_factor_type: TwoFactorType) -> Result<WithdrawInfo, ResponseError> {
     WithdrawInfo::withdraw_krw(amount, two_factor_type).await
+}
+
+pub async fn get_withdraw_address() -> Result<WithdrawCoinAddress, ResponseError> {
+    WithdrawCoinAddress::get_withdraw_address().await
 }

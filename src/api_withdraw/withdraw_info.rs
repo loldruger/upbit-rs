@@ -14,7 +14,6 @@ use super::{
     }
 };
 
-impl RequestWithQuery for WithdrawInfo {}
 impl WithdrawInfo {
     pub async fn get_withdraw_info(currency: Option<&str>, uuid: Option<&str>, txid: Option<&str>) -> Result<Self, ResponseError> {
         let res = Self::get_request(currency, uuid, txid).await?;
