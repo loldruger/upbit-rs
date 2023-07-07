@@ -28,7 +28,7 @@ impl WithdrawInfoDerived {
         transaction_type: TransactionType
     ) -> Result<Self, ResponseError> {
         let res = Self::request_withdraw_coin(currency, net_type, amount, address, secondary_address, transaction_type).await?;
-        let mut res_serialized = res.text().await.unwrap();
+        let res_serialized = res.text().await.unwrap();
         
         if res_serialized.contains("error") {
             return Err(serde_json::from_str(&res_serialized)
@@ -42,8 +42,6 @@ impl WithdrawInfoDerived {
                     }
                 }).ok().unwrap())
         }
-
-        res_serialized = res_serialized.replace("null", "\"null\"");
 
         serde_json::from_str(&res_serialized)
             .map(|x: WithdrawInfoDerivedSource| {

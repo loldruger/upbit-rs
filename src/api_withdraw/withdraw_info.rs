@@ -17,7 +17,7 @@ use super::{
 impl WithdrawInfo {
     pub async fn get_withdraw_info(currency: Option<&str>, uuid: Option<&str>, txid: Option<&str>) -> Result<Self, ResponseError> {
         let res = Self::get_request(currency, uuid, txid).await?;
-        let mut res_serialized = res.text().await.unwrap();
+        let res_serialized = res.text().await.unwrap();
 
         if res_serialized.contains("error") {
             return Err(serde_json::from_str(&res_serialized)
@@ -31,8 +31,6 @@ impl WithdrawInfo {
                     }
                 }).ok().unwrap())
         }
-        
-        res_serialized = res_serialized.replace("null", "\"null\"");
 
         serde_json::from_str(&res_serialized)
             .map(|x: WithdrawInfoSource| {

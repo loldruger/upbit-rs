@@ -98,8 +98,6 @@ impl ToString for TwoFactorType {
 /// | amount | 출금 금액/수량 | NumberString
 /// | fee | 출금 수수료 | NumberString
 /// | transaction_type | 출금 유형<br> default : 일반출금<br>internal : 바로출금 | String
-///  
-///  * done_at field could be null depending on state
 pub async fn list_withdraw_info(
     currency: &str,
     state: WithdrawState,
@@ -154,8 +152,6 @@ pub async fn list_withdraw_info(
 /// | amount | 출금 금액/수량 | NumberString
 /// | fee | 출금 수수료 | NumberString
 /// | transaction_type | 출금 유형<br> default : 일반출금<br>internal : 바로출금 | String
-///  
-///  * done_at field could be null depending on state
 pub async fn get_withdraw_info(currency: Option<&str>, uuid: Option<&str>, txid: Option<&str>) -> Result<WithdrawInfo, ResponseError> {
     WithdrawInfo::get_withdraw_info(currency, uuid, txid).await
 }

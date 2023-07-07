@@ -32,7 +32,7 @@ impl WithdrawInfo {
         order_by: OrderBy
     ) -> Result<Vec<Self>, ResponseError> {
         let res = Self::request(currency, state, uuids, txids, limit, page, order_by).await?;
-        let mut res_serialized = res.text().await.unwrap();
+        let res_serialized = res.text().await.unwrap();
         
         if res_serialized.contains("error") {
             return Err(serde_json::from_str(&res_serialized)
@@ -46,8 +46,6 @@ impl WithdrawInfo {
                     }
                 }).ok().unwrap())
         }
-
-        res_serialized = res_serialized.replace("null", "\"null\"");
 
         serde_json::from_str(&res_serialized)
             .map(|x: Vec<WithdrawInfoSource>| {

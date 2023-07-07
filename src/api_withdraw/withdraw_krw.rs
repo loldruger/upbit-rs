@@ -20,7 +20,7 @@ use super::{
 impl WithdrawInfo {
     pub async fn withdraw_krw(amount: f64, two_factor_type: TwoFactorType) -> Result<Self, ResponseError> {
         let res = Self::request_withdraw_krw(amount, two_factor_type).await?;
-        let mut res_serialized = res.text().await.unwrap();
+        let res_serialized = res.text().await.unwrap();
         
         if res_serialized.contains("error") {
             return Err(serde_json::from_str(&res_serialized)
@@ -34,8 +34,6 @@ impl WithdrawInfo {
                     }
                 }).ok().unwrap())
         }
-
-        res_serialized = res_serialized.replace("null", "\"null\"");
 
         serde_json::from_str(&res_serialized)
             .map(|x: WithdrawInfoSource| {
