@@ -3,7 +3,7 @@ use reqwest::{
     Response, 
     Url
 };
-use crate::{request::RequestWithQuery, constant::WithdrawState};
+use crate::request::RequestWithQuery;
 
 use super::{
     super::constant::{
@@ -18,13 +18,13 @@ use super::{
         ResponseErrorBody,
         ResponseErrorState,
         ResponseErrorSource
-    },
+    }, DepositState,
 };
 
 impl WithdrawInfo {
     pub async fn inquiry_deposit_list(
         currency: &str,
-        state: WithdrawState,
+        state: DepositState,
         uuids: Option<&[&str]>,
         txids: Option<&[&str]>,
         limit: u32,
@@ -32,7 +32,7 @@ impl WithdrawInfo {
         order_by: OrderBy
     ) -> Result<Vec<Self>, ResponseError> {
         let res = Self::request_deposit(currency, state, uuids, txids, limit, page, order_by).await?;
-        let mut res_serialized = res.text().await.unwrap();
+        let res_serialized = res.text().await.unwrap();
         
         if res_serialized.contains("error") {
             return Err(serde_json::from_str(&res_serialized)
@@ -46,8 +46,6 @@ impl WithdrawInfo {
                     }
                 }).ok().unwrap())
         }
-
-        res_serialized = res_serialized.replace("null", "\"null\"");
 
         serde_json::from_str(&res_serialized)
             .map(|x: Vec<WithdrawInfoSource>| {
@@ -81,7 +79,7 @@ impl WithdrawInfo {
 
     async fn request_deposit(
         currency: &str,
-        state: WithdrawState,
+        state: DepositState,
         uuids: Option<&[&str]>,
         txids: Option<&[&str]>,
         limit: u32,
