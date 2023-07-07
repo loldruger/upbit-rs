@@ -2,21 +2,30 @@ use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
 pub enum ResponseErrorState {
-    InternalNeitherParameterSpecified, //either parameter uuid or identifier must be specified.
-    InternalTooManyParameterSpecified, //only one parameter of uuid and identifier must be specified.
+    /// either parameter uuid or identifier must be specified.
+    InternalNeitherParameterSpecified,
+    /// only one parameter of uuid and identifier must be specified.
+    InternalTooManyParameterSpecified, 
     InternalReqwestError,
     InternalHmacError,
     InternalTokenEncodeError,
     InternalJsonParseError,
     InvalidQueryPayload,
     InvalidAccessKey,
-    InvalideVolumeBid, //"주문수량 단위를 잘못 입력하셨습니다. 확인 후 시도해주세요."
-    InvalidPriceBid, //"주문가격 단위를 잘못 입력하셨습니다. 확인 후 시도해주세요."
-    InvalidParameter, // "잘못된 파라미터"
-    OrderNotFound, // "주문을 찾지 못했습니다."
-    UnderMinTotalAsk, //"최소주문금액 이상으로 주문해주세요"
-    UnderMinTotalBid, //"최소주문금액 이상으로 주문해주세요"
-    JwtVerificationError, //"Failed to verify Jwt token."
+    /// "주문수량 단위를 잘못 입력하셨습니다. 확인 후 시도해주세요."
+    InvalideVolumeBid,
+    /// "주문가격 단위를 잘못 입력하셨습니다. 확인 후 시도해주세요."
+    InvalidPriceBid,
+    /// "잘못된 파라미터"
+    InvalidParameter,
+    /// "주문을 찾지 못했습니다."
+    OrderNotFound,
+    /// "최소주문금액 이상으로 주문해주세요"
+    UnderMinTotalAsk,
+    /// "최소주문금액 이상으로 주문해주세요"
+    UnderMinTotalBid,
+    /// "Failed to verify Jwt token."
+    JwtVerificationError,
     CreateAskError,
     CreateBidError,
     InsufficientFundsAsk,
@@ -25,9 +34,15 @@ pub enum ResponseErrorState {
     NonceUsed,
     NoAuthorizationIp,
     OutOfScope,
-    WithdrawAddressNotRegisterd, // "등록된 출금 주소가 아닙니다."
-    NotSupportedOrdType, //"현재 해당 마켓에서 지원하지 않는 주문입니다. 주문 조건을 다시 확인해주시기 바랍니다."
+    /// "등록된 출금 주소가 아닙니다."
+    WithdrawAddressNotRegisterd, 
+    /// "출금 금액이 부족합니다."
+    WithdrawInsufficientBalance,
+    /// "현재 해당 마켓에서 지원하지 않는 주문입니다. 주문 조건을 다시 확인해주시기 바랍니다."
+    NotSupportedOrdType,
+    /// 서버 에러
     ServerError,
+    /// unhandled error
     UnexpectedError
 }
 
@@ -56,6 +71,7 @@ impl From<&str> for ResponseErrorState {
             "no_authorization_i_p" => ResponseErrorState::NoAuthorizationIp,
             "out_of_scope" => ResponseErrorState::OutOfScope,
             "withdraw_address_not_registered" => ResponseErrorState::WithdrawAddressNotRegisterd,
+            "withdraw_insufficient_balance" => ResponseErrorState::WithdrawInsufficientBalance,
             "order_not_found" => ResponseErrorState::OrderNotFound,
             "not_supported_ord_type" => ResponseErrorState::NotSupportedOrdType, 
             "server_error" => ResponseErrorState::ServerError,
