@@ -4,6 +4,8 @@ pub mod api_exchange;
 pub mod api_quotation;
 /// Module for withdrawal APIs
 pub mod api_withdraw;
+/// Module for deposit APIs
+pub mod api_deposit;
 /// Set of constants
 pub mod constant;
 /// Set of concrete request bodies
