@@ -5,7 +5,7 @@ mod withdraw_coin;
 mod withdraw_krw;
 mod withdraw_address;
 
-use crate::{constant::OrderBy, response::{WithdrawChance, WithdrawCoinAddress}};
+use crate::{constant::{OrderBy, TransactionType, WithdrawState}, response::{WithdrawChance, WithdrawCoinAddress}};
 use super::response::{WithdrawInfo, WithdrawInfoDerived, ResponseError};
 
 /// Kind of tow factor type
@@ -19,46 +19,6 @@ impl ToString for TwoFactorType {
         match self {
             TwoFactorType::KakaoPay => "kakao_pay".to_owned(),
             TwoFactorType::Naver => "naver".to_owned(),
-        }
-    }
-}
-
-/// list of withdraw state
-pub enum WithdrawState {
-    Waiting,
-    Processing,
-    Done,
-    Failed,
-    Canceled,
-    Rejected
-}
-
-impl ToString for WithdrawState {
-    fn to_string(&self) -> String {
-        match self {
-            WithdrawState::Waiting => "waiting".to_owned(),
-            WithdrawState::Processing => "processing".to_owned(),
-            WithdrawState::Done => "done".to_owned(),
-            WithdrawState::Failed => "failed".to_owned(),
-            WithdrawState::Canceled => "canceled".to_owned(),
-            WithdrawState::Rejected => "rejected".to_owned(),
-        }
-    }
-}
-
-/// Kind of transaction type
-pub enum TransactionType {
-    /// 일반출금(general withdrawal)
-    Default,
-    /// 바로출금(instant withdrawal)
-    Internal 
-}
-
-impl ToString for TransactionType {
-    fn to_string(&self) -> String {
-        match self {
-            TransactionType::Default => "default".to_owned(),
-            TransactionType::Internal => "internal".to_owned(),
         }
     }
 }
