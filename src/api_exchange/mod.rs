@@ -442,7 +442,7 @@ pub async fn get_order_status(uuid: Option<&str>, identifier: Option<&str>) -> R
 /// 
 /// # Example
 /// ```
-/// let order_status = api_exchange::get_order_status_list().await;
+/// let order_status = api_exchange::list_order_status().await;
 /// ```
 /// ```json
 /// [
@@ -484,7 +484,7 @@ pub async fn get_order_status(uuid: Option<&str>, identifier: Option<&str>) -> R
 /// | locked | 거래에 사용중인 비용 | NumberString |
 /// | executed_volume | 체결된 양 | NumberString |
 /// | trades_count | 해당 주문에 걸린 체결 수 | Integer |
-pub async fn get_order_status_list() -> Result<Vec<OrderInfo>, ResponseError> {
+pub async fn list_order_status() -> Result<Vec<OrderInfo>, ResponseError> {
     OrderInfo::get_order_state_list().await
 }
 
