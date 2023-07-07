@@ -9,7 +9,8 @@ use super::{
     super::{
         constant::{URL_WITHDRAWS_KRW, URL_SERVER},
         response::{
-            WithdrawInfoDerived,
+            WithdrawInfo,
+            WithdrawInfoSource,
             ResponseError,
             ResponseErrorBody,
             ResponseErrorState,
@@ -18,7 +19,7 @@ use super::{
     }
 };
 
-impl WithdrawInfoDerived {
+impl WithdrawInfo {
     pub async fn withdraw_krw(amount: f64, two_factor_type: TwoFactorType) -> Result<Self, ResponseError> {
         let res = Self::request_withdraw_krw(amount, two_factor_type).await?;
         let res_serialized = res.text().await.unwrap();
@@ -37,7 +38,7 @@ impl WithdrawInfoDerived {
         }
 
         serde_json::from_str(&res_serialized)
-            .map(|x: WithdrawInfoDerivedSource| {
+            .map(|x: WithdrawInfoSource| {
                 Self {
                     r#type: x.r#type(),
                     uuid: x.uuid(),
@@ -49,7 +50,6 @@ impl WithdrawInfoDerived {
                     done_at: x.done_at(),
                     amount: x.amount(),
                     fee: x.fee(),
-                    krw_amount: x.krw_amount(),
                     transaction_type: x.transaction_type(),
                 }
             })
@@ -67,30 +67,14 @@ impl WithdrawInfoDerived {
     async fn request_withdraw_krw(amount: f64, two_factor_type: TwoFactorType) -> Result<Response, ResponseError> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_WITHDRAWS_KRW}")).unwrap();
         
-        // url.query_pairs_mut()
-        //     .append_pair("market", market_id)
-        //     .append_pair("side", &side.to_string())
-        //     .append_pair("ord_type", &ord_type.to_string());
+        url.query_pairs_mut()
+            .append_pair("amount", &format!("{amount}"))
+            .append_pair("two_factor_type", &two_factor_type.to_string());
             
-        // if price.is_some() {
-        //     let price = format!("{:.8}", price.unwrap());
-        //     url.query_pairs_mut().append_pair("price", price.as_str());
-        // }
-        
-        // if volume.is_some() {
-        //     let volume = format!("{:.8}", volume.unwrap()); 
-        //     url.query_pairs_mut().append_pair("volume", volume.as_str());
-        // }
-
-        // if identifier.is_some() {
-        //     url.query_pairs_mut().append_pair("identifier", identifier.unwrap());
-        // }
-
         let token_string = Self::set_token_with_query(url.as_str())?;
         
         reqwest::Client::new()
             .post(url.as_str())
-            // .json(&asdf)
             .header(ACCEPT, "application/json")
             .header(CONTENT_TYPE, "application/json")
             .header(AUTHORIZATION, &token_string)
