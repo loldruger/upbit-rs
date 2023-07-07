@@ -10,8 +10,10 @@ use super::response::{AccountsInfo, OrderInfo, OrderChance, OrderStatus, Respons
 /// Side of order
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub enum OrderSide {
-    Bid, // 매수
-    Ask, // 매도
+    /// 매수
+    Bid, 
+    /// 매도
+    Ask,
 }
 
 impl ToString for OrderSide {

@@ -1,6 +1,7 @@
 use serde::Deserialize;
 use super::order_info::*;
 
+/// Deserialized ObjectTrades data of [OrderStatus].
 #[derive(Deserialize, Clone)]
 pub struct ObjectTrades {
     pub market: String,
@@ -12,6 +13,7 @@ pub struct ObjectTrades {
     pub created_at: String,
 }
 
+/// Deserialized OrderStatus data 
 #[derive(Deserialize)]
 pub struct OrderStatus {
     #[serde(flatten)]
@@ -19,6 +21,7 @@ pub struct OrderStatus {
     pub trades: Vec<ObjectTrades>,
 }
 
+/// Raw ObjectTradesSource from serialized data
 #[derive(Deserialize)]
 pub struct ObjectTradesSource {
     pub market: String,
@@ -30,6 +33,7 @@ pub struct ObjectTradesSource {
     pub created_at: String,
 }
 
+/// Raw OrderStatusSource from serialized data
 #[derive(Deserialize)]
 pub struct OrderStatusSource {
     #[serde(flatten)]

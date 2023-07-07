@@ -101,7 +101,7 @@ impl WithdrawInfoSource {
     pub fn transaction_type(&self) -> String { self.transaction_type.clone() }
 }
 
-/// Raw MemberLevel of WithdrawChanceSource from serialized data
+/// Raw MemberLevel of [WithdrawChanceSource] from serialized data
 #[derive(Deserialize, Debug)]
 pub struct MemberLevel {
     pub security_level: i32,
@@ -114,7 +114,7 @@ pub struct MemberLevel {
     pub wallet_locked: bool,
 }
 
-/// Deserialized WithdrawCurrency of WithdrawChance data
+/// Deserialized WithdrawCurrency of [WithdrawChance] data
 #[derive(Debug)]
 pub struct WithdrawCurrency {
     pub code: String,
@@ -142,7 +142,7 @@ impl WithdrawCurrencySource {
     pub fn wallet_support(&self) -> Vec<String> { self.wallet_support.clone() }
 }
 
-/// Deserialized WithdrawLimit of WithdrawChanceSource data
+/// Deserialized WithdrawLimit of [WithdrawChanceSource] data
 #[derive(Debug)]
 pub struct WithdrawLimit {
     pub currency: String,
@@ -179,7 +179,7 @@ impl WithdrawLimitSource {
     pub fn can_withdraw(&self) -> bool { self.can_withdraw }
 }
 
-/// Deserialized WithdrawChance of WithdrawChanceSource data
+/// Deserialized WithdrawChance of [WithdrawChanceSource] data
 #[derive(Debug)]
 pub struct WithdrawChance {
     pub member_level: MemberLevel,
@@ -197,6 +197,7 @@ pub struct WithdrawChanceSource {
     pub withdraw_limit: WithdrawLimitSource
 }
 
+/// Raw withdraw chance info from serialized data
 #[derive(Deserialize, Debug)]
 pub struct WithdrawCoinAddress {
     pub currency: String,

@@ -1,10 +1,14 @@
+/// Server domain address
 pub const URL_SERVER: &str = "https://api.upbit.com";
 
+/// URL of API getting account info
 pub const URL_ACCOUNTS: &str = "/v1/accounts";
+
+/// URL of API getting order info  
+pub const URL_ORDER: &str = "/v1/orders";
 pub const URL_ORDER_CHANCE: &str = "/v1/orders/chance";
 pub const URL_ORDER_STATUS: &str = "/v1/order";
 pub const URL_ORDER_STATUS_LIST: &str = "/v1/orders";
-pub const URL_ORDER: &str = "/v1/orders";
 
 pub const URL_ORDERBOOK: &str = "/v1/orderbook";
 pub const URL_TICKER: &str = "/v1/ticker";
@@ -16,15 +20,32 @@ pub const URL_WITHDRAWS: &str = "/v1/withdraws";
 pub const URL_WITHDRAWS_KRW: &str = "/v1/withdraws/krw";
 pub const URL_WITHDRAWS_COIN: &str = "/v1/withdraws/coin";
 pub const URL_WITHDRAWS_COIN_ADDRESS: &str = "v1/withdraws/coin_addresses";
-pub const URL_WITHDRAW_CHANCE: &str = "/v1/withdraws/chance";
+pub const URL_WITHDRAWS_CHANCE: &str = "/v1/withdraws/chance";
 
-// pub const URL_CANDLE_MINUTE: &str = "/v1/candles/minutes/";
-// pub const URL_CANDLE_DAY: &str = "/v1/candles/days";
-// pub const URL_CANDLE_WEEK: &str = "/v1/candles/weeks";
-// pub const URL_CANDLE_MONTH: &str = "/v1/candles/months";
+/// URL of deposit API
+pub const URL_DEPOSIT: &str = "/v1/deposit";
+/// URL of API listing Deposit info
+pub const URL_DEPOSITS: &str = "/v1/deposits";
+/// URL of API inquiring generation of coin deposit address
+pub const URL_DEPOSITS_GENERATE_COIN_ADDRESS: &str = "/v1/deposits/generate_coin_address";
+/// URL of API getting asset you have
+pub const URL_DEPOSITS_COIN_ADDRESS: &str = "/v1/deposits/coin_address";
+/// URL of API listing assets you have
+pub const URL_DEPOSITS_COIN_ADDRESSES: &str = "/v1/deposits/coin_addresses";
+/// URL of API requesting to deposit KRW
+pub const URL_DEPOSITS_KRW: &str = "/v1/deposits/krw";
 
+/// URL of API listing candle data of minute unit
+pub const URL_CANDLE_MINUTE: &str = "/v1/candles/minutes/";
+pub const URL_CANDLE_DAY: &str = "/v1/candles/days";
+pub const URL_CANDLE_WEEK: &str = "/v1/candles/weeks";
+pub const URL_CANDLE_MONTH: &str = "/v1/candles/months";
+
+/// Kind of order 
 pub enum OrderBy {
+    /// 오름차순 (Ascending)
     Asc,
+    /// 내림차순 (Descending)
     Desc
 }
 
@@ -36,8 +57,6 @@ impl ToString for OrderBy {
         }
     }
 }
-
-
 
 pub enum Currency {
     KRW,

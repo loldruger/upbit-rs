@@ -3,6 +3,7 @@ use serde::Deserialize;
 use super::accounts_info::*;
 use super::accounts_info::AccountsInfoSource;
 
+/// Deserialized ObjectMarket data of [OrderChance].
 #[derive(Deserialize)]
 pub struct ObjectMarket {
     pub id: String,
@@ -15,6 +16,7 @@ pub struct ObjectMarket {
     pub state: String,
 }
 
+/// Deserialized ObjectAskBid info of [ObjectMarket].
 #[derive(Deserialize)]
 pub struct ObjectAskBid {
     pub currency: String,
@@ -50,6 +52,7 @@ pub struct ObjectAskBidSource {
     pub min_total: String,
 }
 
+/// Raw OrderChanceSource data from serialized data
 #[derive(Deserialize)]
 pub struct OrderChanceSource {
     pub bid_fee: String,

@@ -16,16 +16,27 @@ pub use candle_day::CandleChartDay;
 pub use candle_week::CandleChartWeek;
 pub use candle_month::CandleChartMonth;
 
-use crate:: response::ResponseError;
+use crate::response::ResponseError;
+use crate::constant::{URL_CANDLE_MINUTE, URL_CANDLE_DAY, URL_CANDLE_WEEK, URL_CANDLE_MONTH};
 
+/// Kind of minute unit of minute candle chart
+#[derive(Clone, Copy)]
 pub enum CandleMinute {
+    /// Into() coerces it into u8 sized 1
     Min1,
+    /// Into() coerces it into u8 sized 3
     Min3,
+    /// Into() coerces it into u8 sized 5
     Min5,
+    /// Into() coerces it into u8 sized 10
     Min10,
+    /// Into() coerces it into u8 sized 15
     Min15,
+    /// Into() coerces it into u8 sized 30
     Min30,
+    /// Into() coerces it into u8 sized 60
     Min60,
+    /// Into() coerces it into u8 sized 240
     Min240
 }
 
@@ -44,6 +55,7 @@ impl From<CandleMinute> for u8 {
     }
 }
 
+/// For the purpose of descripting the kind of candle chart time
 pub enum UrlAssociates {
     UrlCandleMinute(CandleMinute),
     UrlCandleWeek,
@@ -51,13 +63,14 @@ pub enum UrlAssociates {
     UrlCandleMonth
 }
 
-impl From<UrlAssociates> for String {
-    fn from(value: UrlAssociates) -> Self {
-        match value {
-            UrlAssociates::UrlCandleMinute(minute) => format!("/v1/candles/minutes/{}", Into::<u8>::into(minute)),
-            UrlAssociates::UrlCandleWeek => "/v1/candles/weeks".to_owned(),
-            UrlAssociates::UrlCandleDay => "/v1/candles/days".to_owned(),
-            UrlAssociates::UrlCandleMonth => "/v1/candles/months".to_owned(),
+impl ToString for UrlAssociates {
+    fn to_string(&self) -> String {
+        match self {
+            UrlAssociates::UrlCandleMinute(minute) => 
+                format!("{URL_CANDLE_MINUTE}{}", Into::<u8>::into(*minute)),
+            UrlAssociates::UrlCandleDay => format!("{URL_CANDLE_DAY}"),
+            UrlAssociates::UrlCandleWeek => format!("{URL_CANDLE_WEEK}"),
+            UrlAssociates::UrlCandleMonth => format!("{URL_CANDLE_MONTH}"),
         }
     }
 }
@@ -432,8 +445,8 @@ pub async fn get_candle_day(market: &str, count: i32, last_candle_time: Option<S
 /// > `market` ex) KRW-ETH<br>
 /// > `count` the number of candle to request. maximum value: `200`<br>
 /// > `last_candle_time` (optional) the time moment of the last candle (exclusive). if empty, latest candle will be retrived. <br>
-///  >> *  ISO8061 format (yyyy-MM-dd'T'HH:mm:ss'Z' or yyyy-MM-dd HH:mm:ss). <br>
-///  >> *  though it is commonly UTC time criteria, you can request KST time using like 2023-01-01T00:00:00+09:00 format. <br>
+/// >> *  `ISO8061` format (`yyyy-MM-dd'T'HH:mm:ss'Z'` or `yyyy-MM-dd HH:mm:ss`). <br>
+/// >> *  though it is commonly UTC time criteria, you can request KST time using like `2023-01-01T00:00:00+09:00` format. <br>
 /// 
 /// # Response
 /// ```json
