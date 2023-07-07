@@ -75,29 +75,6 @@ impl ToString for TransactionType {
     }
 }
 
-/// list of withdraw state
-pub enum WithdrawState {
-    Waiting,
-    Processing,
-    Done,
-    Failed,
-    Canceled,
-    Rejected
-}
-
-impl ToString for WithdrawState {
-    fn to_string(&self) -> String {
-        match self {
-            WithdrawState::Waiting => "waiting".to_owned(),
-            WithdrawState::Processing => "processing".to_owned(),
-            WithdrawState::Done => "done".to_owned(),
-            WithdrawState::Failed => "failed".to_owned(),
-            WithdrawState::Canceled => "canceled".to_owned(),
-            WithdrawState::Rejected => "rejected".to_owned(),
-        }
-    }
-}
-
 pub enum Currency {
     KRW,
     BTC,
