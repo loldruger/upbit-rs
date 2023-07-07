@@ -79,7 +79,7 @@ impl CandleChartDay {
     }
 
     async fn request(market: &str, count: i32, last_candle_time: Option<String>, price_unit: Option<String>) -> Result<Response, ResponseError> {
-        let url_candle: String = UrlAssociates::UrlCandleDay.into();
+        let url_candle = UrlAssociates::UrlCandleDay.to_string();
         let mut url = Url::parse(&format!("{URL_SERVER}{url_candle}")).unwrap();
         url.query_pairs_mut()
             .append_pair("market", market)
