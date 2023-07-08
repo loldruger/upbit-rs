@@ -1,4 +1,4 @@
-use crate::{response::{WithdrawalDepositInfo, ResponseError}, constant::OrderBy};
+use crate::{response::{WithdrawalDepositInfo, ResponseError}, constant::{OrderBy, TwoFactorType}};
 
 mod deposit_info;
 mod deposit_info_list;
@@ -167,4 +167,47 @@ pub async fn list_deposit_info(
 /// | transaction_type | 입금 유형<br> default : 일반입금<br>internal : 바로입금 | String
 pub async fn get_deposit_info(currency: Option<&str>, uuid: Option<&str>, txid: Option<&str>) -> Result<WithdrawalDepositInfo, ResponseError> {
     WithdrawalDepositInfo::get_deposit_info(currency, uuid, txid).await
+}
+
+/// 원화를 입금한다.
+/// 
+/// # Example
+/// ```rust
+/// let deposit_result = api_deposit::deposit_krw(10000.0, api_deposit::TwoFactorType::KakaoPay).await;
+/// ```
+/// - parameters
+/// > `amount` amount of deposit <br>
+/// > `two_factor_type`
+/// >> * `TwoFactorType::KakaoPay` Two factor identification via kakao <br>
+/// >> * `TwoFactorType::Naver` Two factor identification via naver <br>
+/// # Response
+/// ```json
+/// {
+///     "type": "deposit",
+///     "uuid": "9f432943-54e0-40b7-825f-b6fec8b42b79",
+///     "currency": "KRW",
+///     "txid": "ebe6937b-130e-4066-8ac6-4b0e67f28adc",
+///     "state": "processing",
+///     "created_at": "2018-04-13T11:24:01+09:00",
+///     "done_at": null,
+///     "amount": "0.01",
+///     "fee": "0.0",
+///     "transaction_type": "default"
+/// }
+/// ```
+/// | field                  | description                   | type         |
+/// |:-----------------------|:------------------------------|:-------------|
+/// | type | 입출금 종류 | String |
+/// | uuid | 입금의 고유 아이디 | String |
+/// | currency | 화폐를 의미하는 영문 대문자 코드 | String |
+/// | net_type | 입금 네트워크 | String |
+/// | txid | 입금의 트랜잭션 아이디 | String |
+/// | state | 입금 상태 | String |
+/// | created_at | 입금 생성 시간 | DateString |
+/// | done_at | 입금 완료 시간 | DateString |
+/// | amount | 입금 금액/수량 | NumberString |
+/// | fee | 입금 수수료 | NumberString |
+/// | transaction_type | 입금 유형 | String |
+pub async fn deposit_krw(amount: f64, two_factor_type: TwoFactorType) -> Result<WithdrawalDepositInfo, ResponseError> {
+    WithdrawalDepositInfo::deposit_krw(amount, two_factor_type).await
 }

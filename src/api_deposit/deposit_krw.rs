@@ -5,7 +5,7 @@ use crate::constant::TwoFactorType;
 
 use super::{
     super::{
-        constant::{URL_WITHDRAWS_KRW, URL_SERVER},
+        constant::{URL_DEPOSITS_KRW, URL_SERVER},
         request::RequestWithQuery,
         response::{
             WithdrawalDepositInfo,
@@ -64,7 +64,7 @@ impl WithdrawalDepositInfo {
     }
 
     async fn request_deposit_krw(amount: f64, two_factor_type: TwoFactorType) -> Result<Response, ResponseError> {
-        let mut url = Url::parse(&format!("{URL_SERVER}{URL_WITHDRAWS_KRW}")).unwrap();
+        let mut url = Url::parse(&format!("{URL_SERVER}{URL_DEPOSITS_KRW}")).unwrap();
         
         url.query_pairs_mut()
             .append_pair("amount", &format!("{amount}"))
