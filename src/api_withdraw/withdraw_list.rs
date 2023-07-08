@@ -12,8 +12,8 @@ use super::{
         OrderBy
     },
     super::response::{
-        WithdrawInfo,
-        WithdrawInfoSource,
+        WithdrawalDepositInfo,
+        WithdrawalDepositInfoSource,
         ResponseError,
         ResponseErrorBody,
         ResponseErrorState,
@@ -21,7 +21,7 @@ use super::{
     }, WithdrawState,
 };
 
-impl WithdrawInfo {
+impl WithdrawalDepositInfo {
     pub async fn inquiry_withdraw_list(
         currency: &str,
         state: WithdrawState,
@@ -48,7 +48,7 @@ impl WithdrawInfo {
         }
 
         serde_json::from_str(&res_serialized)
-            .map(|x: Vec<WithdrawInfoSource>| {
+            .map(|x: Vec<WithdrawalDepositInfoSource>| {
                 x
                     .into_iter()
                     .map(|x| Self {

@@ -7,8 +7,8 @@ use super::{
         constant::{URL_WITHDRAWS_COIN, URL_SERVER},
         request::RequestWithQuery,
         response::{
-            WithdrawInfoDerived,
-            WithdrawInfoDerivedSource,
+            WithdrawalDepositInfoDerived,
+            WithdrawalDepositInfoDerivedSource,
             ResponseError,
             ResponseErrorBody,
             ResponseErrorState,
@@ -17,8 +17,8 @@ use super::{
     }
 };
 
-impl RequestWithQuery for WithdrawInfoDerived {}
-impl WithdrawInfoDerived {
+impl RequestWithQuery for WithdrawalDepositInfoDerived {}
+impl WithdrawalDepositInfoDerived {
     pub async fn withdraw_coin(
         currency: &str,
         net_type: &str,
@@ -44,7 +44,7 @@ impl WithdrawInfoDerived {
         }
 
         serde_json::from_str(&res_serialized)
-            .map(|x: WithdrawInfoDerivedSource| {
+            .map(|x: WithdrawalDepositInfoDerivedSource| {
                 Self {
                     r#type: x.r#type(),
                     uuid: x.uuid(),

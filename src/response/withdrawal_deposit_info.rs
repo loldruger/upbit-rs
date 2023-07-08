@@ -4,9 +4,9 @@ use crate::request::{Request, RequestWithQuery};
 
 use super::{AccountsInfoSource, AccountsInfo};
 
-/// Deserialized derived WithdrawInfo data
+/// Deserialized derived WithdrawalDepositInfo data
 #[derive(Debug)]
-pub struct WithdrawInfoDerived {
+pub struct WithdrawalDepositInfoDerived {
     pub r#type: String,
     pub uuid: String,
     pub currency: String,
@@ -23,7 +23,7 @@ pub struct WithdrawInfoDerived {
 
 /// Raw derived withdraw info from serialized data
 #[derive(Deserialize)]
-pub struct WithdrawInfoDerivedSource {
+pub struct WithdrawalDepositInfoDerivedSource {
     r#type: String,
     uuid: String,
     currency: String,
@@ -38,7 +38,7 @@ pub struct WithdrawInfoDerivedSource {
     transaction_type: String
 }
 
-impl WithdrawInfoDerivedSource {
+impl WithdrawalDepositInfoDerivedSource {
     pub fn r#type(&self) -> String { self.r#type.clone() }
     pub fn uuid(&self) -> String { self.uuid.clone() }
     pub fn currency(&self) -> String {self.currency.clone()}
@@ -55,9 +55,9 @@ impl WithdrawInfoDerivedSource {
     pub fn transaction_type(&self) -> String { self.transaction_type.clone() }
 }
 
-/// Deserialized WithdrawInfo data
+/// Deserialized WithdrawalDepositInfo data
 #[derive(Debug)]
-pub struct WithdrawInfo {
+pub struct WithdrawalDepositInfo {
     pub r#type: String,
     pub uuid: String,
     pub currency: String,
@@ -71,11 +71,11 @@ pub struct WithdrawInfo {
     pub transaction_type: String,
 }
 
-impl RequestWithQuery for WithdrawInfo {}
+impl RequestWithQuery for WithdrawalDepositInfo {}
 
 /// Raw withdraw info from serialized data
 #[derive(Deserialize)]
-pub struct WithdrawInfoSource {
+pub struct WithdrawalDepositInfoSource {
     r#type: String,
     uuid: String,
     currency: String,
@@ -89,7 +89,7 @@ pub struct WithdrawInfoSource {
     transaction_type: String
 }
 
-impl WithdrawInfoSource {
+impl WithdrawalDepositInfoSource {
     pub fn r#type(&self) -> String { self.r#type.clone() }
     pub fn uuid(&self) -> String { self.uuid.clone() }
     pub fn currency(&self) -> String {self.currency.clone()}

@@ -12,8 +12,8 @@ use super::{
         OrderBy
     },
     super::response::{
-        WithdrawInfo,
-        WithdrawInfoSource,
+        WithdrawalDepositInfo,
+        WithdrawalDepositInfoSource,
         ResponseError,
         ResponseErrorBody,
         ResponseErrorState,
@@ -21,7 +21,7 @@ use super::{
     }, DepositState,
 };
 
-impl WithdrawInfo {
+impl WithdrawalDepositInfo {
     pub async fn inquiry_deposit_list(
         currency: &str,
         state: DepositState,
@@ -31,7 +31,7 @@ impl WithdrawInfo {
         page: u32,
         order_by: OrderBy
     ) -> Result<Vec<Self>, ResponseError> {
-        let res = Self::request_deposit(currency, state, uuids, txids, limit, page, order_by).await?;
+        let res = Self::request_deposit_list(currency, state, uuids, txids, limit, page, order_by).await?;
         let res_serialized = res.text().await.unwrap();
         
         if res_serialized.contains("error") {
@@ -48,7 +48,7 @@ impl WithdrawInfo {
         }
 
         serde_json::from_str(&res_serialized)
-            .map(|x: Vec<WithdrawInfoSource>| {
+            .map(|x: Vec<WithdrawalDepositInfoSource>| {
                 x
                     .into_iter()
                     .map(|x| Self {
@@ -77,7 +77,7 @@ impl WithdrawInfo {
             })
     }
 
-    async fn request_deposit(
+    async fn request_deposit_list(
         currency: &str,
         state: DepositState,
         uuids: Option<&[&str]>,

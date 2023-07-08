@@ -75,6 +75,24 @@ impl ToString for TransactionType {
     }
 }
 
+/// Kind of tow factor type
+pub enum TwoFactorType {
+    /// 카카오페이 인증
+    KakaoPay,
+    /// 네이버 인증
+    Naver
+}
+
+impl ToString for TwoFactorType {
+    fn to_string(&self) -> String {
+        match self {
+            TwoFactorType::KakaoPay => "kakao_pay".to_owned(),
+            TwoFactorType::Naver => "naver".to_owned(),
+        }
+    }
+}
+
+
 pub enum Currency {
     KRW,
     BTC,

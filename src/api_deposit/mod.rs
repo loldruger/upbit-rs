@@ -1,8 +1,8 @@
-use crate::{response::{WithdrawInfo, ResponseError}, constant::OrderBy};
+use crate::{response::{WithdrawalDepositInfo, ResponseError}, constant::OrderBy};
 
 mod deposit_info;
 mod deposit_info_list;
-mod deposit_krw_requestion;
+mod deposit_krw;
 mod coin_address_generation;
 mod coin_address_inquiry;
 mod coin_addresses_inquiry;
@@ -100,16 +100,16 @@ impl ToString for DepositState {
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
 /// | type | 입출금 종류 | String
-/// | uuid | 출금의 고유 아이디 | String
+/// | uuid | 입금의 고유 아이디 | String
 /// | currency | 화폐를 의미하는 영문 대문자 코드 | String
-/// | net_type | 출금 네트워크 | String
-/// | txid | 출금의 트랜잭션 아이디 | String
-/// | state | 출금 상태<br> - PROCESSING  : 입금 진행중 <br> - ACCEPTED : 완료 <br> - CANCELLED : 취소됨<br> - REJECTED : 거절됨 <br> - TRAVEL_RULE_SUSPECTED : 트래블룰 추가 인증 대기중<br> - REFUNDING : 반환절차 진행중<br> - REFUNDED : 반환됨 | String
-/// | created_at | 출금 생성 시간 | DateString
-/// | done_at | 출금 완료 시간 | DateString
-/// | amount | 출금 금액/수량 | NumberString
-/// | fee | 출금 수수료 | NumberString
-/// | transaction_type | 출금 유형<br> default : 일반출금<br>internal : 바로출금 | String
+/// | net_type | 입금 네트워크 | String
+/// | txid | 입금의 트랜잭션 아이디 | String
+/// | state | 입금 상태<br> - PROCESSING  : 입금 진행중 <br> - ACCEPTED : 완료 <br> - CANCELLED : 취소됨<br> - REJECTED : 거절됨 <br> - TRAVEL_RULE_SUSPECTED : 트래블룰 추가 인증 대기중<br> - REFUNDING : 반환절차 진행중<br> - REFUNDED : 반환됨 | String
+/// | created_at | 입금 생성 시간 | DateString
+/// | done_at | 입금 완료 시간 | DateString
+/// | amount | 입금 금액/수량 | NumberString
+/// | fee | 입금 수수료 | NumberString
+/// | transaction_type | 입금 유형<br> default : 일반입금<br>internal : 바로입금 | String
 pub async fn list_deposit_info(
     currency: &str,
     state: DepositState,
@@ -118,6 +118,52 @@ pub async fn list_deposit_info(
     limit: u32,
     page: u32,
     order_by: OrderBy
-) -> Result<Vec<WithdrawInfo>, ResponseError> {
-    WithdrawInfo::inquiry_deposit_list(currency, state, uuids, txids, limit, page, order_by).await
+) -> Result<Vec<WithdrawalDepositInfo>, ResponseError> {
+    WithdrawalDepositInfo::inquiry_deposit_list(currency, state, uuids, txids, limit, page, order_by).await
+}
+
+/// 개별 입금 조회.
+/// 
+/// # Example
+/// ```rust
+/// let deposit_info = api_quotation::get_deposit_info(None, Some("9f432943-54e0-40b7-825f-b6fec8b42b79"), None).await;
+/// ```
+/// - parameters
+/// > `currency` ex) KRW, BTC, ETH etc. <br>
+/// > `uuid` uuid<br>
+/// > `txid` txid<br>
+/// # Response
+/// ```json
+/// [
+///   { 
+///     "type": "deposit",
+///     "uuid": "94332e99-3a87-4a35-ad98-28b0c969f830",
+///     "currency": "KRW",
+///     "txid": "9e37c537-6849-4c8b-a134-57313f5dfc5a",
+///     "state": "ACCEPTED",
+///     "created_at": "2017-12-08T15:38:02+09:00",
+///     "done_at": "2017-12-08T15:38:02+09:00",
+///     "amount": "100000.0",
+///     "fee": "0.0",
+///     "transaction_type": "default"
+///   }
+///   #....
+/// ]
+/// ```
+/// 
+/// | field                  | description                   | type         |
+/// |:-----------------------|:------------------------------|:-------------|
+/// | type | 입출금 종류 | String
+/// | uuid | 입금의 고유 아이디 | String
+/// | currency | 화폐를 의미하는 영문 대문자 코드 | String
+/// | net_type | 입금 네트워크 | String
+/// | txid | 입금의 트랜잭션 아이디 | String
+/// | state | 입금 상태<br> - WAITING : 대기중<br> - PROCESSING : 진행중<br> - DONE : 완료<br> - FAILED : 실패<br> - CANCELLED : 취소됨<br> - REJECTED : 거절됨 | String
+/// | created_at | 입금 생성 시간 | DateString
+/// | done_at | 입금 완료 시간 | DateString
+/// | amount | 입금 금액/수량 | NumberString
+/// | fee | 입금 수수료 | NumberString
+/// | transaction_type | 입금 유형<br> default : 일반입금<br>internal : 바로입금 | String
+pub async fn get_deposit_info(currency: Option<&str>, uuid: Option<&str>, txid: Option<&str>) -> Result<WithdrawalDepositInfo, ResponseError> {
+    WithdrawalDepositInfo::get_deposit_info(currency, uuid, txid).await
 }

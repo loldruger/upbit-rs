@@ -5,31 +5,22 @@ mod withdraw_coin;
 mod withdraw_krw;
 mod withdraw_address;
 
-use crate::{constant::{OrderBy, TransactionType}, response::{WithdrawChance, WithdrawCoinAddress}};
-use super::response::{WithdrawInfo, WithdrawInfoDerived, ResponseError};
-
-/// Kind of tow factor type
-pub enum TwoFactorType {
-    KakaoPay,
-    Naver
-}
-
-impl ToString for TwoFactorType {
-    fn to_string(&self) -> String {
-        match self {
-            TwoFactorType::KakaoPay => "kakao_pay".to_owned(),
-            TwoFactorType::Naver => "naver".to_owned(),
-        }
-    }
-}
+use crate::{constant::{OrderBy, TransactionType, TwoFactorType}, response::{WithdrawChance, WithdrawCoinAddress}};
+use super::response::{WithdrawalDepositInfo, WithdrawalDepositInfoDerived, ResponseError};
 
 /// list of withdraw state
 pub enum WithdrawState {
+    /// 대기중
     Waiting,
+    /// 진행중
     Processing,
+    /// 완료
     Done,
+    /// 실패
     Failed,
+    /// 취소됨
     Canceled,
+    /// 거절됨
     Rejected
 }
 
@@ -129,8 +120,8 @@ pub async fn list_withdraw_info(
     limit: u32,
     page: u32,
     order_by: OrderBy
-) -> Result<Vec<WithdrawInfo>, ResponseError> {
-    WithdrawInfo::inquiry_withdraw_list(currency, state, uuids, txids, limit, page, order_by).await
+) -> Result<Vec<WithdrawalDepositInfo>, ResponseError> {
+    WithdrawalDepositInfo::inquiry_withdraw_list(currency, state, uuids, txids, limit, page, order_by).await
 }
 
 /// 개별 출금 조회.
@@ -175,8 +166,8 @@ pub async fn list_withdraw_info(
 /// | amount | 출금 금액/수량 | NumberString
 /// | fee | 출금 수수료 | NumberString
 /// | transaction_type | 출금 유형<br> default : 일반출금<br>internal : 바로출금 | String
-pub async fn get_withdraw_info(currency: Option<&str>, uuid: Option<&str>, txid: Option<&str>) -> Result<WithdrawInfo, ResponseError> {
-    WithdrawInfo::get_withdraw_info(currency, uuid, txid).await
+pub async fn get_withdraw_info(currency: Option<&str>, uuid: Option<&str>, txid: Option<&str>) -> Result<WithdrawalDepositInfo, ResponseError> {
+    WithdrawalDepositInfo::get_withdraw_info(currency, uuid, txid).await
 }
 
 /// 출금 가능 정보를 조회한다.
@@ -317,8 +308,8 @@ pub async fn withdraw_coin(
     address: &str,
     secondary_address: Option<&str>,
     transaction_type: TransactionType
-) -> Result<WithdrawInfoDerived, ResponseError> {
-    WithdrawInfoDerived::withdraw_coin(
+) -> Result<WithdrawalDepositInfoDerived, ResponseError> {
+    WithdrawalDepositInfoDerived::withdraw_coin(
         currency,
         net_type,
         amount,
@@ -367,10 +358,33 @@ pub async fn withdraw_coin(
 /// | amount| 출금 금액/수량 | NumberString |
 /// | fee| 출금 수수료 | NumberString |
 /// | transaction_type| 출금 유형 | String |
-pub async fn withdraw_krw(amount: f64, two_factor_type: TwoFactorType) -> Result<WithdrawInfo, ResponseError> {
-    WithdrawInfo::withdraw_krw(amount, two_factor_type).await
+pub async fn withdraw_krw(amount: f64, two_factor_type: TwoFactorType) -> Result<WithdrawalDepositInfo, ResponseError> {
+    WithdrawalDepositInfo::withdraw_krw(amount, two_factor_type).await
 }
 
+/// 출금 허용 주소 리스트 조회
+/// 
+/// # Example
+/// ```rust
+/// let withdraw_address = api_withdraw::withdraw_krw(10000.0, TwoFactorType::KakaoPay).await;
+/// ```
+/// # Response
+/// ```json
+/// {
+///     "currency": "BTC",
+///     "net_type": "BTC",
+///     "network_name": "Bitcoin",
+///     "withdraw_address": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+///     "secondary_address": null
+/// }
+/// ```
+/// | field                  | description                   | type         |
+/// |:-----------------------|:------------------------------|:-------------|
+/// | currency | 출금 화폐 | String |
+/// | net_type | 출금 네트워크 타입 | String |
+/// | network_name | 출금 네트워크 이름 | String |
+/// | withdraw_address | 출금 주소 | String |
+/// | secondary_address | 2차 출금 주소 (필요한 디지털 자산에 한해서) | String |
 pub async fn get_withdraw_address() -> Result<WithdrawCoinAddress, ResponseError> {
     WithdrawCoinAddress::get_withdraw_address().await
 }
