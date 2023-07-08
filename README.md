@@ -29,15 +29,16 @@ let order_info = api_exchange::sell_by_market_price("KRW-ETH", 1.0, "cdd92199-28
 let order_info = api_exchange::cancel_order("cdd92199-2897-4e14-9448-f923320408ad").await;
 
 // api_withdraw
+let withdraw_result = api_withdraw::withdraw_krw(10000.0, api_withdraw::TwoFactorType::KakaoPay).await;
 let withdraw_info = api_withdraw::get_withdraw_info(None, Some("cdd92199-2897-4e14-9448-f923320408ad"), None).await;
 let withdraw_info_list = api_withdraw::list_withdraw_info("KRW", WithdrawState::Done, None, None, 10, 0, OrderBy::Asc).await;
 let withdraw_chance = api_withdraw::get_withdraw_chance("KRW", None).await;
-let withdraw_result = api_withdraw::withdraw_krw(10000.0, api_withdraw::TwoFactorType::KakaoPay).await;
 let withdraw_result_more_info = api_withdraw::withdraw_coin("ETH", "ETH", 0.05, "0x40268F1e99F76b658c6D52d89166EE289EfC225d", None, TransactionType::Default).await;
 
 // api_deposit
+let deposit_result = api_deposit::deposit_krw(10000.0, api_withdraw::TwoFactorType::KakaoPay).await
+let deposit_result = api_deposit::get_deposit_info(Some("KRW"), None, None).await;
 let deposit_result = api_deposit::list_deposit_info("KRW", DepositState::Rejected, None, None, 10, 0, OrderBy::Asc).await;
-
 // api_quotation
 let order_book_info = api_quotation::get_orderbook_info("KRW-ETH").await;
 let ticker_snapshot = api_quotation::get_ticker_snapshot("KRW-ETH").await;
