@@ -1,6 +1,6 @@
 [package]
 name = "upbit"
-version = "1.4.9"
+version = "1.4.10"
 edition = "2021"
 authors = ["sy september <loldruger@gmail.com>"]
 description = "rust_upbit_api with upbit api version v1.3.4"
@@ -16,7 +16,7 @@ hmac = "0.12.1"
 jsonwebtokens = "1.2.0"
 sha2 = "0.10.7"
 uuid = { version = "1.4.0", features = ["v4", "serde"] }
-serde = "1.0.166"
+serde = "1.0.167"
 serde_with = { version = "3.0.0", features = ["json"] }
 serde_json = "1.0.100"
 envmnt = "0.10.4"
