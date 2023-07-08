@@ -126,8 +126,8 @@ pub async fn list_deposit_info(
 /// 
 /// # Example
 /// ```rust
-/// let deposit_info = api_deposit::get_deposit_info(Some("KRW"), None, None).await;
-/// let deposit_info = api_deposit::get_deposit_info(None, Some("9f432943-54e0-40b7-825f-b6fec8b42b79"), None).await;
+/// let deposit_result = api_deposit::get_deposit_info(Some("KRW"), None, None).await;
+/// let deposit_result = api_deposit::get_deposit_info(None, Some("9f432943-54e0-40b7-825f-b6fec8b42b79"), None).await;
 /// ```
 /// - parameters
 /// > `currency` ex) KRW, BTC, ETH etc. <br>
