@@ -104,7 +104,7 @@ impl ToString for DepositState {
 /// | currency | 화폐를 의미하는 영문 대문자 코드 | String
 /// | net_type | 출금 네트워크 | String
 /// | txid | 출금의 트랜잭션 아이디 | String
-/// | state | 출금 상태<br> - PROCESSING  : 입금 진행중 <br> - ACCEPTED : 완료 <br> - CANCELLED : 취소됨<br> - REJECTED : 거절됨 <br> - TRAVEL_RULE_SUSPECTED : 트래블룰 추가 인증 대기중<br> - REFUNDING : 반환절차 진행중<br> REFUNDED : 반환됨 | String
+/// | state | 출금 상태<br> - PROCESSING  : 입금 진행중 <br> - ACCEPTED : 완료 <br> - CANCELLED : 취소됨<br> - REJECTED : 거절됨 <br> - TRAVEL_RULE_SUSPECTED : 트래블룰 추가 인증 대기중<br> - REFUNDING : 반환절차 진행중<br> - REFUNDED : 반환됨 | String
 /// | created_at | 출금 생성 시간 | DateString
 /// | done_at | 출금 완료 시간 | DateString
 /// | amount | 출금 금액/수량 | NumberString

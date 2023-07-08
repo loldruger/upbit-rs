@@ -35,6 +35,9 @@ let withdraw_chance = api_withdraw::get_withdraw_chance("KRW", None).await;
 let withdraw_result = api_withdraw::withdraw_krw(10000.0, api_withdraw::TwoFactorType::KakaoPay).await;
 let withdraw_result_more_info = api_withdraw::withdraw_coin("ETH", "ETH", 0.05, "0x40268F1e99F76b658c6D52d89166EE289EfC225d", None, TransactionType::Default).await;
 
+// api_deposit
+let deposit_result = api_deposit::list_deposit_info("KRW", DepositState::Rejected, None, None, 10, 0, OrderBy::Asc).await;
+
 // api_quotation
 let order_book_info = api_quotation::get_orderbook_info("KRW-ETH").await;
 let ticker_snapshot = api_quotation::get_ticker_snapshot("KRW-ETH").await;
