@@ -128,7 +128,7 @@ pub async fn list_withdraw_info(
 /// 
 /// # Example
 /// ```rust
-/// let withdraw_info = api_quotation::get_withdraw_info(None, Some("9f432943-54e0-40b7-825f-b6fec8b42b79"), None).await;
+/// let withdraw_info = api_withdraw::get_withdraw_info(None, Some("9f432943-54e0-40b7-825f-b6fec8b42b79"), None).await;
 /// ```
 /// - parameters
 /// > `currency` ex) KRW, BTC, ETH etc. <br>
