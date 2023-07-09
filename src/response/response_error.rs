@@ -16,6 +16,7 @@ pub enum ResponseErrorState {
     /// "internal_json_parse_error"
     InternalJsonParseError,
     /// "JWT 헤더의 페이로드가 올바르지 않습니다."
+    /// 
     /// "서명에 사용한 페이로드 값을 확인해주세요."
     InvalidQueryPayload,
     /// "잘못된 API 키"
@@ -38,6 +39,8 @@ pub enum ResponseErrorState {
     CreateAskError,
     /// "주문 요청 정보가 올바르지 않습니다."
     CreateBidError,
+    /// "디지털 자산 지갑정보를 찾지 못했습니다."
+    CoinAddressNotFound,
     /// "매도 가능 잔고가 부족합니다."
     InsufficientFundsAsk,
     /// "매수 가능 잔고가 부족합니다."
@@ -45,6 +48,7 @@ pub enum ResponseErrorState {
     /// "API 키가 만료되었습니다."
     ExpiredAccessKey,
     /// "이미 요청한 nonce값이 다시 사용되었습니다."
+    /// 
     /// "JWT 헤더 페이로드의 nonce 값은 매번 새로운 값을 사용해야합니다."
     NonceUsed,
     /// "허용되지 않은 IP 주소입니다."
@@ -58,6 +62,7 @@ pub enum ResponseErrorState {
     /// "현재 해당 마켓에서 지원하지 않는 주문입니다. 주문 조건을 다시 확인해주시기 바랍니다."
     NotSupportedOrdType,
     /// "잘못된 API 요청입니다"
+    /// 
     /// "누락된 파라미터가 없는지 확인해주세요."
     ValidationError,
     /// "서버 에러"
@@ -85,6 +90,7 @@ impl From<&str> for ResponseErrorState {
             "under_min_total_bid" => ResponseErrorState::UnderMinTotalBid,
             "insufficient_funds_ask" => ResponseErrorState::InsufficientFundsAsk,
             "insufficient_funds_bid" => ResponseErrorState::InsufficientFundsBid,
+            "coin_address_not_found" => ResponseErrorState::CoinAddressNotFound,
             "create_ask_error" => ResponseErrorState::CreateAskError,
             "create_bid_error" => ResponseErrorState::CreateBidError,
             "nonce_used" => ResponseErrorState::NonceUsed,

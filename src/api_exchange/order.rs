@@ -90,22 +90,22 @@ impl OrderInfo {
             url.query_pairs_mut().append_pair("identifier", identifier.unwrap());
         }
 
-        let asdf: Option<String> = if let Some(x) = url.query() {
-            let mut y = x.replace('=', ":");
-            y = y.replace('&', ",");
-            y.insert(0, '{');
-            y.insert(y.len(), '}');
+        // let asdf: Option<String> = if let Some(x) = url.query() {
+        //     let mut y = x.replace('=', ":");
+        //     y = y.replace('&', ",");
+        //     y.insert(0, '{');
+        //     y.insert(y.len(), '}');
 
-            Some(y)
-        } else {
-            None
-        };
+        //     Some(y)
+        // } else {
+        //     None
+        // };
 
         let token_string = Self::set_token_with_query(url.as_str())?;
         
         reqwest::Client::new()
             .post(url.as_str())
-            .json(&asdf)
+            // .json(&asdf)
             .header(ACCEPT, "application/json")
             .header(CONTENT_TYPE, "application/json")
             .header(AUTHORIZATION, &token_string)

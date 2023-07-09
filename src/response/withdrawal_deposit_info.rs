@@ -248,3 +248,13 @@ pub struct CoinAddressGenSecondaryResponse {
     pub secondary_address: Option<String>
 }
 
+#[derive(Deserialize, Debug)]
+pub struct CoinAddressResponse {
+    pub currency: String,
+    pub net_type: String,
+    pub deposit_address: Option<String>,
+    pub secondary_address: Option<String>
+}
+
+impl Request for CoinAddressResponse {}
+impl RequestWithQuery for CoinAddressResponse {}

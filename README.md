@@ -40,6 +40,9 @@ let deposit_result = api_deposit::deposit_krw(10000.0, api_withdraw::TwoFactorTy
 let deposit_result = api_deposit::get_deposit_info(Some("KRW"), None, None).await;
 let deposit_result = api_deposit::list_deposit_info("KRW", DepositState::Rejected, None, None, 10, 0, OrderBy::Asc).await;
 
+let coin_address_info = api_deposit::get_coin_address_info("ETH", "ETH").await:
+let coin_address_info_list = api_deposit::list_coin_address_info().await;
+
 // api_quotation
 let order_book_info = api_quotation::get_orderbook_info("KRW-ETH").await;
 let ticker_snapshot = api_quotation::get_ticker_snapshot("KRW-ETH").await;

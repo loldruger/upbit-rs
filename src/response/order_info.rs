@@ -2,7 +2,7 @@ use crate::request::{Request, RequestWithQuery};
 use serde::Deserialize;
 
 /// Deserialized OrderInfo data
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct OrderInfo {
     pub uuid: String,
     pub side: String,

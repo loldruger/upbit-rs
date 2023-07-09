@@ -1,11 +1,11 @@
-use crate::{response::{WithdrawalDepositInfo, ResponseError, CoinAddressGen}, constant::{OrderBy, TwoFactorType}};
+use crate::{response::{WithdrawalDepositInfo, ResponseError, CoinAddressGen, CoinAddressResponse}, constant::{OrderBy, TwoFactorType}};
 
 mod deposit_info;
 mod deposit_info_list;
 mod deposit_krw;
+mod coin_address_info;
+mod coin_address_info_list;
 mod coin_address_generation;
-mod coin_address_inquiry;
-mod coin_addresses_inquiry;
 
 /// List of kind of Deposit state 
 pub enum DepositState {
@@ -212,7 +212,64 @@ pub async fn deposit_krw(amount: f64, two_factor_type: TwoFactorType) -> Result<
     WithdrawalDepositInfo::deposit_krw(amount, two_factor_type).await
 }
 
-/// # Not working for now
+/// 개별 입금 주소 조회
+/// 
+/// # Example
+/// ```
+/// let coin_address_info = api_deposit::get_coin_address_info("ETH", "ETH").await;
+/// ```
+/// - parameters
+/// > `currency` ex) BTC, ETH etc. <br>
+/// > `net_type` ex) BTC, ETH etc.
+/// ```json
+/// {
+///    "currency": "ETH",
+///    "net_type": "ETH",
+///    "deposit_address": "0xe13ca9a87a5ab313ebf59f984e7e42690409120d",
+///    "secondary_address": null
+/// }
+/// ```
+/// | field                  | description                   | type         |
+/// |:-----------------------|:------------------------------|:-------------|
+/// | currency | 화폐를 의미하는 영문 대문자 코드 | String |
+/// | net_type | 입금 네트워크 | String |
+/// | deposit_address | 입금 주소 | String |
+/// | secondary_address | 2차 입금 주소 | String |
+pub async fn get_coin_address_info(currency: &str, net_type: &str) -> Result<CoinAddressResponse, ResponseError> {
+    CoinAddressResponse::get_coin_address_info(currency, net_type).await
+}
+
+/// 전체 입금 주소 조회
+/// 
+/// # Example
+/// ```
+/// let coin_address_info_list = api_deposit::get_coin_address_info().await;
+/// ```
+/// - parameters
+/// > `currency` ex) BTC, ETH etc. <br>
+/// > `net_type` ex) BTC, ETH etc.
+/// ```json
+/// [
+///     {
+///        "currency": "ETH",
+///        "net_type": "ETH",
+///        "deposit_address": "0xe13ca9a87a5ab313ebf59f984e7e42690409120d",
+///        "secondary_address": null
+///     },
+///     ...
+/// ]
+/// ```
+/// | field                  | description                   | type         |
+/// |:-----------------------|:------------------------------|:-------------|
+/// | currency | 화폐를 의미하는 영문 대문자 코드 | String |
+/// | net_type | 입금 네트워크 | String |
+/// | deposit_address | 입금 주소 | String |
+/// | secondary_address | 2차 입금 주소 | String |
+pub async fn list_coin_address_info() -> Result<Vec<CoinAddressResponse>, ResponseError> {
+    CoinAddressResponse::list_coin_address_info().await
+}
+
+/// # Currently not working
 pub async fn generate_deposit_address(currency: &str, net_type: Option<&str>) -> Result<CoinAddressGen, ResponseError> {
     CoinAddressGen::generate_deposit_address(currency, net_type).await
 }
