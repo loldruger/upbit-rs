@@ -215,3 +215,35 @@ pub struct WithdrawCoinAddress {
 }
 
 impl Request for WithdrawCoinAddress {}
+
+#[derive(Deserialize, Debug)]
+pub enum CoinAddressGenResponse {
+    First(CoinAddressGenFirstResponse),
+    Second(CoinAddressGenSecondaryResponse)
+}
+
+#[derive(Deserialize, Debug)]
+pub struct CoinAddressGen {
+    pub response: CoinAddressGenResponse,
+}
+
+impl RequestWithQuery for CoinAddressGen {}
+
+/// Raw CoinAddressGenFirstResponse from serialized data
+/// 
+/// Which is first response 
+#[derive(Deserialize, Debug)]
+pub struct CoinAddressGenFirstResponse {
+    pub success: bool,
+    pub message: String
+}
+
+/// Raw CoinAddressGenSecondResponse from serialized data
+#[derive(Deserialize, Debug)]
+pub struct CoinAddressGenSecondaryResponse {
+    pub currency: String,
+    pub net_type: Option<String>,
+    pub deposit_address: String,
+    pub secondary_address: Option<String>
+}
+
