@@ -1,4 +1,4 @@
-use crate::{response::{WithdrawalDepositInfo, ResponseError}, constant::{OrderBy, TwoFactorType}};
+use crate::{response::{WithdrawalDepositInfo, ResponseError, CoinAddressGen}, constant::{OrderBy, TwoFactorType}};
 
 mod deposit_info;
 mod deposit_info_list;
@@ -210,4 +210,9 @@ pub async fn get_deposit_info(currency: Option<&str>, uuid: Option<&str>, txid: 
 /// | transaction_type | 입금 유형 | String |
 pub async fn deposit_krw(amount: f64, two_factor_type: TwoFactorType) -> Result<WithdrawalDepositInfo, ResponseError> {
     WithdrawalDepositInfo::deposit_krw(amount, two_factor_type).await
+}
+
+/// # Not working for now
+pub async fn generate_deposit_address(currency: &str, net_type: Option<&str>) -> Result<CoinAddressGen, ResponseError> {
+    CoinAddressGen::generate_deposit_address(currency, net_type).await
 }

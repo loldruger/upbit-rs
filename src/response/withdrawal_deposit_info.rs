@@ -217,6 +217,7 @@ pub struct WithdrawCoinAddress {
 impl Request for WithdrawCoinAddress {}
 
 #[derive(Deserialize, Debug)]
+#[serde(untagged)]
 pub enum CoinAddressGenResponse {
     First(CoinAddressGenFirstResponse),
     Second(CoinAddressGenSecondaryResponse)
