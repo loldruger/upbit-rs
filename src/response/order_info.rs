@@ -8,7 +8,7 @@ pub struct OrderInfo {
     pub uuid: String,
     pub side: OrderSide,
     pub ord_type: OrderType,
-    pub price: f64,
+    pub price: Option<f64>,
     pub state: OrderState,
     pub market: String,
     pub created_at: chrono::NaiveDateTime,
@@ -53,21 +53,17 @@ impl OrderInfoSource {
     /// Convert [String] type of ord_type into [OrderType]
     pub fn ord_type(&self) -> OrderType { self.ord_type.as_str().into() }
     /// Convert [String] type of price into [f64]
-    pub fn price(&self) -> f64 { 
+    pub fn price(&self) -> Option<f64> { 
         self.price
             .as_ref()
-            .unwrap()
-            .parse()
-            .unwrap()
+            .and_then(|x| x.parse().ok())
         }
     /// Convert [String] type of state into [OrderState]
     pub fn state(&self) -> OrderState { self.state.as_str().into() }
     /// Get market
     pub fn market(&self) -> String { self.market.to_owned() }
     /// Convert [String] type of created_at into [chrono::NaiveDateTime]
-    pub fn created_at(&self) -> chrono::NaiveDateTime { 
-        chrono::NaiveDateTime::parse_from_str(&self.created_at.clone(), "%Y-%m-%dT%H:%M:%S%z").unwrap()
-    }
+    pub fn created_at(&self) -> chrono::NaiveDateTime { chrono::DateTime::parse_from_rfc3339(&self.created_at).unwrap().naive_local() }
     /// Convert [String] type of volume into [f64]
     pub fn volume(&self) -> f64 { self.volume.parse().unwrap() }
     /// Convert [String] type of remaining_volume into [f64]

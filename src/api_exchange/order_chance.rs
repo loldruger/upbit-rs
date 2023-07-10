@@ -44,8 +44,8 @@ impl OrderChance {
                     market: ObjectMarket {
                         id: x.market.id.to_owned(),
                         name: x.market.name.to_owned(),
-                        order_types: x.market.order_types.to_owned(),
-                        order_sides: x.market.order_sides.to_owned(),
+                        order_types: x.market.order_types.into_iter().map(|x|x.as_str().into()).collect(),
+                        order_sides: x.market.order_sides.into_iter().map(|x|x.as_str().into()).collect(),
                         bid: ObjectAskBid {
                             currency: x.market.bid.currency.to_owned(),
                             price_unit: x.market.bid.price_unit.to_owned(),

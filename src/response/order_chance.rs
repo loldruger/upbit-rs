@@ -1,14 +1,16 @@
 use serde::Deserialize;
 
+use crate::api_exchange::{OrderType, OrderSide};
+
 use super::accounts_info::*;
 
 /// Deserialized ObjectMarket data of [OrderChance].
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct ObjectMarket {
     pub id: String,
     pub name: String,
-    pub order_types: Vec<String>,
-    pub order_sides: Vec<String>,
+    pub order_types: Vec<OrderType>,
+    pub order_sides: Vec<OrderSide>,
     pub bid: ObjectAskBid,
     pub ask: ObjectAskBid,
     pub max_total: u64,
@@ -16,7 +18,7 @@ pub struct ObjectMarket {
 }
 
 /// Deserialized ObjectAskBid info of [ObjectMarket].
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct ObjectAskBid {
     pub currency: String,
     pub price_unit: Option<String>,
@@ -24,7 +26,7 @@ pub struct ObjectAskBid {
 }
 
 /// Raw OrderChance data from serialized data
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct OrderChance {
     pub bid_fee: f32,
     pub ask_fee: f32,

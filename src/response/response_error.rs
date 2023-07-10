@@ -61,6 +61,8 @@ pub enum ResponseErrorState {
     WithdrawInsufficientBalance,
     /// "현재 해당 마켓에서 지원하지 않는 주문입니다. 주문 조건을 다시 확인해주시기 바랍니다."
     NotSupportedOrdType,
+    /// "not found market marketId: XXX"
+    NotFoundMarket,
     /// "잘못된 API 요청입니다"
     /// 
     /// "누락된 파라미터가 없는지 확인해주세요."
@@ -74,35 +76,36 @@ pub enum ResponseErrorState {
 impl From<&str> for ResponseErrorState {
     fn from(value: &str) -> Self {
         match value {
-            "internal_neither_parameter_specified" => ResponseErrorState::InternalNeitherParameterSpecified,
-            "internal_more_parameter_specified" => ResponseErrorState::InternalTooManyParameterSpecified,
-            "internal_reqwest_error" => ResponseErrorState::InternalReqwestError,
-            "internal_hmac_error" => ResponseErrorState::InternalHmacError,
-            "internal_token_encode_error" => ResponseErrorState::InternalTokenEncodeError,
-            "jwt_verification" => ResponseErrorState::JwtVerificationError,
-            "expired_access_key" => ResponseErrorState::ExpiredAccessKey,
-            "invalid_query_payload" => ResponseErrorState::InvalidQueryPayload,
-            "invalid_access_key" => ResponseErrorState::InvalidAccessKey,
-            "invalid_volume_bid" => ResponseErrorState::InvalideVolumeBid,
-            "invalid_price_bid" => ResponseErrorState::InvalidPriceBid,
-            "invalid_parameter" => ResponseErrorState::InvalidParameter,
-            "under_min_total_ask" => ResponseErrorState::UnderMinTotalAsk,
-            "under_min_total_bid" => ResponseErrorState::UnderMinTotalBid,
-            "insufficient_funds_ask" => ResponseErrorState::InsufficientFundsAsk,
-            "insufficient_funds_bid" => ResponseErrorState::InsufficientFundsBid,
-            "coin_address_not_found" => ResponseErrorState::CoinAddressNotFound,
-            "create_ask_error" => ResponseErrorState::CreateAskError,
-            "create_bid_error" => ResponseErrorState::CreateBidError,
-            "nonce_used" => ResponseErrorState::NonceUsed,
-            "no_authorization_i_p" => ResponseErrorState::NoAuthorizationIp,
-            "out_of_scope" => ResponseErrorState::OutOfScope,
-            "withdraw_address_not_registered" => ResponseErrorState::WithdrawAddressNotRegisterd,
-            "withdraw_insufficient_balance" => ResponseErrorState::WithdrawInsufficientBalance,
-            "order_not_found" => ResponseErrorState::OrderNotFound,
-            "not_supported_ord_type" => ResponseErrorState::NotSupportedOrdType, 
-            "validation_error" => ResponseErrorState::ValidationError,
-            "server_error" => ResponseErrorState::ServerError,
-            _ => ResponseErrorState::UnexpectedError
+            "internal_neither_parameter_specified" => Self::InternalNeitherParameterSpecified,
+            "internal_more_parameter_specified" => Self::InternalTooManyParameterSpecified,
+            "internal_reqwest_error" => Self::InternalReqwestError,
+            "internal_hmac_error" => Self::InternalHmacError,
+            "internal_token_encode_error" => Self::InternalTokenEncodeError,
+            "jwt_verification" => Self::JwtVerificationError,
+            "expired_access_key" => Self::ExpiredAccessKey,
+            "invalid_query_payload" => Self::InvalidQueryPayload,
+            "invalid_access_key" => Self::InvalidAccessKey,
+            "invalid_volume_bid" => Self::InvalideVolumeBid,
+            "invalid_price_bid" => Self::InvalidPriceBid,
+            "invalid_parameter" => Self::InvalidParameter,
+            "under_min_total_ask" => Self::UnderMinTotalAsk,
+            "under_min_total_bid" => Self::UnderMinTotalBid,
+            "insufficient_funds_ask" => Self::InsufficientFundsAsk,
+            "insufficient_funds_bid" => Self::InsufficientFundsBid,
+            "coin_address_not_found" => Self::CoinAddressNotFound,
+            "create_ask_error" => Self::CreateAskError,
+            "create_bid_error" => Self::CreateBidError,
+            "nonce_used" => Self::NonceUsed,
+            "no_authorization_i_p" => Self::NoAuthorizationIp,
+            "out_of_scope" => Self::OutOfScope,
+            "withdraw_address_not_registered" => Self::WithdrawAddressNotRegisterd,
+            "withdraw_insufficient_balance" => Self::WithdrawInsufficientBalance,
+            "order_not_found" => Self::OrderNotFound,
+            "not_supported_ord_type" => Self::NotSupportedOrdType,
+            "notfoundmarket" => Self::NotFoundMarket,
+            "validation_error" => Self::ValidationError,
+            "server_error" => Self::ServerError,
+            _ => Self::UnexpectedError
         }
     }
 }

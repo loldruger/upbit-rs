@@ -70,7 +70,7 @@ impl TickerSnapshot {
                     low_price: x.low_price,
                     trade_price: x.trade_price,
                     prev_closing_price: x.prev_closing_price,
-                    change: x.change.into(),
+                    change: x.change,
                     change_price: x.change_price,
                     change_rate: x.change_rate,
                     signed_change_price: x.signed_change_price,

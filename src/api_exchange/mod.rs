@@ -171,11 +171,12 @@ pub async fn order_by_price(
     .await
 }
 
-/// 판매 주문을 한다. (Sell at market price with specific amount of volume.)
+/// 즉시 시장가 판매를 한다. (Sell immediately at market price with specific amount of volume.)
 /// 
 /// # Example
 /// ```
-/// let order_info = api_exchange::sell_by_market_price("KRW-ETH", 1.0, "cdd92199-2897-4e14-9448-f923320408ad").await;
+/// let order_info = api_exchange::sell_by_market_price("KRW-ETH", 1.0, None).await;
+/// let order_info = api_exchange::sell_by_market_price("KRW-ETH", 1.0, Some("cdd92199-2897-4e14-9448-f923320408ad")).await;
 /// ```
 /// - parameters
 /// > `market` ex) "KRW-ETH" <br>
