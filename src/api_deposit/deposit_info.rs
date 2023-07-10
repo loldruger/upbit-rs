@@ -2,7 +2,7 @@ use reqwest::header::{ACCEPT, AUTHORIZATION};
 use reqwest::{Url, Response};
 
 use crate::request::RequestWithQuery;
-use crate::response::{WithdrawalDepositInfo, WithdrawalDepositInfoSource};
+use crate::response::{TransactionInfo, TransactionInfoSource};
 
 use super::{
     super::constant::{URL_WITHDRAW, URL_SERVER},
@@ -14,7 +14,7 @@ use super::{
     }
 };
 
-impl WithdrawalDepositInfo {
+impl TransactionInfo {
     pub async fn get_deposit_info(currency: Option<&str>, uuid: Option<&str>, txid: Option<&str>) -> Result<Self, ResponseError> {
         let res = Self::request_deposit(currency, uuid, txid).await?;
         let res_serialized = res.text().await.unwrap();
@@ -33,7 +33,7 @@ impl WithdrawalDepositInfo {
         }
 
         serde_json::from_str(&res_serialized)
-            .map(|x: WithdrawalDepositInfoSource| {
+            .map(|x: TransactionInfoSource| {
                 Self {
                     r#type: x.r#type(),
                     uuid: x.uuid(),

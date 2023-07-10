@@ -18,7 +18,7 @@ use super::{
 };
 
 impl OrderInfo {
-    pub async fn delete_order(uuid: Option<&str>, identifier: Option<&str>) -> Result<Self, ResponseError> {
+    pub async fn cancel_order(uuid: Option<&str>, identifier: Option<&str>) -> Result<Self, ResponseError> {
         if uuid.is_none() && identifier.is_none() {
             return Err(ResponseError {
                 state: ResponseErrorState::InternalNeitherParameterSpecified,
@@ -37,7 +37,7 @@ impl OrderInfo {
             });
         }
 
-        let res = Self::request_delete(uuid, identifier).await?;
+        let res = Self::request_cancel(uuid, identifier).await?;
         let res_serialized: String = res.text().await.unwrap();
         
         if res_serialized.contains("error") {
@@ -84,7 +84,7 @@ impl OrderInfo {
             })
     }
 
-    async fn request_delete(uuid: Option<&str>, identifier: Option<&str>) -> Result<Response, ResponseError> {
+    async fn request_cancel(uuid: Option<&str>, identifier: Option<&str>) -> Result<Response, ResponseError> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDER_STATUS}")).unwrap();
 
         if uuid.is_some() {

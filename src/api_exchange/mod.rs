@@ -5,10 +5,12 @@ pub mod order_chance;
 pub mod order_status;
 pub mod order_status_list;
 
+use serde::Deserialize;
+
 use super::response::{AccountsInfo, OrderInfo, OrderChance, OrderStatus, ResponseError};
 
 /// Side of order
-#[derive(Copy, Clone, PartialEq, Eq)]
+#[derive(Deserialize, Debug, Copy, Clone, PartialEq, Eq)]
 pub enum OrderSide {
     /// 매수
     Bid, 
@@ -25,8 +27,18 @@ impl ToString for OrderSide {
     }
 }
 
+impl From<&str> for OrderSide {
+    fn from(value: &str) -> Self {
+        match value {
+            "bid" => OrderSide::Bid,
+            "ask" => OrderSide::Ask,
+            _ => panic!("value must be either \"bid\" or \"ask!\"")
+        }
+    }
+}
+
 /// Type of order
-#[derive(Copy, Clone, PartialEq, Eq)]
+#[derive(Deserialize, Debug, Copy, Clone, PartialEq, Eq)]
 pub enum OrderType {
     /// 지정가 주문
     Limit,
@@ -42,6 +54,42 @@ impl ToString for OrderType {
             OrderType::Limit => "limit".to_owned(),
             OrderType::Price => "price".to_owned(),
             OrderType::Market => "market".to_owned(),
+        }
+    }
+}
+
+impl From<&str> for OrderType {
+    fn from(value: &str) -> Self {
+        match value {
+            "limit" => OrderType::Limit,
+            "price" => OrderType::Price,
+            "market" => OrderType::Market,
+            _ => panic!("value must be one of \"limit\", \"price!\" or \"market\"")
+        }
+    }
+}
+
+/// List of order state
+#[derive(Deserialize, Debug)]
+pub enum OrderState {
+    /// 체결 대기 (default)
+    Wait,
+    /// 예약주문 대기
+    Watch,
+    /// 전체 체결 완료
+    Done,
+    /// 주문 취소
+    Cancel
+}
+
+impl From<&str> for OrderState {
+    fn from(value: &str) -> Self {
+        match value {
+            "wait" => OrderState::Wait,
+            "watch" => OrderState::Watch,
+            "done" => OrderState::Done,
+            "cancel" => OrderState::Cancel,
+            _ => panic!("value must be one of \"wait\", \"watch!\", \"done!\" or \"cancel\"")
         }
     }
 }
@@ -232,7 +280,7 @@ pub async fn sell_by_market_price(market: &str, volume: f64, identifier: Option<
 /// | executed_volume   | 체결된 양                    | NumberString |
 /// | trades_count      | 해당 주문에 걸린 체결 수      | Integer |
 pub async fn cancel_order(uuid: Option<&str>, identifier: Option<&str>) -> Result<OrderInfo, ResponseError> {
-    OrderInfo::delete_order(uuid, identifier).await
+    OrderInfo::cancel_order(uuid, identifier).await
 }
 
 /// 내가 보유한 자산 리스트를 보여줍니다. (inquire your account info)
@@ -435,7 +483,7 @@ pub async fn get_order_chance(market_id: &str) -> Result<OrderChance, ResponseEr
 /// | trades.side | 체결 종류 | String |
 /// | trades.created_at | 체결 시각 | DateString |
 pub async fn get_order_status(uuid: Option<&str>, identifier: Option<&str>) -> Result<OrderStatus, ResponseError> {
-    OrderStatus::get_order_state(uuid, identifier).await
+    OrderStatus::get_order_status(uuid, identifier).await
 }
 
 /// 주문 리스트를 조회한다. (inquire every order status.)

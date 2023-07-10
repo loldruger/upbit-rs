@@ -1,6 +1,7 @@
 use crate::response::{ResponseError, ResponseErrorBody, ResponseErrorState, ResponseErrorSource};
 
 use super::super::constant::{URL_SERVER, URL_TICKER};
+use super::SnapshotChangeType;
 
 use reqwest::Url;
 use reqwest::header::ACCEPT;
@@ -19,7 +20,7 @@ pub struct TickerSnapshot {
     low_price: f64,
     trade_price: f64,
     prev_closing_price: f64,
-    change: String, //EVEN, RISE, FALL
+    change: SnapshotChangeType, //EVEN, RISE, FALL
     change_price: f64,
     change_rate: f64,
     signed_change_price: f64,
@@ -69,7 +70,7 @@ impl TickerSnapshot {
                     low_price: x.low_price,
                     trade_price: x.trade_price,
                     prev_closing_price: x.prev_closing_price,
-                    change: x.change,
+                    change: x.change.into(),
                     change_price: x.change_price,
                     change_rate: x.change_rate,
                     signed_change_price: x.signed_change_price,

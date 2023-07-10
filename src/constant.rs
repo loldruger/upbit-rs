@@ -6,20 +6,33 @@ pub const URL_ACCOUNTS: &str = "/v1/accounts";
 
 /// URL of API getting order info  
 pub const URL_ORDER: &str = "/v1/orders";
+/// URL of API getting order chance
 pub const URL_ORDER_CHANCE: &str = "/v1/orders/chance";
+/// URL of API getting order status
 pub const URL_ORDER_STATUS: &str = "/v1/order";
+/// URL of API getting order status list
 pub const URL_ORDER_STATUS_LIST: &str = "/v1/orders";
 
+/// URL of API getting order book
 pub const URL_ORDERBOOK: &str = "/v1/orderbook";
+/// URL of API getting ticker
 pub const URL_TICKER: &str = "/v1/ticker";
+/// URL of API getting trandes ticks
 pub const URL_TRADES_TICKS: &str = "/v1/trades/ticks";
+/// URL of API getting market state
 pub const URL_MARKET_STATE: &str = "/v1/market/all";
 
+/// URL of API getting withdraw info
 pub const URL_WITHDRAW: &str = "/v1/withdraw";
+/// URL of API getting withdraw info list
 pub const URL_WITHDRAWS: &str = "/v1/withdraws";
+/// URL of API withdrawing KRW
 pub const URL_WITHDRAWS_KRW: &str = "/v1/withdraws/krw";
+/// URL of API withdrawing coin
 pub const URL_WITHDRAWS_COIN: &str = "/v1/withdraws/coin";
+/// URL of API getting coin address
 pub const URL_WITHDRAWS_COIN_ADDRESS: &str = "v1/withdraws/coin_addresses";
+/// URL of API getting withdraw chance
 pub const URL_WITHDRAWS_CHANCE: &str = "/v1/withdraws/chance";
 
 /// URL of deposit API
@@ -37,8 +50,11 @@ pub const URL_DEPOSITS_KRW: &str = "/v1/deposits/krw";
 
 /// URL of API listing candle data of minute unit
 pub const URL_CANDLE_MINUTE: &str = "/v1/candles/minutes/";
+/// URL of API listing candle data of day unit
 pub const URL_CANDLE_DAY: &str = "/v1/candles/days";
+/// URL of API listing candle data of week unit
 pub const URL_CANDLE_WEEK: &str = "/v1/candles/weeks";
+/// URL of API listing candle data of month unit
 pub const URL_CANDLE_MONTH: &str = "/v1/candles/months";
 
 /// Kind of order 
@@ -58,19 +74,40 @@ impl ToString for OrderBy {
     }
 }
 
+impl From<&str> for OrderBy {
+    fn from(value: &str) -> Self {
+        match value {
+            "asc" => Self::Asc,
+            "desc" => Self::Desc,
+            _ => panic!()
+        }
+    }
+}
+
 /// Kind of transaction type
-pub enum TransactionType {
-    /// 일반출금(general withdrawal)
+#[derive(Debug)]
+pub enum WithdrawType {
+    /// 일반 입출금(general withdrawal or deposit)
     Default,
-    /// 바로출금(instant withdrawal)
+    /// 바로 입출금(instant withdrawal or deposit)
     Internal 
 }
 
-impl ToString for TransactionType {
+impl ToString for WithdrawType {
     fn to_string(&self) -> String {
         match self {
-            TransactionType::Default => "default".to_owned(),
-            TransactionType::Internal => "internal".to_owned(),
+            WithdrawType::Default => "default".to_owned(),
+            WithdrawType::Internal => "internal".to_owned(),
+        }
+    }
+}
+
+impl From<&str> for WithdrawType {
+    fn from(value: &str) -> Self {
+        match value {
+            "default" => Self::Default,
+            "internal" => Self::Internal,
+            _ => panic!("")
         }
     }
 }
@@ -92,17 +129,44 @@ impl ToString for TwoFactorType {
     }
 }
 
-
-pub enum Currency {
-    KRW,
-    BTC,
-    USDT,
+/// List of transaction type
+#[derive(Debug)]
+pub enum TransactionType {
+    /// 출금
+    Withdraw,
+    /// 입금
+    Deposit
 }
 
-pub enum CurrencyCrypto {
-    BTC,
-    ETH,
-    ATOM
+impl ToString for TransactionType {
+    fn to_string(&self) -> String {
+        match self {
+            TransactionType::Withdraw => "withdraw".to_owned(),
+            TransactionType::Deposit => "deposit".to_owned(),
+        }
+    }
 }
 
-pub struct MarketType(Currency, CurrencyCrypto);
+impl From<&str> for TransactionType {
+    fn from(value: &str) -> Self {
+        match value {
+            "withdraw" => Self::Withdraw,
+            "deposit" => Self::Deposit,
+            _ => panic!("")
+        }
+    }
+}
+
+// pub enum Currency {
+//     KRW,
+//     BTC,
+//     USDT,
+// }
+
+// pub enum CurrencyCrypto {
+//     BTC,
+//     ETH,
+//     ATOM
+// }
+
+// pub struct MarketType(Currency, CurrencyCrypto);

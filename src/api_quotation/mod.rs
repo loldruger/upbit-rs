@@ -8,6 +8,7 @@ pub mod candle_month;
 pub mod candle_week;
 
 pub use order_book::OrderbookInfo;
+use serde::Deserialize;
 pub use ticker_snapshot::TickerSnapshot;
 pub use trade_recent::TradeRecent;
 pub use market_state::MarketState;
@@ -18,6 +19,28 @@ pub use candle_month::CandleChartMonth;
 
 use crate::response::ResponseError;
 use crate::constant::{URL_CANDLE_MINUTE, URL_CANDLE_DAY, URL_CANDLE_WEEK, URL_CANDLE_MONTH};
+
+/// Kind of change of ticker snapshot
+#[derive(Deserialize)]
+pub enum SnapshotChangeType {
+    /// 보합
+    Even,
+    /// 상승
+    Rise,
+    /// 하락
+    Fall,
+}
+
+impl From<&str> for SnapshotChangeType {
+    fn from(value: &str) -> Self {
+        match value {
+            "EVEN" => Self::Even,
+            "FALL" => Self::Fall,
+            "Rise" => Self::Rise,
+            _ => panic!()
+        }
+    }
+}
 
 /// Kind of minute unit of minute candle chart
 #[derive(Clone, Copy)]

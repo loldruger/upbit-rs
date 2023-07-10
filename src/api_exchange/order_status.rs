@@ -19,7 +19,7 @@ use super::{
 
 impl RequestWithQuery for OrderStatus {}
 impl OrderStatus {
-    pub async fn get_order_state(uuid: Option<&str>, identifier: Option<&str>) -> Result<Self, ResponseError> {
+    pub async fn get_order_status(uuid: Option<&str>, identifier: Option<&str>) -> Result<Self, ResponseError> {
         if uuid.is_none() && identifier.is_none() {
             return Err(ResponseError {
                 state: ResponseErrorState::InternalNeitherParameterSpecified,

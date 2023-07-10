@@ -8,8 +8,8 @@ use super::{
         constant::{URL_WITHDRAWS_KRW, URL_SERVER},
         request::RequestWithQuery,
         response::{
-            WithdrawalDepositInfo,
-            WithdrawalDepositInfoSource,
+            TransactionInfo,
+            TransactionInfoSource,
             ResponseError,
             ResponseErrorBody,
             ResponseErrorState,
@@ -18,7 +18,7 @@ use super::{
     }
 };
 
-impl WithdrawalDepositInfo {
+impl TransactionInfo {
     pub async fn withdraw_krw(amount: f64, two_factor_type: TwoFactorType) -> Result<Self, ResponseError> {
         let res = Self::request_withdraw_krw(amount, two_factor_type).await?;
         let res_serialized = res.text().await.unwrap();
@@ -37,7 +37,7 @@ impl WithdrawalDepositInfo {
         }
 
         serde_json::from_str(&res_serialized)
-            .map(|x: WithdrawalDepositInfoSource| {
+            .map(|x: TransactionInfoSource| {
                 Self {
                     r#type: x.r#type(),
                     uuid: x.uuid(),

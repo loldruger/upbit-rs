@@ -1,29 +1,29 @@
 use serde::Deserialize;
 
-use crate::request::{Request, RequestWithQuery};
+use crate::{request::{Request, RequestWithQuery}, constant::{WithdrawType, TransactionType}, api_deposit::DepositState};
 
 use super::{AccountsInfoSource, AccountsInfo};
 
-/// Deserialized derived WithdrawalDepositInfo data
+/// Deserialized derived TransactionInfoDerived data
 #[derive(Debug)]
-pub struct WithdrawalDepositInfoDerived {
-    pub r#type: String,
+pub struct TransactionInfoDerived {
+    pub r#type: TransactionType,
     pub uuid: String,
     pub currency: String,
     pub net_type: Option<String>,
     pub txid: String,
-    pub state: String,
+    pub state: DepositState,
     pub created_at: chrono::NaiveDateTime,
     pub done_at: Option<chrono::NaiveDateTime>,
     pub amount: f64,
     pub fee: f64,
     pub krw_amount: f64,
-    pub transaction_type: String,
+    pub transaction_type: WithdrawType,
 }
 
 /// Raw derived withdraw info from serialized data
 #[derive(Deserialize)]
-pub struct WithdrawalDepositInfoDerivedSource {
+pub struct TransactionInfoDerivedSource {
     r#type: String,
     uuid: String,
     currency: String,
@@ -38,44 +38,56 @@ pub struct WithdrawalDepositInfoDerivedSource {
     transaction_type: String
 }
 
-impl WithdrawalDepositInfoDerivedSource {
-    pub fn r#type(&self) -> String { self.r#type.clone() }
+impl TransactionInfoDerivedSource {
+    /// Convert [String] type value into [TransactionType]
+    pub fn r#type(&self) -> TransactionType { self.r#type.as_str().into() }
+    /// Get uuid 
     pub fn uuid(&self) -> String { self.uuid.clone() }
+    /// Get currency
     pub fn currency(&self) -> String {self.currency.clone()}
+    /// Get net_type
     pub fn net_type(&self) -> Option<String> {self.net_type.clone().or(None)}
+    /// Get txid
     pub fn txid(&self) -> String { self.txid.clone() }
-    pub fn state(&self) -> String { self.state.clone() }
+    /// Convert [String] state value into [DepositState]
+    pub fn state(&self) -> DepositState { self.state.as_str().into() }
+    /// Convert [String] created_at value into [chrono::NaiveDateTime]
     pub fn created_at(&self) -> chrono::NaiveDateTime {chrono::NaiveDateTime::parse_from_str(&self.created_at, "%Y-%m-%dT%H:%M:%S%z").unwrap()}
+    /// Convert [String] done_at value into [chrono::NaiveDateTime]
     pub fn done_at(&self) -> Option<chrono::NaiveDateTime> {
         chrono::NaiveDateTime::parse_from_str(&self.done_at.clone().or(None)?, "%Y-%m-%dT%H:%M:%S%z").ok()
     }
+    /// Convert [String] amount value into [f64]
     pub fn amount(&self) -> f64 { self.amount.parse().unwrap() }
+    /// Convert [String] fee value into [f64]
     pub fn fee(&self) -> f64 { self.fee.parse().unwrap() }
+    /// Convert [String] krw_amount value into [f64]
     pub fn krw_amount(&self) -> f64 { self.krw_amount.parse().unwrap() }
-    pub fn transaction_type(&self) -> String { self.transaction_type.clone() }
+    /// Convert [String] transaction_type value into [WithdrawType]
+    pub fn transaction_type(&self) -> WithdrawType { self.transaction_type.as_str().into() }
 }
 
-/// Deserialized WithdrawalDepositInfo data
+/// Deserialized TransactionInfo data
 #[derive(Debug)]
-pub struct WithdrawalDepositInfo {
-    pub r#type: String,
+pub struct TransactionInfo {
+    pub r#type: TransactionType,
     pub uuid: String,
     pub currency: String,
     pub net_type: Option<String>,
     pub txid: String,
-    pub state: String,
+    pub state: DepositState,
     pub created_at: chrono::NaiveDateTime,
     pub done_at: Option<chrono::NaiveDateTime>,
     pub amount: f64,
     pub fee: f64,
-    pub transaction_type: String,
+    pub transaction_type: WithdrawType,
 }
 
-impl RequestWithQuery for WithdrawalDepositInfo {}
+impl RequestWithQuery for TransactionInfo {}
 
 /// Raw withdraw info from serialized data
 #[derive(Deserialize)]
-pub struct WithdrawalDepositInfoSource {
+pub struct TransactionInfoSource {
     r#type: String,
     uuid: String,
     currency: String,
@@ -89,23 +101,31 @@ pub struct WithdrawalDepositInfoSource {
     transaction_type: String
 }
 
-impl WithdrawalDepositInfoSource {
-    pub fn r#type(&self) -> String { self.r#type.clone() }
+impl TransactionInfoSource {
+    /// Convert [String] type value into [TransactionType]
+    pub fn r#type(&self) -> TransactionType { self.r#type.as_str().into() }
+    /// Get uuid 
     pub fn uuid(&self) -> String { self.uuid.clone() }
+    /// Get currency
     pub fn currency(&self) -> String {self.currency.clone()}
+    /// Get net_type
     pub fn net_type(&self) -> Option<String> {self.net_type.clone().or(None)}
+    /// Get txid
     pub fn txid(&self) -> String { self.txid.clone() }
-    pub fn state(&self) -> String { self.state.clone() }
+    /// Convert [String] state value into [DepositState]
+    pub fn state(&self) -> DepositState { self.state.as_str().into() }
+    /// Convert [String] created_at value into [chrono::NaiveDateTime]
     pub fn created_at(&self) -> chrono::NaiveDateTime {chrono::NaiveDateTime::parse_from_str(&self.created_at, "%Y-%m-%dT%H:%M:%S%z").unwrap()}
+    /// Convert [String] done_at value into [chrono::NaiveDateTime]
     pub fn done_at(&self) -> Option<chrono::NaiveDateTime> {
-        chrono::NaiveDateTime::parse_from_str(
-            &self.done_at.clone().or(None)?,
-            "%Y-%m-%dT%H:%M:%S%z"
-        ).ok()
+        chrono::NaiveDateTime::parse_from_str(&self.done_at.clone().or(None)?, "%Y-%m-%dT%H:%M:%S%z").ok()
     }
+    /// Convert [String] amount value into [f64]
     pub fn amount(&self) -> f64 { self.amount.parse().unwrap() }
+    /// Convert [String] fee value into [f64]
     pub fn fee(&self) -> f64 { self.fee.parse().unwrap() }
-    pub fn transaction_type(&self) -> String { self.transaction_type.clone() }
+    /// Convert [String] transaction_type value into [WithdrawType]
+    pub fn transaction_type(&self) -> WithdrawType { self.transaction_type.as_str().into() }
 }
 
 /// Raw MemberLevel of [WithdrawChanceSource] from serialized data
@@ -216,6 +236,7 @@ pub struct WithdrawCoinAddress {
 
 impl Request for WithdrawCoinAddress {}
 
+/// Kind of response body of coin address Generator
 #[derive(Deserialize, Debug)]
 #[serde(untagged)]
 pub enum CoinAddressGenResponse {
@@ -223,6 +244,7 @@ pub enum CoinAddressGenResponse {
     Second(CoinAddressGenSecondaryResponse)
 }
 
+/// Response body of coin address generator
 #[derive(Deserialize, Debug)]
 pub struct CoinAddressGen {
     pub response: CoinAddressGenResponse,
@@ -248,6 +270,7 @@ pub struct CoinAddressGenSecondaryResponse {
     pub secondary_address: Option<String>
 }
 
+/// Response body of coin address info
 #[derive(Deserialize, Debug)]
 pub struct CoinAddressResponse {
     pub currency: String,

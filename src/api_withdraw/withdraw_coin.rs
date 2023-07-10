@@ -2,13 +2,13 @@ use reqwest::header::{ACCEPT, AUTHORIZATION};
 use reqwest::{Url, Response};
 
 use super::{
-    TransactionType,
+    WithdrawType,
     super::{
         constant::{URL_WITHDRAWS_COIN, URL_SERVER},
         request::RequestWithQuery,
         response::{
-            WithdrawalDepositInfoDerived,
-            WithdrawalDepositInfoDerivedSource,
+            TransactionInfoDerived,
+            TransactionInfoDerivedSource,
             ResponseError,
             ResponseErrorBody,
             ResponseErrorState,
@@ -17,15 +17,15 @@ use super::{
     }
 };
 
-impl RequestWithQuery for WithdrawalDepositInfoDerived {}
-impl WithdrawalDepositInfoDerived {
+impl RequestWithQuery for TransactionInfoDerived {}
+impl TransactionInfoDerived {
     pub async fn withdraw_coin(
         currency: &str,
         net_type: &str,
         amount: f64,
         address: &str,
         secondary_address: Option<&str>,
-        transaction_type: TransactionType
+        transaction_type: WithdrawType
     ) -> Result<Self, ResponseError> {
         let res = Self::request_withdraw_coin(currency, net_type, amount, address, secondary_address, transaction_type).await?;
         let res_serialized = res.text().await.unwrap();
@@ -44,7 +44,7 @@ impl WithdrawalDepositInfoDerived {
         }
 
         serde_json::from_str(&res_serialized)
-            .map(|x: WithdrawalDepositInfoDerivedSource| {
+            .map(|x: TransactionInfoDerivedSource| {
                 Self {
                     r#type: x.r#type(),
                     uuid: x.uuid(),
@@ -77,7 +77,7 @@ impl WithdrawalDepositInfoDerived {
         amount: f64,
         address: &str,
         secondary_address: Option<&str>,
-        transaction_type: TransactionType
+        transaction_type: WithdrawType
     ) -> Result<Response, ResponseError> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_WITHDRAWS_COIN}")).unwrap();
         

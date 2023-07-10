@@ -1,14 +1,14 @@
 mod withdraw_info;
-mod withdraw_list;
+mod withdraw_info_list;
 mod withdraw_chance;
 mod withdraw_coin;
 mod withdraw_krw;
 mod withdraw_address;
 
-use crate::{constant::{OrderBy, TransactionType, TwoFactorType}, response::{WithdrawChance, WithdrawCoinAddress}};
-use super::response::{WithdrawalDepositInfo, WithdrawalDepositInfoDerived, ResponseError};
+use crate::{constant::{OrderBy, WithdrawType, TwoFactorType}, response::{WithdrawChance, WithdrawCoinAddress}};
+use super::response::{TransactionInfo, TransactionInfoDerived, ResponseError};
 
-/// list of withdraw state
+/// List of withdraw state
 pub enum WithdrawState {
     /// 대기중
     Waiting,
@@ -33,6 +33,20 @@ impl ToString for WithdrawState {
             WithdrawState::Failed => "failed".to_owned(),
             WithdrawState::Canceled => "canceled".to_owned(),
             WithdrawState::Rejected => "rejected".to_owned(),
+        }
+    }
+}
+
+impl From<&str> for WithdrawState {
+    fn from(value: &str) -> Self {
+        match value {
+            "waiting" => WithdrawState::Waiting,
+            "processing" => WithdrawState::Processing,
+            "done" => WithdrawState::Done,
+            "failed" => WithdrawState::Failed,
+            "canceled" => WithdrawState::Canceled,
+            "rejected" => WithdrawState::Rejected,
+            _ => panic!()
         }
     }
 }
@@ -120,8 +134,8 @@ pub async fn list_withdraw_info(
     limit: u32,
     page: u32,
     order_by: OrderBy
-) -> Result<Vec<WithdrawalDepositInfo>, ResponseError> {
-    WithdrawalDepositInfo::inquiry_withdraw_list(currency, state, uuids, txids, limit, page, order_by).await
+) -> Result<Vec<TransactionInfo>, ResponseError> {
+    TransactionInfo::inquiry_withdraw_list(currency, state, uuids, txids, limit, page, order_by).await
 }
 
 /// 개별 출금 조회.
@@ -166,8 +180,8 @@ pub async fn list_withdraw_info(
 /// | amount | 출금 금액/수량 | NumberString
 /// | fee | 출금 수수료 | NumberString
 /// | transaction_type | 출금 유형<br> default : 일반출금<br>internal : 바로출금 | String
-pub async fn get_withdraw_info(currency: Option<&str>, uuid: Option<&str>, txid: Option<&str>) -> Result<WithdrawalDepositInfo, ResponseError> {
-    WithdrawalDepositInfo::get_withdraw_info(currency, uuid, txid).await
+pub async fn get_withdraw_info(currency: Option<&str>, uuid: Option<&str>, txid: Option<&str>) -> Result<TransactionInfo, ResponseError> {
+    TransactionInfo::get_withdraw_info(currency, uuid, txid).await
 }
 
 /// 출금 가능 정보를 조회한다.
@@ -307,9 +321,9 @@ pub async fn withdraw_coin(
     amount: f64,
     address: &str,
     secondary_address: Option<&str>,
-    transaction_type: TransactionType
-) -> Result<WithdrawalDepositInfoDerived, ResponseError> {
-    WithdrawalDepositInfoDerived::withdraw_coin(
+    transaction_type: WithdrawType
+) -> Result<TransactionInfoDerived, ResponseError> {
+    TransactionInfoDerived::withdraw_coin(
         currency,
         net_type,
         amount,
@@ -358,8 +372,8 @@ pub async fn withdraw_coin(
 /// | amount| 출금 금액/수량 | NumberString |
 /// | fee| 출금 수수료 | NumberString |
 /// | transaction_type| 출금 유형 | String |
-pub async fn withdraw_krw(amount: f64, two_factor_type: TwoFactorType) -> Result<WithdrawalDepositInfo, ResponseError> {
-    WithdrawalDepositInfo::withdraw_krw(amount, two_factor_type).await
+pub async fn withdraw_krw(amount: f64, two_factor_type: TwoFactorType) -> Result<TransactionInfo, ResponseError> {
+    TransactionInfo::withdraw_krw(amount, two_factor_type).await
 }
 
 /// 출금 허용 주소 리스트 조회

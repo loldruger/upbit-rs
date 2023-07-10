@@ -1,4 +1,4 @@
-use crate::{response::{WithdrawalDepositInfo, ResponseError, CoinAddressGen, CoinAddressResponse}, constant::{OrderBy, TwoFactorType}};
+use crate::{response::{TransactionInfo, ResponseError, CoinAddressGen, CoinAddressResponse}, constant::{OrderBy, TwoFactorType}};
 
 mod deposit_info;
 mod deposit_info_list;
@@ -8,28 +8,49 @@ mod coin_address_info_list;
 mod coin_address_generation;
 
 /// List of kind of Deposit state 
+#[derive(Debug)]
 pub enum DepositState {
+    /// 입금 진행중
     Processing,
-    // working
+    /// 완료
     Accepted,
+    /// 취소됨
     Canceled,
-    // working
+    /// 거절됨
     Rejected,
+    /// 트래블룰 추가 인증 대기중
     TravelRuleSuspected,
+    /// 반환절차 진행중
     Refunding,
+    /// 반환됨
     Refunded
 }
 
 impl ToString for DepositState {
     fn to_string(&self) -> String {
         match self {
-            DepositState::Processing => "processing".to_owned(),
-            DepositState::Accepted => "accepted".to_owned(),
-            DepositState::Canceled => "cancelled".to_owned(), // this typo is intentional
-            DepositState::Rejected => "rejected".to_owned(),
-            DepositState::TravelRuleSuspected => "travel_rule_suspected".to_owned(),
-            DepositState::Refunding => "refunding".to_owned(),
-            DepositState::Refunded => "refunded".to_owned(),
+            Self::Processing => "processing".to_owned(),
+            Self::Accepted => "accepted".to_owned(),
+            Self::Canceled => "cancelled".to_owned(), // this typo is intentional
+            Self::Rejected => "rejected".to_owned(),
+            Self::TravelRuleSuspected => "travel_rule_suspected".to_owned(),
+            Self::Refunding => "refunding".to_owned(),
+            Self::Refunded => "refunded".to_owned(),
+        }
+    }
+}
+
+impl From<&str> for DepositState {
+    fn from(value: &str) -> Self {
+        match value {
+            "processing" => Self::Processing,
+            "accepted" => Self::Accepted,
+            "cancelled" => Self::Canceled,
+            "rejected" => Self::Rejected,
+            "travel_rule_suspected" => Self::TravelRuleSuspected,
+            "refunding" => Self::Refunding,
+            "refunded" => Self::Refunded,
+            _ => panic!()
         }
     }
 }
@@ -118,8 +139,8 @@ pub async fn list_deposit_info(
     limit: u32,
     page: u32,
     order_by: OrderBy
-) -> Result<Vec<WithdrawalDepositInfo>, ResponseError> {
-    WithdrawalDepositInfo::inquiry_deposit_list(currency, state, uuids, txids, limit, page, order_by).await
+) -> Result<Vec<TransactionInfo>, ResponseError> {
+    TransactionInfo::inquiry_deposit_list(currency, state, uuids, txids, limit, page, order_by).await
 }
 
 /// 개별 입금 조회.
@@ -165,8 +186,8 @@ pub async fn list_deposit_info(
 /// | amount | 입금 금액/수량 | NumberString
 /// | fee | 입금 수수료 | NumberString
 /// | transaction_type | 입금 유형<br> default : 일반입금<br>internal : 바로입금 | String
-pub async fn get_deposit_info(currency: Option<&str>, uuid: Option<&str>, txid: Option<&str>) -> Result<WithdrawalDepositInfo, ResponseError> {
-    WithdrawalDepositInfo::get_deposit_info(currency, uuid, txid).await
+pub async fn get_deposit_info(currency: Option<&str>, uuid: Option<&str>, txid: Option<&str>) -> Result<TransactionInfo, ResponseError> {
+    TransactionInfo::get_deposit_info(currency, uuid, txid).await
 }
 
 /// 원화를 입금한다.
@@ -208,8 +229,8 @@ pub async fn get_deposit_info(currency: Option<&str>, uuid: Option<&str>, txid: 
 /// | amount | 입금 금액/수량 | NumberString |
 /// | fee | 입금 수수료 | NumberString |
 /// | transaction_type | 입금 유형 | String |
-pub async fn deposit_krw(amount: f64, two_factor_type: TwoFactorType) -> Result<WithdrawalDepositInfo, ResponseError> {
-    WithdrawalDepositInfo::deposit_krw(amount, two_factor_type).await
+pub async fn deposit_krw(amount: f64, two_factor_type: TwoFactorType) -> Result<TransactionInfo, ResponseError> {
+    TransactionInfo::deposit_krw(amount, two_factor_type).await
 }
 
 /// 개별 입금 주소 조회
