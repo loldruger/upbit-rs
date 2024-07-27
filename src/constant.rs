@@ -14,11 +14,11 @@ pub const URL_ORDER_STATUS: &str = "/v1/order";
 #[deprecated(since = "1.6.0 (api version 1.4.8)")]
 pub const URL_ORDER_STATUS_LIST: &str = "/v1/orders";
 /// URL of API getting order status by uuids
-pub const URL_ORDER_STATUS_BY_UUID: &str = "v1/orders/uuids";
+pub const URL_ORDER_STATUS_BY_UUID: &str = "/v1/orders/uuids";
 /// URL of API getting order status waiting for trades
-pub const URL_ORDER_STATUS_OPEN: &str = "v1/orders/open";
+pub const URL_ORDER_STATUS_OPEN: &str = "/v1/orders/open";
 /// URL of API getting order status closed
-pub const URL_ORDER_STATUS_CLOSED: &str = "v1/orders/closed";
+pub const URL_ORDER_STATUS_CLOSED: &str = "/v1/orders/closed";
 
 /// URL of API getting order book
 pub const URL_ORDERBOOK: &str = "/v1/orderbook";
