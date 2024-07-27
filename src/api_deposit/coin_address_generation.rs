@@ -32,7 +32,10 @@ impl CoinAddressGen {
                             message: e.error.message
                         },
                     }
-                }).ok().unwrap())
+                })
+                .ok()
+                .unwrap()
+            )
         }
 
         serde_json::from_str(&res_serialized)

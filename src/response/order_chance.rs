@@ -9,7 +9,7 @@ use super::accounts_info::*;
 pub struct ObjectMarket {
     pub id: String,
     pub name: String,
-    pub order_types: Vec<OrderType>,
+    // pub order_types: Vec<OrderType>,
     pub order_sides: Vec<OrderSide>,
     pub bid: ObjectAskBid,
     pub ask: ObjectAskBid,
@@ -31,6 +31,8 @@ pub struct OrderChance {
     pub bid_fee: f32,
     pub ask_fee: f32,
     pub market: ObjectMarket,
+    pub ask_types: Option<Vec<String>>,
+    pub bid_types: Option<Vec<String>>,
     pub bid_account: AccountsInfo,
     pub ask_account: AccountsInfo,
 }
@@ -62,6 +64,8 @@ pub struct OrderChanceSource {
     pub bid_fee: String,
     pub ask_fee: String,
     pub market: ObjectMarketSource,
+    pub ask_types: Option<Vec<String>>,
+    pub bid_types: Option<Vec<String>>,
     pub bid_account: AccountsInfoSource,
     pub ask_account: AccountsInfoSource,
 }

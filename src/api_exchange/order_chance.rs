@@ -33,7 +33,10 @@ impl OrderChance {
                             message: e.error.message
                         },
                     }
-                }).ok().unwrap())
+                })
+                .ok()
+                .unwrap()
+            )
         }
 
         serde_json::from_str(&res_serialized)
@@ -44,7 +47,7 @@ impl OrderChance {
                     market: ObjectMarket {
                         id: x.market.id.to_owned(),
                         name: x.market.name.to_owned(),
-                        order_types: x.market.order_types.into_iter().map(|x|x.as_str().into()).collect(),
+                        // order_types: x.market.order_types.into_iter().map(|x|x.as_str().into()).collect(),
                         order_sides: x.market.order_sides.into_iter().map(|x|x.as_str().into()).collect(),
                         bid: ObjectAskBid {
                             currency: x.market.bid.currency.to_owned(),
@@ -59,6 +62,8 @@ impl OrderChance {
                         max_total: x.market.max_total.parse().unwrap(),
                         state: x.market.state.to_owned(),
                     },
+                    ask_types: None,
+                    bid_types: None,
                     bid_account: AccountsInfo {
                         currency: x.bid_account.currency(),
                         balance: x.bid_account.balance(),
