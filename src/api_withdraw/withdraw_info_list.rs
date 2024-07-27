@@ -14,10 +14,7 @@ use super::{
     super::response::{
         TransactionInfo,
         TransactionInfoSource,
-        ResponseError,
-        ResponseErrorBody,
-        ResponseErrorState,
-        ResponseErrorSource
+        ResponseError
     }, WithdrawState,
 };
 

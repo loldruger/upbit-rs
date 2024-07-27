@@ -12,8 +12,7 @@ use super::{
         WithdrawCoinAddress,
         ResponseError,
         ResponseErrorBody,
-        ResponseErrorState,
-        ResponseErrorSource
+        ResponseErrorState
     }
 };
 

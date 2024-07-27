@@ -2,7 +2,7 @@ use super::{
     UrlAssociates,
     CandleMinute,
     super::constant::URL_SERVER,
-    super::response::{ResponseError, ResponseErrorBody, ResponseErrorState, ResponseErrorSource}
+    super::response::{ResponseError, ResponseErrorBody, ResponseErrorState}
 };
 
 use reqwest::{Url, Response};

@@ -9,8 +9,7 @@ use super::{
         CoinAddressResponse,
         ResponseError,
         ResponseErrorBody,
-        ResponseErrorState,
-        ResponseErrorSource
+        ResponseErrorState
     }
 };
 

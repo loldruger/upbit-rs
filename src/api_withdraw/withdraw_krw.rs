@@ -3,8 +3,7 @@ use reqwest::{Url, Response};
 
 use crate::constant::TwoFactorType;
 
-use super::{
-    super::{
+use super::super::{
         constant::{URL_WITHDRAWS_KRW, URL_SERVER},
         request::RequestWithQuery,
         response::{
@@ -12,11 +11,9 @@ use super::{
             TransactionInfoSource,
             ResponseError,
             ResponseErrorBody,
-            ResponseErrorState,
-            ResponseErrorSource
+            ResponseErrorState
         }
-    }
-};
+    };
 
 impl TransactionInfo {
     pub async fn withdraw_krw(amount: f64, two_factor_type: TwoFactorType) -> Result<Self, ResponseError> {

@@ -3,7 +3,7 @@ use reqwest::header::ACCEPT;
 use serde::Deserialize;
 
 use super::super::constant::{URL_SERVER, URL_MARKET_STATE};
-use crate::response::{ResponseError, ResponseErrorBody, ResponseErrorState, ResponseErrorSource};
+use crate::response::{ResponseError, ResponseErrorBody, ResponseErrorState};
 
 #[derive(Deserialize)]
 pub struct MarketState {

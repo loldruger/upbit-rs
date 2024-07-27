@@ -12,8 +12,7 @@ use super::{
         ObjectAskBid,
         ResponseError,
         ResponseErrorBody,
-        ResponseErrorState,
-        ResponseErrorSource
+        ResponseErrorState
     },
 };
 

@@ -12,8 +12,7 @@ use super::{
         ObjectTrades,
         ResponseError,
         ResponseErrorBody,
-        ResponseErrorState,
-        ResponseErrorSource
+        ResponseErrorState
     }
 };
 

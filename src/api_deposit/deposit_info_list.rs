@@ -15,9 +15,6 @@ use super::{
         TransactionInfo,
         TransactionInfoSource,
         ResponseError,
-        ResponseErrorBody,
-        ResponseErrorState,
-        ResponseErrorSource
     }, DepositState,
 };
 

@@ -14,8 +14,7 @@ use super::{
         WithdrawCurrency,
         ResponseError,
         ResponseErrorBody,
-        ResponseErrorState,
-        ResponseErrorSource
+        ResponseErrorState
     },
 };
 

@@ -12,8 +12,7 @@ use super::{
         CoinAddressGenSecondaryResponse,
         ResponseError,
         ResponseErrorBody,
-        ResponseErrorState,
-        ResponseErrorSource
+        ResponseErrorState
     },
 };
 

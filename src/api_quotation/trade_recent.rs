@@ -1,4 +1,4 @@
-use crate::response::{ResponseError, ResponseErrorBody, ResponseErrorState, ResponseErrorSource};
+use crate::response::{ResponseError, ResponseErrorBody, ResponseErrorState};
 
 use super::super::constant::{URL_SERVER, URL_TRADES_TICKS};
 
