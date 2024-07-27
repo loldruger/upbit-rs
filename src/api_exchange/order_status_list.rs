@@ -4,24 +4,137 @@ use reqwest::{
     Url
 };
 
-use crate::request::Request;
+use crate::request::RequestWithQuery;
+use crate::{constant::OrderBy, request::Request};
 
 use super::{
-    super::constant::{URL_ORDER_STATUS_LIST, URL_SERVER},
-    super::response::{
+    super::{constant::{
+        URL_ORDER_STATUS_BY_UUID, URL_ORDER_STATUS_CLOSED, URL_ORDER_STATUS_LIST, URL_ORDER_STATUS_OPEN, URL_SERVER
+    }, response::{
         OrderInfo,
         OrderInfoSource,
         ResponseError
-    }
+    }},
+    OrderState
 };
 
 impl OrderInfo {
+    pub async fn get_order_state_by_uuid(market_id: &str, uuids: Option<Vec<&str>>, identifiers: Option<Vec<&str>>, order_by: OrderBy) -> Result<Self, ResponseError> {
+        let res = Self::request_orders_by_uuids(market_id, uuids, identifiers, order_by).await?;
+        let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest)?;
+        
+        if res_serialized.contains("error") {
+            return Err(serde_json::from_str(&res_serialized)
+                .map(crate::response::response_error)                
+                .ok()
+                .unwrap()
+            )
+        }
+
+        serde_json::from_str(&res_serialized)
+            .map(|x: OrderInfoSource| {
+                Self {
+                    uuid: x.uuid(),
+                    side: x.side(),
+                    ord_type: x.ord_type(),
+                    price: x.price(),
+                    state: x.state(),
+                    market: x.market(),
+                    created_at: x.created_at(),
+                    volume: x.volume(),
+                    remaining_volume: x.remaining_volume(),
+                    reserved_fee: x.reserved_fee(),
+                    remaining_fee: x.remaining_fee(),
+                    paid_fee: x.paid_fee(),
+                    locked: x.locked(),
+                    executed_volume: x.executed_volume(),
+                    executed_funds: x.executed_funds(),
+                    trades_count: x.trades_count(),
+                    time_in_force: x.time_in_force(),
+                }
+            })
+            .map_err(crate::response::response_error_from_json)
+    }
+
+    pub async fn get_order_state_open(market_id: &str, state: OrderState, states: Vec<OrderState>, page: u8, limit: u8, order_by: OrderBy) -> Result<Self, ResponseError> {
+        let res = Self::request_orders_opened(market_id, state, states, page, limit, order_by).await?;
+        let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest)?;
+        
+        if res_serialized.contains("error") {
+            return Err(serde_json::from_str(&res_serialized)
+                .map(crate::response::response_error)                
+                .ok()
+                .unwrap()
+            )
+        }
+
+        serde_json::from_str(&res_serialized)
+            .map(|x: OrderInfoSource| {
+                Self {
+                    uuid: x.uuid(),
+                    side: x.side(),
+                    ord_type: x.ord_type(),
+                    price: x.price(),
+                    state: x.state(),
+                    market: x.market(),
+                    created_at: x.created_at(),
+                    volume: x.volume(),
+                    remaining_volume: x.remaining_volume(),
+                    reserved_fee: x.reserved_fee(),
+                    remaining_fee: x.remaining_fee(),
+                    paid_fee: x.paid_fee(),
+                    locked: x.locked(),
+                    executed_volume: x.executed_volume(),
+                    executed_funds: x.executed_funds(),
+                    trades_count: x.trades_count(),
+                    time_in_force: x.time_in_force(),
+                }
+            })
+            .map_err(crate::response::response_error_from_json)
+
+    }
+
+    pub async fn get_order_state_closed(market_id: &str, state: OrderState, start_time: &str, end_time: &str, limit: u16, order_by: OrderBy) -> Result<Self, ResponseError> {
+        let res = Self::request_orders_closed(market_id, state, start_time, end_time, limit, order_by).await?;
+        let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest)?;
+
+        if res_serialized.contains("error") {
+            return Err(serde_json::from_str(&res_serialized)
+                .map(crate::response::response_error)                
+                .ok()
+                .unwrap()
+            )
+        }
+
+        serde_json::from_str(&res_serialized)
+            .map(|x: OrderInfoSource| {
+                Self {
+                    uuid: x.uuid(),
+                    side: x.side(),
+                    ord_type: x.ord_type(),
+                    price: x.price(),
+                    state: x.state(),
+                    market: x.market(),
+                    created_at: x.created_at(),
+                    volume: x.volume(),
+                    remaining_volume: x.remaining_volume(),
+                    reserved_fee: x.reserved_fee(),
+                    remaining_fee: x.remaining_fee(),
+                    paid_fee: x.paid_fee(),
+                    locked: x.locked(),
+                    executed_volume: x.executed_volume(),
+                    executed_funds: x.executed_funds(),
+                    trades_count: x.trades_count(),
+                    time_in_force: x.time_in_force(),
+                }
+            })
+            .map_err(crate::response::response_error_from_json)
+    }
+
+    #[deprecated(since = "1.6.0 (api version 1.4.8)")]
     pub async fn get_order_state_list() -> Result<Vec<Self>, ResponseError> {
-        let res = Self::request().await?;
-        let res_serialized = match res.text().await {
-            Ok(s) => s,
-            Err(e) => return Err(crate::response::response_error_from_reqwest(e))
-        };
+        let res = Self::request(&format!("{URL_SERVER}{URL_ORDER_STATUS_LIST}")).await?;
+        let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest)?;
         
         if res_serialized.contains("error") {
             return Err(serde_json::from_str(&res_serialized)
@@ -51,16 +164,88 @@ impl OrderInfo {
                             paid_fee: x.paid_fee(),
                             locked: x.locked(),
                             executed_volume: x.executed_volume(),
-                            trades_count: x.trades_count()
+                            executed_funds: x.executed_funds(),
+                            trades_count: x.trades_count(),
+                            time_in_force: x.time_in_force(),
                         })
                     .collect::<Vec<Self>>()
             })
             .map_err(crate::response::response_error_from_json)
     }
 
-    async fn request() -> Result<Response, ResponseError> {
-        let url = Url::parse(&format!("{URL_SERVER}{URL_ORDER_STATUS_LIST}")).unwrap();
+    async fn request(url: &str) -> Result<Response, ResponseError> {
+        let url = Url::parse(url).unwrap();
         let token_string = Self::set_token()?;
+
+        reqwest::Client::new()
+            .get(url.as_str())
+            .header(ACCEPT, "application/json")
+            .header(AUTHORIZATION, &token_string)
+            .send()
+            .await
+            .map_err(crate::response::response_error_from_reqwest)
+    }
+
+    async fn request_orders_by_uuids(market_id: &str, uuids: Option<Vec<&str>>, identifiers: Option<Vec<&str>>, order_by: OrderBy) -> Result<Response, ResponseError> {
+        let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDER_STATUS_BY_UUID}")).unwrap();
+        
+        url.query_pairs_mut()
+            .append_pair("market", market_id)
+            .append_pair("order_by", &order_by.to_string());
+
+        if uuids.is_some() {
+            url.query_pairs_mut().append_pair("uuids", &uuids.unwrap().join(","));
+        }
+
+        if identifiers.is_some() {
+            url.query_pairs_mut().append_pair("identifier", &identifiers.unwrap().join(","));
+        }
+
+        let token_string = Self::set_token_with_query(url.as_str())?;
+
+        reqwest::Client::new()
+            .get(url.as_str())
+            .header(ACCEPT, "application/json")
+            .header(AUTHORIZATION, &token_string)
+            .send()
+            .await
+            .map_err(crate::response::response_error_from_reqwest)
+    }
+
+    async fn request_orders_opened(market_id: &str, state: OrderState, states: Vec<OrderState>, page: u8, limit: u8, order_by: OrderBy) -> Result<Response, ResponseError> {
+        let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDER_STATUS_OPEN}")).unwrap();
+        
+        url.query_pairs_mut()
+            .append_pair("market", market_id)
+            .append_pair("state", &state.to_string())
+            .append_pair("states", &states.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(","))
+            .append_pair("page", &page.to_string())
+            .append_pair("limit", &limit.to_string())
+            .append_pair("order_by", &order_by.to_string());
+
+        let token_string = Self::set_token_with_query(url.as_str())?;
+
+        reqwest::Client::new()
+            .get(url.as_str())
+            .header(ACCEPT, "application/json")
+            .header(AUTHORIZATION, &token_string)
+            .send()
+            .await
+            .map_err(crate::response::response_error_from_reqwest)
+    }
+
+    async fn request_orders_closed(market_id: &str, state: OrderState, start_time: &str, end_time: &str, limit: u16, order_by: OrderBy) -> Result<Response, ResponseError> {
+        let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDER_STATUS_CLOSED}")).unwrap();
+        
+        url.query_pairs_mut()
+            .append_pair("market", market_id)
+            .append_pair("state", &state.to_string())
+            .append_pair("start_time", start_time)
+            .append_pair("end_time", end_time)
+            .append_pair("limit", &limit.to_string())
+            .append_pair("order_by", &order_by.to_string());
+
+        let token_string = Self::set_token_with_query(url.as_str())?;
 
         reqwest::Client::new()
             .get(url.as_str())

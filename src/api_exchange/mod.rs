@@ -7,6 +7,8 @@ pub mod order_status_list;
 
 use serde::Deserialize;
 
+use crate::constant::OrderBy;
+
 use super::response::{AccountsInfo, OrderInfo, OrderChance, OrderStatus, ResponseError};
 
 /// Side of order
@@ -46,6 +48,8 @@ pub enum OrderType {
     Price,
     /// 시장가 주문(매도)
     Market,
+    /// 최유리 주문
+    Best
 }
 
 impl ToString for OrderType {
@@ -54,6 +58,7 @@ impl ToString for OrderType {
             OrderType::Limit => "limit".to_owned(),
             OrderType::Price => "price".to_owned(),
             OrderType::Market => "market".to_owned(),
+            OrderType::Best => "best".to_owned(),
         }
     }
 }
@@ -64,13 +69,42 @@ impl From<&str> for OrderType {
             "limit" => OrderType::Limit,
             "price" => OrderType::Price,
             "market" => OrderType::Market,
-            _ => panic!("value must be one of \"limit\", \"price!\" or \"market\"")
+            "best" => OrderType::Best,
+            _ => panic!("value must be one of \"limit\", \"price!\", \"market\" or \"best\".")
+        }
+    }
+}
+
+/// New Order type 
+#[derive(Deserialize, Debug, PartialEq, Eq)]
+pub enum OrderCondition {
+    /// Immediate or Cancel
+    IOK,
+    /// Fill or Kill
+    FOK,
+}
+
+impl ToString for OrderCondition {
+    fn to_string(&self) -> String {
+        match self {
+            OrderCondition::IOK => "iok".to_owned(),
+            OrderCondition::FOK => "fok".to_owned()
+        }
+    }
+}
+
+impl From<&str> for OrderCondition {
+    fn from(value: &str) -> Self {
+        match value {
+            "iok" => OrderCondition::IOK,
+            "fok" => OrderCondition::FOK,
+            _ => panic!("value must be one of \"iok\" or \"fok\".")
         }
     }
 }
 
 /// List of order state
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, PartialEq, Eq)]
 pub enum OrderState {
     /// 체결 대기 (default)
     Wait,
@@ -80,6 +114,17 @@ pub enum OrderState {
     Done,
     /// 주문 취소
     Cancel
+}
+
+impl ToString for OrderState {
+    fn to_string(&self) -> String {
+        match self {
+            OrderState::Wait => "wait".to_owned(),
+            OrderState::Watch => "watch".to_owned(),
+            OrderState::Done => "done".to_owned(),
+            OrderState::Cancel => "cancel".to_owned(),
+        }
+    }
 }
 
 impl From<&str> for OrderState {
@@ -153,7 +198,7 @@ impl From<&str> for OrderState {
 /// | trades_count      | 해당 주문에 걸린 체결 수      | Integer |
 
 pub async fn order_by_price(
-    market: &str,
+    market_id: &str,
     side: OrderSide,
     price: f64,
     price_desired: f64,
@@ -161,7 +206,7 @@ pub async fn order_by_price(
     identifier: Option<&str>,
 ) -> Result<OrderInfo, ResponseError> {
     OrderInfo::order(
-        market,
+        market_id,
         side,
         Some((price + 1.) / price_checker(price_desired)),
         Some(price_checker(price_desired)),
@@ -220,9 +265,9 @@ pub async fn order_by_price(
 /// | executed_volume   | 체결된 양                    | NumberString |
 /// | trades_count      | 해당 주문에 걸린 체결 수      | Integer |
 
-pub async fn sell_by_market_price(market: &str, volume: f64, identifier: Option<&str>) -> Result<OrderInfo, ResponseError> {
+pub async fn sell_by_market_price(market_id: &str, volume: f64, identifier: Option<&str>) -> Result<OrderInfo, ResponseError> {
     OrderInfo::order(
-        market,
+        market_id,
         OrderSide::Ask,
         Some(volume),
         None,
@@ -533,8 +578,21 @@ pub async fn get_order_status(uuid: Option<&str>, identifier: Option<&str>) -> R
 /// | locked | 거래에 사용중인 비용 | NumberString |
 /// | executed_volume | 체결된 양 | NumberString |
 /// | trades_count | 해당 주문에 걸린 체결 수 | Integer |
+#[deprecated(since = "1.6.0 (api version 1.4.8)", note = "use get_order_status() instead")]
 pub async fn list_order_status() -> Result<Vec<OrderInfo>, ResponseError> {
     OrderInfo::get_order_state_list().await
+}
+
+pub async fn get_order_state_by_uuid(market_id: &str, uuids: Option<Vec<&str>>, identifiers: Option<Vec<&str>>, order_by: OrderBy) -> Result<OrderInfo, ResponseError> {
+    OrderInfo::get_order_state_by_uuid(market_id, uuids, identifiers, order_by).await
+}
+
+pub async fn get_order_state_open(market_id: &str, state: OrderState, states: Vec<OrderState>, page: u8, limit: u8, order_by: OrderBy) -> Result<OrderInfo, ResponseError> {
+    OrderInfo::get_order_state_open(market_id, state, states, page, limit, order_by).await
+}
+
+pub async fn get_order_state_closed(market_id: &str, state: OrderState, start_time: &str, end_time: &str, limit: u16, order_by: OrderBy) -> Result<OrderInfo, ResponseError> {
+    OrderInfo::get_order_state_closed(market_id, state, start_time, end_time, limit, order_by).await
 }
 
 fn price_checker(price: f64) -> f64 {
