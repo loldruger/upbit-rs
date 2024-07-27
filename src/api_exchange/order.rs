@@ -19,7 +19,10 @@ use super::{
 impl OrderInfo {
     pub async fn order(market_id: &str, side: OrderSide, volume: Option<f64>, price: Option<f64>, ord_type: OrderType, identifier: Option<&str>) -> Result<Self, ResponseError> {
         let res = Self::request_order(market_id, side, volume, price, ord_type, identifier).await?;
-        let res_serialized = res.text().await.unwrap();
+        let res_serialized = match res.text().await {
+            Ok(s) => s,
+            Err(e) => return Err(crate::response::response_error_from_reqwest(e))
+        };
         
         if res_serialized.contains("error") {
             return Err(serde_json::from_str(&res_serialized)

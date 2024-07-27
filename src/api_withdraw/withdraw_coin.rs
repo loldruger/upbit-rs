@@ -25,7 +25,10 @@ impl TransactionInfoDerived {
         transaction_type: WithdrawType
     ) -> Result<Self, ResponseError> {
         let res = Self::request_withdraw_coin(currency, net_type, amount, address, secondary_address, transaction_type).await?;
-        let res_serialized = res.text().await.unwrap();
+        let res_serialized = match res.text().await {
+            Ok(s) => s,
+            Err(e) => return Err(crate::response::response_error_from_reqwest(e))
+        };
         
         if res_serialized.contains("error") {
             return Err(serde_json::from_str(&res_serialized)
