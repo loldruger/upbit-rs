@@ -14,10 +14,10 @@ license = "MIT"
 reqwest = { version = "0.12.5", features = ["json"] }
 hmac = "0.12.1"
 jsonwebtokens = "1.2.0"
-sha2 = "0.10.7"
-uuid = { version = "1.4.0", features = ["v4", "serde"] }
-serde = "1.0.169"
-serde_with = { version = "3.0.0", features = ["json"] }
-serde_json = "1.0.100"
+sha2 = "0.10.8"
+uuid = { version = "1.10.0", features = ["v4", "serde"] }
+serde = "1.0.204"
+serde_with = { version = "3.9.0", features = ["json"] }
+serde_json = "1.0.120"
 envmnt = "0.10.4"
-chrono = { version = "0.4.26", features = ["serde"] }
+chrono = { version = "0.4.38", features = ["serde"] }
