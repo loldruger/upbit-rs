@@ -31,8 +31,8 @@ impl OrderInfo {
             return Err(ResponseError {
                 state: ResponseErrorState::InternalTooManyParameterSpecified,
                 error: ResponseErrorBody {
-                    name: "internal_more_parameter_specified".to_owned(),
-                    message: "only one parameter of uuid and identifier must be specified.".to_owned()
+                    name: "invalid_parameter_combination".to_owned(),
+                    message: "You can specify either a 'uuid' or an 'identifier', but not both.".to_owned()                
                 }
             });
         }
@@ -50,7 +50,10 @@ impl OrderInfo {
                             message: e.error.message
                         },
                     }
-                }).ok().unwrap())
+                })
+                .ok()
+                .unwrap()
+            )
         }
 
         serde_json::from_str(&res_serialized)

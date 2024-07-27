@@ -77,7 +77,7 @@ impl From<&str> for ResponseErrorState {
     fn from(value: &str) -> Self {
         match value {
             "internal_neither_parameter_specified" => Self::InternalNeitherParameterSpecified,
-            "internal_more_parameter_specified" => Self::InternalTooManyParameterSpecified,
+            "invalid_parameter_combination" => Self::InternalTooManyParameterSpecified,
             "internal_reqwest_error" => Self::InternalReqwestError,
             "internal_hmac_error" => Self::InternalHmacError,
             "internal_token_encode_error" => Self::InternalTokenEncodeError,
