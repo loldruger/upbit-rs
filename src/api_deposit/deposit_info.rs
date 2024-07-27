@@ -12,10 +12,7 @@ use super::{
 impl TransactionInfo {
     pub async fn get_deposit_info(currency: Option<&str>, uuid: Option<&str>, txid: Option<&str>) -> Result<Self, ResponseError> {
         let res = Self::request_deposit(currency, uuid, txid).await?;
-        let res_serialized = match res.text().await {
-            Ok(s) => s,
-            Err(e) => return Err(crate::response::response_error_from_reqwest(e))
-        };
+        let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest)?;
 
         if res_serialized.contains("error") {
             return Err(serde_json::from_str(&res_serialized)

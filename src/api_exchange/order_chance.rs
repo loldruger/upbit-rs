@@ -18,11 +18,8 @@ impl RequestWithQuery for OrderChance {}
 impl OrderChance {
     pub async fn get_order_chance(market_id: &str) -> Result<Self, ResponseError> {
         let res = Self::request(market_id).await?;
-        let res_serialized = match res.text().await {
-            Ok(s) => s,
-            Err(e) => return Err(crate::response::response_error_from_reqwest(e))
-        };
-        
+        let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest)?;
+
         if res_serialized.contains("error") {
             return Err(serde_json::from_str(&res_serialized)
                 .map(crate::response::response_error)

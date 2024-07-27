@@ -1,4 +1,4 @@
-use crate::{request::{Request, RequestWithQuery}, api_exchange::{OrderType, OrderState}};
+use crate::{api_exchange::{OrderCondition, OrderState, OrderType}, request::{Request, RequestWithQuery}};
 use serde::Deserialize;
 use crate::api_exchange::OrderSide;
 
@@ -19,7 +19,9 @@ pub struct OrderInfo {
     pub paid_fee: f64,
     pub locked: f64,
     pub executed_volume: f64,
+    pub executed_funds: f64,
     pub trades_count: i64,
+    pub time_in_force: OrderCondition
 }
 
 impl Request for OrderInfo {}
@@ -42,7 +44,9 @@ pub struct OrderInfoSource {
     paid_fee: String,
     locked: String,
     executed_volume: String,
+    executed_funds: String,
     trades_count: i64,
+    time_in_force: String
 }
 
 impl OrderInfoSource {
@@ -78,6 +82,10 @@ impl OrderInfoSource {
     pub fn locked(&self) -> f64 { self.locked.parse().unwrap() }
     /// Convert [String] type of executed_volume into [f64]
     pub fn executed_volume(&self) -> f64 { self.executed_volume.parse().unwrap() }
+    /// Convert [String] type of executed_funds into [f64]
+    pub fn executed_funds(&self) -> f64 { self.executed_funds.parse().unwrap() }
     /// Convert [String] type of trades_count into [f64]
     pub fn trades_count(&self) -> i64 { self.trades_count }
+    /// Get time_in_force
+    pub fn time_in_force(&self) -> OrderCondition { self.time_in_force.as_str().into() }
 }

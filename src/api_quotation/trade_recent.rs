@@ -22,10 +22,7 @@ pub struct TradeRecent {
 impl TradeRecent {
     pub async fn list_trade_recent(market: &str, hhmmss: Option<&str>, count: i32, cursor: String, days_ago: Option<i32>) -> Result<Self, ResponseError> {
         let res = Self::request(market, hhmmss, count, cursor, days_ago).await?;
-        let res_serialized = match res.text().await {
-            Ok(s) => s,
-            Err(e) => return Err(crate::response::response_error_from_reqwest(e))
-        };
+        let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest)?;
         
         if res_serialized.contains("error") {
             return Err(serde_json::from_str(&res_serialized)

@@ -25,10 +25,7 @@ pub struct CandleChartMonth {
 impl CandleChartMonth {
     pub async fn request_candle(market: &str, count: i32, last_candle_time: Option<String>) -> Result<Vec<Self>, ResponseError> {
         let res = Self::request(market, count, last_candle_time).await?;
-        let res_serialized = match res.text().await {
-            Ok(s) => s,
-            Err(e) => return Err(crate::response::response_error_from_reqwest(e))
-        };
+        let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest)?;
         
         if res_serialized.contains("error") {
             return Err(serde_json::from_str(&res_serialized)

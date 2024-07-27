@@ -19,11 +19,8 @@ use super::{
 impl OrderInfo {
     pub async fn order(market_id: &str, side: OrderSide, volume: Option<f64>, price: Option<f64>, ord_type: OrderType, identifier: Option<&str>) -> Result<Self, ResponseError> {
         let res = Self::request_order(market_id, side, volume, price, ord_type, identifier).await?;
-        let res_serialized = match res.text().await {
-            Ok(s) => s,
-            Err(e) => return Err(crate::response::response_error_from_reqwest(e))
-        };
-        
+        let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest)?;
+
         if res_serialized.contains("error") {
             return Err(serde_json::from_str(&res_serialized)
                 .map(crate::response::response_error)                
@@ -49,7 +46,9 @@ impl OrderInfo {
                     paid_fee: x.paid_fee(),
                     locked: x.locked(),
                     executed_volume: x.executed_volume(),
+                    executed_funds: x.executed_funds(),
                     trades_count: x.trades_count(),
+                    time_in_force: x.time_in_force(),
                 }
             })
             .map_err(crate::response::response_error_from_json)

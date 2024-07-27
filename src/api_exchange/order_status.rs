@@ -25,10 +25,7 @@ impl OrderStatus {
         }
 
         let res = Self::request(uuid, identifier).await?;
-        let res_serialized = match res.text().await {
-            Ok(s) => s,
-            Err(e) => return Err(crate::response::response_error_from_reqwest(e))
-        };
+        let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest)?;
         
         if res_serialized.contains("error") {
             return Err(serde_json::from_str(&res_serialized)
@@ -56,7 +53,9 @@ impl OrderStatus {
                         paid_fee: x.order_info.paid_fee(),
                         locked: x.order_info.locked(),
                         executed_volume: x.order_info.executed_volume(),
+                        executed_funds: x.order_info.executed_funds(),
                         trades_count: x.order_info.trades_count(),
+                        time_in_force: x.order_info.time_in_force(),
                     },
                     trades: x.trades
                         .into_iter()
