@@ -1,4 +1,4 @@
-use crate::response::{ResponseError, ResponseErrorBody, ResponseErrorState};
+use crate::response::ResponseError;
 
 use super::super::constant::URL_SERVER;
 use super::UrlAssociates;
@@ -39,38 +39,30 @@ impl CandleChartDay {
         }
         
         serde_json::from_str(&res_serialized)
-            .map(|x: Vec<Self>| {         
-                x
+            .map(|i: Vec<Self>| {         
+                i
                     .into_iter()
-                    .map(|i| {
+                    .map(|x| {
                         Self {
-                            market: i.market,
-                            candle_date_time_utc: i.candle_date_time_utc,
-                            candle_date_time_kst: i.candle_date_time_kst,
-                            opening_price: i.opening_price,
-                            high_price: i.high_price,
-                            low_price: i.low_price,
-                            trade_price: i.trade_price,
-                            timestamp: i.timestamp,
-                            candle_acc_trade_price: i.candle_acc_trade_price,
-                            candle_acc_trade_volume: i.candle_acc_trade_volume,
-                            prev_closing_price: i.prev_closing_price,
-                            change_price: i.change_price,
-                            change_rate: i.change_rate,
-                            converted_trade_price: i.converted_trade_price
+                            market: x.market,
+                            candle_date_time_utc: x.candle_date_time_utc,
+                            candle_date_time_kst: x.candle_date_time_kst,
+                            opening_price: x.opening_price,
+                            high_price: x.high_price,
+                            low_price: x.low_price,
+                            trade_price: x.trade_price,
+                            timestamp: x.timestamp,
+                            candle_acc_trade_price: x.candle_acc_trade_price,
+                            candle_acc_trade_volume: x.candle_acc_trade_volume,
+                            prev_closing_price: x.prev_closing_price,
+                            change_price: x.change_price,
+                            change_rate: x.change_rate,
+                            converted_trade_price: x.converted_trade_price
                         }
                     })
                     .collect()
         })
-        .map_err(|x| {
-            ResponseError {
-                state: ResponseErrorState::InternalJsonParseError,
-                error: ResponseErrorBody {
-                    name: "internal_json_parse_error".to_owned(),
-                    message: x.to_string()
-                },
-            }
-        })
+        .map_err(crate::response::response_error_from_json)
     }
 
     async fn request(market: &str, count: i32, last_candle_time: Option<String>, price_unit: Option<String>) -> Result<Response, ResponseError> {

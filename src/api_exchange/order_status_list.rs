@@ -29,8 +29,8 @@ impl OrderInfo {
         }
 
         serde_json::from_str(&res_serialized)
-            .map(|x: Vec<OrderInfoSource>| {
-                x
+            .map(|i: Vec<OrderInfoSource>| {
+                i
                     .into_iter()
                     .map(|x| 
                         Self {

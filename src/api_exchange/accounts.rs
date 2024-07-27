@@ -2,7 +2,6 @@ use reqwest::Response;
 use reqwest::header::{ACCEPT, AUTHORIZATION};
 
 use crate::request::Request;
-use crate::response::ResponseErrorState;
 
 use super::{
     super::constant::{URL_ACCOUNTS, URL_SERVER},
@@ -10,11 +9,7 @@ use super::{
         AccountsInfo,
         AccountsInfoSource
     },
-    super::response::{
-        ResponseError,
-        ResponseErrorBody,
-        ResponseErrorSource
-    },
+    super::response::ResponseError
 };
 
 impl AccountsInfo {
@@ -31,8 +26,8 @@ impl AccountsInfo {
         }
 
         serde_json::from_str(&res_serialized)
-            .map(|x: Vec<AccountsInfoSource>| {
-                x
+            .map(|i: Vec<AccountsInfoSource>| {
+                i
                     .into_iter()
                     .map(|x| Self {
                         currency: x.currency(),

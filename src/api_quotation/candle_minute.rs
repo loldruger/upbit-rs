@@ -2,7 +2,7 @@ use super::{
     UrlAssociates,
     CandleMinute,
     super::constant::URL_SERVER,
-    super::response::{ResponseError, ResponseErrorBody, ResponseErrorState}
+    super::response::ResponseError
 };
 
 use reqwest::{Url, Response};
@@ -72,15 +72,7 @@ impl CandleChartMinute {
                 })
                 .collect()
         })
-        .map_err(|x| {
-            ResponseError {
-                state: ResponseErrorState::InternalJsonParseError,
-                error: ResponseErrorBody {
-                    name: "internal_json_parse_error".to_owned(),
-                    message: x.to_string()
-                },
-            }
-        })
+        .map_err(crate::response::response_error_from_json)
     }
 
     async fn request(market: &str, to: Option<String>, count: i32, candle_minute: CandleMinute) -> Result<Response, ResponseError> {

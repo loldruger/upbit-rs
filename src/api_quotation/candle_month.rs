@@ -1,4 +1,4 @@
-use crate::response::{ResponseError, ResponseErrorBody, ResponseErrorState};
+use crate::response::ResponseError;
 
 use super::UrlAssociates;
 use super::super::constant::URL_SERVER;
@@ -56,15 +56,7 @@ impl CandleChartMonth {
                     })
                     .collect()
         })
-        .map_err(|x| {
-            ResponseError {
-                state: ResponseErrorState::InternalJsonParseError,
-                error: ResponseErrorBody {
-                    name: "internal_json_parse_error".to_owned(),
-                    message: x.to_string()
-                },
-            }
-        })
+        .map_err(crate::response::response_error_from_json)
     }
 
     async fn request(market: &str, count: i32, last_candle_time: Option<String>) -> Result<Response, ResponseError> {
