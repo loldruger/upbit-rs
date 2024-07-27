@@ -19,7 +19,7 @@ use super::{
 };
 
 impl OrderInfo {
-    pub async fn get_order_state_by_uuid(market_id: &str, uuids: Option<Vec<&str>>, identifiers: Option<Vec<&str>>, order_by: OrderBy) -> Result<Self, ResponseError> {
+    pub async fn get_order_states_by_uuids(market_id: &str, uuids: Option<Vec<&str>>, identifiers: Option<Vec<&str>>, order_by: OrderBy) -> Result<Vec<Self>, ResponseError> {
         let res = Self::request_orders_by_uuids(market_id, uuids, identifiers, order_by).await?;
         let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest)?;
         
@@ -29,34 +29,12 @@ impl OrderInfo {
                 .ok()
                 .unwrap()
             )
-        }
+        } 
 
-        serde_json::from_str(&res_serialized)
-            .map(|x: OrderInfoSource| {
-                Self {
-                    uuid: x.uuid(),
-                    side: x.side(),
-                    ord_type: x.ord_type(),
-                    price: x.price(),
-                    state: x.state(),
-                    market: x.market(),
-                    created_at: x.created_at(),
-                    volume: x.volume(),
-                    remaining_volume: x.remaining_volume(),
-                    reserved_fee: x.reserved_fee(),
-                    remaining_fee: x.remaining_fee(),
-                    paid_fee: x.paid_fee(),
-                    locked: x.locked(),
-                    executed_volume: x.executed_volume(),
-                    executed_funds: x.executed_funds(),
-                    trades_count: x.trades_count(),
-                    time_in_force: x.time_in_force(),
-                }
-            })
-            .map_err(crate::response::response_error_from_json)
+        Self::deserialize_response(res_serialized)
     }
 
-    pub async fn get_order_state_open(market_id: &str, state: OrderState, states: Vec<OrderState>, page: u8, limit: u8, order_by: OrderBy) -> Result<Self, ResponseError> {
+    pub async fn get_order_states_opened(market_id: &str, state: OrderState, states: Vec<OrderState>, page: u8, limit: u8, order_by: OrderBy) -> Result<Vec<Self>, ResponseError> {
         let res = Self::request_orders_opened(market_id, state, states, page, limit, order_by).await?;
         let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest)?;
         
@@ -68,33 +46,10 @@ impl OrderInfo {
             )
         }
 
-        serde_json::from_str(&res_serialized)
-            .map(|x: OrderInfoSource| {
-                Self {
-                    uuid: x.uuid(),
-                    side: x.side(),
-                    ord_type: x.ord_type(),
-                    price: x.price(),
-                    state: x.state(),
-                    market: x.market(),
-                    created_at: x.created_at(),
-                    volume: x.volume(),
-                    remaining_volume: x.remaining_volume(),
-                    reserved_fee: x.reserved_fee(),
-                    remaining_fee: x.remaining_fee(),
-                    paid_fee: x.paid_fee(),
-                    locked: x.locked(),
-                    executed_volume: x.executed_volume(),
-                    executed_funds: x.executed_funds(),
-                    trades_count: x.trades_count(),
-                    time_in_force: x.time_in_force(),
-                }
-            })
-            .map_err(crate::response::response_error_from_json)
-
+        Self::deserialize_response(res_serialized)
     }
 
-    pub async fn get_order_state_closed(market_id: &str, state: OrderState, start_time: &str, end_time: &str, limit: u16, order_by: OrderBy) -> Result<Self, ResponseError> {
+    pub async fn get_order_states_closed(market_id: &str, state: OrderState, start_time: &str, end_time: &str, limit: u16, order_by: OrderBy) -> Result<Vec<Self>, ResponseError> {
         let res = Self::request_orders_closed(market_id, state, start_time, end_time, limit, order_by).await?;
         let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest)?;
 
@@ -106,29 +61,7 @@ impl OrderInfo {
             )
         }
 
-        serde_json::from_str(&res_serialized)
-            .map(|x: OrderInfoSource| {
-                Self {
-                    uuid: x.uuid(),
-                    side: x.side(),
-                    ord_type: x.ord_type(),
-                    price: x.price(),
-                    state: x.state(),
-                    market: x.market(),
-                    created_at: x.created_at(),
-                    volume: x.volume(),
-                    remaining_volume: x.remaining_volume(),
-                    reserved_fee: x.reserved_fee(),
-                    remaining_fee: x.remaining_fee(),
-                    paid_fee: x.paid_fee(),
-                    locked: x.locked(),
-                    executed_volume: x.executed_volume(),
-                    executed_funds: x.executed_funds(),
-                    trades_count: x.trades_count(),
-                    time_in_force: x.time_in_force(),
-                }
-            })
-            .map_err(crate::response::response_error_from_json)
+        Self::deserialize_response(res_serialized)
     }
 
     #[deprecated(since = "1.6.0 (api version 1.4.8)")]
@@ -144,33 +77,7 @@ impl OrderInfo {
             )
         }
 
-        serde_json::from_str(&res_serialized)
-            .map(|i: Vec<OrderInfoSource>| {
-                i
-                    .into_iter()
-                    .map(|x| 
-                        Self {
-                            uuid: x.uuid(),
-                            side: x.side(),
-                            ord_type: x.ord_type(),
-                            price: x.price(),
-                            state: x.state(),
-                            market: x.market(),
-                            created_at: x.created_at(),
-                            volume: x.volume(),
-                            remaining_volume: x.remaining_volume(),
-                            reserved_fee: x.reserved_fee(),
-                            remaining_fee: x.remaining_fee(),
-                            paid_fee: x.paid_fee(),
-                            locked: x.locked(),
-                            executed_volume: x.executed_volume(),
-                            executed_funds: x.executed_funds(),
-                            trades_count: x.trades_count(),
-                            time_in_force: x.time_in_force(),
-                        })
-                    .collect::<Vec<Self>>()
-            })
-            .map_err(crate::response::response_error_from_json)
+        Self::deserialize_response(res_serialized)
     }
 
     async fn request(url: &str) -> Result<Response, ResponseError> {
@@ -193,15 +100,18 @@ impl OrderInfo {
             .append_pair("market", market_id)
             .append_pair("order_by", &order_by.to_string());
 
-        if uuids.is_some() {
-            url.query_pairs_mut().append_pair("uuids", &uuids.unwrap().join(","));
+        if let Some(uuids) = uuids {
+            for uuid in uuids {
+                url.query_pairs_mut().append_pair("uuids", uuid);
+            }
         }
 
         if identifiers.is_some() {
-            url.query_pairs_mut().append_pair("identifier", &identifiers.unwrap().join(","));
+            url.query_pairs_mut().append_pair("identifiers", &identifiers.unwrap().join(","));
         }
-
-        let token_string = Self::set_token_with_query(url.as_str())?;
+        
+        let url = url.as_str().replace("uuids", "uuids[]");
+        let token_string = Self::set_token_with_query(&url)?;
 
         reqwest::Client::new()
             .get(url.as_str())
@@ -254,5 +164,35 @@ impl OrderInfo {
             .send()
             .await
             .map_err(crate::response::response_error_from_reqwest)
+    }
+
+    fn deserialize_response(res: String) -> Result<Vec<Self>, ResponseError> {
+        serde_json::from_str(&res)
+            .map(|i: Vec<OrderInfoSource>| {
+                i
+                    .into_iter()
+                    .map(|x| 
+                        Self {
+                            uuid: x.uuid(),
+                            side: x.side(),
+                            ord_type: x.ord_type(),
+                            price: x.price(),
+                            state: x.state(),
+                            market: x.market(),
+                            created_at: x.created_at(),
+                            volume: x.volume(),
+                            remaining_volume: x.remaining_volume(),
+                            reserved_fee: x.reserved_fee(),
+                            remaining_fee: x.remaining_fee(),
+                            paid_fee: x.paid_fee(),
+                            locked: x.locked(),
+                            executed_volume: x.executed_volume(),
+                            executed_funds: x.executed_funds(),
+                            trades_count: x.trades_count(),
+                            time_in_force: x.time_in_force(),
+                        })
+                    .collect::<Vec<Self>>()
+            })
+            .map_err(crate::response::response_error_from_json)
     }
 }
