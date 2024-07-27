@@ -78,7 +78,7 @@ impl From<&str> for ResponseErrorState {
     fn from(value: &str) -> Self {
         match value {
             "internal_neither_parameter_specified" => Self::InternalNeitherParameterSpecified,
-            "invalid_parameter_combination" => Self::InternalTooManyParameterSpecified,
+            "internal_invalid_parameter_combination" => Self::InternalTooManyParameterSpecified,
             "internal_reqwest_error" => Self::InternalReqwestError,
             "internal_hmac_error" => Self::InternalHmacError,
             "internal_token_encode_error" => Self::InternalTokenEncodeError,
@@ -158,5 +158,25 @@ pub fn response_error_from_reqwest(e: reqwest::Error) -> ResponseError {
             name: "internal_reqwest_error".to_owned(),
             message: e.to_string()
         },
+    }
+}
+
+pub fn response_error_internal_neither_parameter_specified() -> ResponseError {
+    ResponseError {
+        state: ResponseErrorState::InternalNeitherParameterSpecified,
+        error: ResponseErrorBody {
+            name: "internal_neither_parameter_specified".to_owned(),
+            message: "either parameter uuid or identifier must be specified.".to_owned()
+        }
+    }
+}
+
+pub fn response_error_internal_too_many_parameter_specified() -> ResponseError {
+    ResponseError {
+        state: ResponseErrorState::InternalTooManyParameterSpecified,
+        error: ResponseErrorBody {
+            name: "internal_invalid_parameter_combination".to_owned(),
+            message: "You can specify either a 'uuid' or an 'identifier', but not both.".to_owned()                
+        }
     }
 }

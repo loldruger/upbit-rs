@@ -10,9 +10,7 @@ use super::{
         OrderStatus,
         OrderStatusSource,
         ObjectTrades,
-        ResponseError,
-        ResponseErrorBody,
-        ResponseErrorState
+        ResponseError
     }
 };
 
@@ -20,21 +18,10 @@ impl RequestWithQuery for OrderStatus {}
 impl OrderStatus {
     pub async fn get_order_status(uuid: Option<&str>, identifier: Option<&str>) -> Result<Self, ResponseError> {
         if uuid.is_none() && identifier.is_none() {
-            return Err(ResponseError {
-                state: ResponseErrorState::InternalNeitherParameterSpecified,
-                error: ResponseErrorBody {
-                    name: "internal_neither_parameter_specified".to_owned(),
-                    message: "Either `uuid` or `identifier` parameter must be specified.".to_owned()
-                }
-            });
+            return Err(crate::response::response_error_internal_neither_parameter_specified());
+
         } else if uuid.is_some() && identifier.is_some() {
-            return Err(ResponseError {
-                state: ResponseErrorState::InternalTooManyParameterSpecified,
-                error: ResponseErrorBody {
-                    name: "invalid_parameter_combination".to_owned(),
-                    message: "You can specify either a 'uuid' or an 'identifier', but not both.".to_owned()                
-                }
-            });
+            return Err(crate::response::response_error_internal_too_many_parameter_specified());
         }
 
         let res = Self::request(uuid, identifier).await?;
@@ -104,14 +91,6 @@ impl OrderStatus {
             .header(AUTHORIZATION, &token_string)
             .send()
             .await
-            .map_err(|x| {
-                ResponseError {
-                    state: ResponseErrorState::InternalReqwestError,
-                    error: ResponseErrorBody {
-                        name: "internal_reqwest_error".to_owned(),
-                        message: x.to_string()
-                    }
-                }
-            })
+            .map_err(crate::response::response_error_from_reqwest)
     }
 }

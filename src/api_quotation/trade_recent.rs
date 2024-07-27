@@ -1,4 +1,4 @@
-use crate::response::{ResponseError, ResponseErrorBody, ResponseErrorState};
+use crate::response::ResponseError;
 
 use super::super::constant::{URL_SERVER, URL_TRADES_TICKS};
 
@@ -71,14 +71,6 @@ impl TradeRecent {
             .header(ACCEPT, "application/json")
             .send()
             .await
-            .map_err(|x| {
-                ResponseError {
-                    state: ResponseErrorState::InternalReqwestError,
-                    error: ResponseErrorBody {
-                        name: "internal_reqwest_error".to_owned(),
-                        message: x.to_string()
-                    }
-                }
-            })
+            .map_err(crate::response::response_error_from_reqwest)
     }
 }
