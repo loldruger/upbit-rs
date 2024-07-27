@@ -29,15 +29,7 @@ impl CandleChartMonth {
         
         if res_serialized.contains("error") {
             return Err(serde_json::from_str(&res_serialized)
-                .map(|e: ResponseErrorSource| {
-                    ResponseError {
-                        state: ResponseErrorState::from(e.error.name.as_str()),
-                        error: ResponseErrorBody {
-                            name: e.error.name,
-                            message: e.error.message
-                        },
-                    }
-                })                
+                .map(crate::response::response_error)                
                 .ok()
                 .unwrap()
             )

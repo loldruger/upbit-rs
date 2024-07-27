@@ -24,15 +24,7 @@ impl AccountsInfo {
         
         if res_serialized.contains("error") {
             return Err(serde_json::from_str(&res_serialized)
-                .map(|e: ResponseErrorSource| {
-                    ResponseError {
-                        state: ResponseErrorState::from(e.error.name.as_str()),
-                        error: ResponseErrorBody {
-                            name: e.error.name,
-                            message: e.error.message
-                        },
-                    }
-                })                
+                .map(crate::response::response_error)                
                 .ok()
                 .unwrap()
             )
@@ -52,15 +44,7 @@ impl AccountsInfo {
                     })
                     .collect::<Vec<Self>>()
             })
-            .map_err(|x| {
-                ResponseError {
-                    state: ResponseErrorState::InternalJsonParseError,
-                    error: ResponseErrorBody {
-                        name: "internal_json_parse_error".to_owned(),
-                        message: x.to_string()
-                    },
-                }
-            })
+            .map_err(crate::response::response_error_from_json)
     }
 
     async fn request() -> Result<Response, ResponseError> {
@@ -72,14 +56,6 @@ impl AccountsInfo {
             .header(AUTHORIZATION, &token_string)
             .send()
             .await
-            .map_err(|x| {
-                ResponseError {
-                    state: ResponseErrorState::InternalReqwestError,
-                    error: ResponseErrorBody {
-                        name: "internal_reqwest_error".to_owned(),
-                        message: x.to_string()
-                    },
-                }
-            })
+            .map_err(crate::response::response_error_from_reqwest)
     }
 }

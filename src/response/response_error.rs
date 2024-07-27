@@ -1,4 +1,5 @@
 use serde::Deserialize;
+use serde_json::Error;
 
 /// List of response error item
 #[derive(Deserialize, Debug)]
@@ -128,4 +129,34 @@ pub struct ResponseErrorSource {
 pub struct ResponseErrorBody {
     pub name: String,
     pub message: String,
+}
+
+pub fn response_error(e: ResponseErrorSource) -> ResponseError {
+    ResponseError {
+        state: ResponseErrorState::from(e.error.name.as_str()),
+        error: ResponseErrorBody {
+            name: e.error.name,
+            message: e.error.message
+        },
+    }
+}
+
+pub fn response_error_from_json(e: Error) -> ResponseError {
+    ResponseError {
+        state: ResponseErrorState::InternalJsonParseError,
+        error: ResponseErrorBody {
+            name: "internal_json_parse_error".to_owned(),
+            message: e.to_string()
+        },
+    }
+}
+
+pub fn response_error_from_reqwest(e: reqwest::Error) -> ResponseError {
+    ResponseError {
+        state: ResponseErrorState::InternalReqwestError,
+        error: ResponseErrorBody {
+            name: "internal_reqwest_error".to_owned(),
+            message: e.to_string()
+        },
+    }
 }
