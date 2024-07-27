@@ -583,16 +583,16 @@ pub async fn list_order_status() -> Result<Vec<OrderInfo>, ResponseError> {
     OrderInfo::get_order_state_list().await
 }
 
-pub async fn get_order_state_by_uuid(market_id: &str, uuids: Option<Vec<&str>>, identifiers: Option<Vec<&str>>, order_by: OrderBy) -> Result<OrderInfo, ResponseError> {
-    OrderInfo::get_order_state_by_uuid(market_id, uuids, identifiers, order_by).await
+pub async fn get_order_states_by_uuids(market_id: &str, uuids: Option<Vec<&str>>, identifiers: Option<Vec<&str>>, order_by: OrderBy) -> Result<Vec<OrderInfo>, ResponseError> {
+    OrderInfo::get_order_states_by_uuids(market_id, uuids, identifiers, order_by).await
 }
 
-pub async fn get_order_state_open(market_id: &str, state: OrderState, states: Vec<OrderState>, page: u8, limit: u8, order_by: OrderBy) -> Result<OrderInfo, ResponseError> {
-    OrderInfo::get_order_state_open(market_id, state, states, page, limit, order_by).await
+pub async fn get_order_states_opened(market_id: &str, state: OrderState, states: Vec<OrderState>, page: u8, limit: u8, order_by: OrderBy) -> Result<Vec<OrderInfo>, ResponseError> {
+    OrderInfo::get_order_states_opened(market_id, state, states, page, limit, order_by).await
 }
 
-pub async fn get_order_state_closed(market_id: &str, state: OrderState, start_time: &str, end_time: &str, limit: u16, order_by: OrderBy) -> Result<OrderInfo, ResponseError> {
-    OrderInfo::get_order_state_closed(market_id, state, start_time, end_time, limit, order_by).await
+pub async fn get_order_states_closed(market_id: &str, state: OrderState, start_time: &str, end_time: &str, limit: u16, order_by: OrderBy) -> Result<Vec<OrderInfo>, ResponseError> {
+    OrderInfo::get_order_states_closed(market_id, state, start_time, end_time, limit, order_by).await
 }
 
 fn price_checker(price: f64) -> f64 {
