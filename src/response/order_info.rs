@@ -21,7 +21,7 @@ pub struct OrderInfo {
     pub executed_volume: f64,
     pub executed_funds: f64,
     pub trades_count: i64,
-    pub time_in_force: OrderCondition
+    pub time_in_force: Option<OrderCondition>
 }
 
 impl Request for OrderInfo {}
@@ -46,7 +46,7 @@ pub struct OrderInfoSource {
     executed_volume: String,
     executed_funds: String,
     trades_count: i64,
-    time_in_force: String
+    time_in_force: Option<String>
 }
 
 impl OrderInfoSource {
@@ -87,5 +87,7 @@ impl OrderInfoSource {
     /// Convert [String] type of trades_count into [f64]
     pub fn trades_count(&self) -> i64 { self.trades_count }
     /// Get time_in_force
-    pub fn time_in_force(&self) -> OrderCondition { self.time_in_force.as_str().into() }
+    pub fn time_in_force(&self) -> Option<OrderCondition> { 
+        None
+    }
 }
