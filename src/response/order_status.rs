@@ -1,8 +1,8 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use super::order_info::*;
 
 /// Deserialized ObjectTrades data of [OrderStatus].
-#[derive(Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct ObjectTrades {
     pub market: String,
     pub uuid: String,
@@ -14,7 +14,7 @@ pub struct ObjectTrades {
 }
 
 /// Deserialized OrderStatus data 
-#[derive(Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct OrderStatus {
     #[serde(flatten)]
     pub order_info: OrderInfo,

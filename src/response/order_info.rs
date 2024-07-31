@@ -1,9 +1,9 @@
 use crate::{api_exchange::{OrderCondition, OrderState, OrderType}, request::{Request, RequestWithQuery}};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use crate::api_exchange::OrderSide;
 
 /// Deserialized OrderInfo data
-#[derive(Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct OrderInfo {
     pub uuid: String,
     pub side: OrderSide,

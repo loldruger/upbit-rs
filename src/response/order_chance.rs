@@ -1,11 +1,11 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::api_exchange::{OrderType, OrderSide};
 
 use super::accounts_info::*;
 
 /// Deserialized ObjectMarket data of [OrderChance].
-#[derive(Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct ObjectMarket {
     pub id: String,
     pub name: String,
@@ -18,7 +18,7 @@ pub struct ObjectMarket {
 }
 
 /// Deserialized ObjectAskBid info of [ObjectMarket].
-#[derive(Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct ObjectAskBid {
     pub currency: String,
     pub price_unit: Option<String>,
@@ -26,7 +26,7 @@ pub struct ObjectAskBid {
 }
 
 /// Raw OrderChance data from serialized data
-#[derive(Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct OrderChance {
     pub bid_fee: f32,
     pub ask_fee: f32,

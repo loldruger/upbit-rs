@@ -1,8 +1,8 @@
 use crate::request::Request;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// Deserialized and parsed account info data
-#[derive(Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct AccountsInfo {
     pub currency: String,
     pub balance: f64,

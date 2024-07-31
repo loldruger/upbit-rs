@@ -5,14 +5,14 @@ pub mod order_chance;
 pub mod order_status;
 pub mod order_status_list;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::constant::OrderBy;
 
 use super::response::{AccountsInfo, OrderInfo, OrderChance, OrderStatus, ResponseError};
 
 /// Side of order
-#[derive(Deserialize, Debug, Copy, Clone, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Debug, Copy, Clone, PartialEq, Eq)]
 pub enum OrderSide {
     /// 매수
     Bid, 
@@ -40,7 +40,7 @@ impl From<&str> for OrderSide {
 }
 
 /// Type of order
-#[derive(Deserialize, Debug, Copy, Clone, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Debug, Copy, Clone, PartialEq, Eq)]
 pub enum OrderType {
     /// 지정가 주문
     Limit,
@@ -76,7 +76,7 @@ impl From<&str> for OrderType {
 }
 
 /// New Order type 
-#[derive(Deserialize, Debug, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub enum OrderCondition {
     /// Immediate or Cancel
     IOK,
@@ -104,7 +104,7 @@ impl From<&str> for OrderCondition {
 }
 
 /// List of order state
-#[derive(Deserialize, Debug, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub enum OrderState {
     /// 체결 대기 (default)
     Wait,
