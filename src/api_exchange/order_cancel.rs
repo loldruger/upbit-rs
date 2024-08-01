@@ -62,12 +62,12 @@ impl OrderInfo {
     async fn request_cancel(uuid: Option<&str>, identifier: Option<&str>) -> Result<Response, ResponseError> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDER_STATUS}")).unwrap();
 
-        if uuid.is_some() {
-            url.query_pairs_mut().append_pair("uuid", uuid.unwrap());
+        if let Some(uuid) = uuid {
+            url.query_pairs_mut().append_pair("uuid", uuid);
         }
 
-        if identifier.is_some() {
-            url.query_pairs_mut().append_pair("identifier", identifier.unwrap());
+        if let Some(identifier) = identifier {
+            url.query_pairs_mut().append_pair("identifier", identifier);
         }
 
         let token_string = Self::set_token_with_query(url.as_str())?;
@@ -82,3 +82,43 @@ impl OrderInfo {
     }
 }
 
+// #[cfg(test)]
+// mod tests {
+//     use serde_json::Value;
+
+//     use super::*;
+
+//     #[tokio::test]
+//     async fn cancel_order() {
+//         crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
+//         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
+
+//         let res = OrderInfo::request_cancel().await.unwrap();
+//         let res_serialized = res
+//             .text()
+//             .await
+//             .map_err(crate::response::response_error_from_reqwest)
+//             .unwrap();
+
+//         let json = serde_json::from_str::<Value>(&res_serialized).unwrap();
+//         println!("{:#?}", json.get(0));
+
+//         assert_ne!(json.get("uuid"), None);
+//         assert_ne!(json.get("side"), None);
+//         assert_ne!(json.get("ord_type"), None);
+//         assert_ne!(json.get("price"), None);
+//         assert_ne!(json.get("state"), None);
+//         assert_ne!(json.get("market"), None);
+//         assert_ne!(json.get("created_at"), None);
+//         assert_ne!(json.get("volume"), None);
+//         assert_ne!(json.get("remaining_volume"), None);
+//         assert_ne!(json.get("reserved_fee"), None);
+//         assert_ne!(json.get("remaining_fee"), None);
+//         assert_ne!(json.get("paid_fee"), None);
+//         assert_ne!(json.get("locked"), None);
+//         assert_ne!(json.get("executed_volume"), None);
+//         assert_ne!(json.get("executed_funds"), None);
+//         assert_ne!(json.get("trades_count"), None);
+//         assert_ne!(json.get("time_in_force"), None);
+//     }
+// }

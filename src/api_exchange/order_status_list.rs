@@ -64,7 +64,7 @@ impl OrderInfo {
         Self::deserialize_response(res_serialized)
     }
 
-    #[deprecated(since = "1.6.0 (api version 1.4.8)")]
+    #[deprecated(since = "1.6.0")]
     pub async fn get_order_state_list() -> Result<Vec<Self>, ResponseError> {
         let res = Self::request(&format!("{URL_SERVER}{URL_ORDER_STATUS_LIST}")).await?;
         let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest)?;
@@ -106,8 +106,10 @@ impl OrderInfo {
             }
         }
 
-        if identifiers.is_some() {
-            url.query_pairs_mut().append_pair("identifiers", &identifiers.unwrap().join(","));
+        if let Some(identifiers) = identifiers {
+            for identifier in identifiers {
+                url.query_pairs_mut().append_pair("identifiers", identifier);
+            }
         }
         
         let url = url.as_str().replace("uuids", "uuids[]");

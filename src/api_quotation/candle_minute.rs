@@ -78,12 +78,13 @@ impl CandleChartMinute {
     async fn request(market: &str, to: Option<String>, count: i32, candle_minute: CandleMinute) -> Result<Response, ResponseError> {
         let url_candle = UrlAssociates::UrlCandleMinute(candle_minute).to_string();
         let mut url = Url::parse(&format!("{URL_SERVER}{url_candle}")).unwrap();
+        
         url.query_pairs_mut()
             .append_pair("market", market)
             .append_pair("count", count.to_string().as_str());
         
-        if to.is_some() {
-            url.query_pairs_mut().append_pair("to", to.unwrap().as_str());
+        if let Some(to) = to {
+            url.query_pairs_mut().append_pair("to", to.as_str());
         }
 
         reqwest::Client::new()

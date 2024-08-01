@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::api_exchange::{OrderType, OrderSide};
+use crate::api_exchange::OrderSide;
 
 use super::accounts_info::*;
 

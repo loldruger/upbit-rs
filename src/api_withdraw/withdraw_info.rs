@@ -44,16 +44,16 @@ impl TransactionInfo {
     async fn get_request(currency: Option<&str>, uuid: Option<&str>, txid: Option<&str>) -> Result<Response, ResponseError> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_WITHDRAW}")).unwrap();
 
-        if currency.is_some() {
-            url.query_pairs_mut().append_pair("currency", currency.unwrap());
+        if let Some(currency) = currency {
+            url.query_pairs_mut().append_pair("currency", currency);
         }
 
-        if uuid.is_some() {
-            url.query_pairs_mut().append_pair("uuid", uuid.unwrap());
+        if let Some(uuid) = uuid {
+            url.query_pairs_mut().append_pair("uuid", uuid);
         }
 
-        if txid.is_some() {
-            url.query_pairs_mut().append_pair("txid", txid.unwrap());
+        if let Some(txid) = txid {
+            url.query_pairs_mut().append_pair("txid", txid);
         }
 
         let token_string = Self::set_token_with_query(url.as_str())?;

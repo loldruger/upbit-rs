@@ -77,8 +77,8 @@ impl WithdrawChance {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_WITHDRAWS_CHANCE}?currency={currency}")).unwrap();
         let token_string = Self::set_token_with_query(url.as_str())?;
 
-        if net_type.is_some() {
-            url.query_pairs_mut().append_pair("net_type", net_type.unwrap());
+        if let Some(net_type) = net_type {
+            url.query_pairs_mut().append_pair("net_type", net_type);
         }
 
         reqwest::Client::new()

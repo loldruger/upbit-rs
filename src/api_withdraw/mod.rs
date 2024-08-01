@@ -5,6 +5,8 @@ mod withdraw_coin;
 mod withdraw_krw;
 mod withdraw_address;
 
+use core::fmt::Display;
+
 use crate::{constant::{OrderBy, WithdrawType, TwoFactorType}, response::{WithdrawChance, WithdrawCoinAddress}};
 use super::response::{TransactionInfo, TransactionInfoDerived, ResponseError};
 
@@ -24,18 +26,31 @@ pub enum WithdrawState {
     Rejected
 }
 
-impl ToString for WithdrawState {
-    fn to_string(&self) -> String {
+impl Display for WithdrawState {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            WithdrawState::Waiting => "waiting".to_owned(),
-            WithdrawState::Processing => "processing".to_owned(),
-            WithdrawState::Done => "done".to_owned(),
-            WithdrawState::Failed => "failed".to_owned(),
-            WithdrawState::Canceled => "canceled".to_owned(),
-            WithdrawState::Rejected => "rejected".to_owned(),
+            WithdrawState::Waiting => write!(f, "waiting"),
+            WithdrawState::Processing => write!(f, "processing"),
+            WithdrawState::Done => write!(f, "done"),
+            WithdrawState::Failed => write!(f, "failed"),
+            WithdrawState::Canceled => write!(f, "canceled"),
+            WithdrawState::Rejected => write!(f, "rejected"),
         }
     }
 }
+
+// impl ToString for WithdrawState {
+//     fn to_string(&self) -> String {
+//         match self {
+//             WithdrawState::Waiting => "waiting".to_owned(),
+//             WithdrawState::Processing => "processing".to_owned(),
+//             WithdrawState::Done => "done".to_owned(),
+//             WithdrawState::Failed => "failed".to_owned(),
+//             WithdrawState::Canceled => "canceled".to_owned(),
+//             WithdrawState::Rejected => "rejected".to_owned(),
+//         }
+//     }
+// }
 
 impl From<&str> for WithdrawState {
     fn from(value: &str) -> Self {

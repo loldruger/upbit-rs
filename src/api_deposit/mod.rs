@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use crate::{response::{TransactionInfo, ResponseError, CoinAddressGen, CoinAddressResponse}, constant::{OrderBy, TwoFactorType}};
 
 mod deposit_info;
@@ -26,19 +28,33 @@ pub enum DepositState {
     Refunded
 }
 
-impl ToString for DepositState {
-    fn to_string(&self) -> String {
+impl Display for DepositState {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Processing => "processing".to_owned(),
-            Self::Accepted => "accepted".to_owned(),
-            Self::Canceled => "cancelled".to_owned(), // this typo is intentional
-            Self::Rejected => "rejected".to_owned(),
-            Self::TravelRuleSuspected => "travel_rule_suspected".to_owned(),
-            Self::Refunding => "refunding".to_owned(),
-            Self::Refunded => "refunded".to_owned(),
+            Self::Processing => write!(f, "processing"),
+            Self::Accepted => write!(f, "accepted"),
+            Self::Canceled => write!(f, "cancelled"), // this typo is intentional
+            Self::Rejected => write!(f, "rejected"),
+            Self::TravelRuleSuspected => write!(f, "travel_rule_suspected"),
+            Self::Refunding => write!(f, "refunding"),
+            Self::Refunded => write!(f, "refunded"),
         }
     }
 }
+
+// impl ToString for DepositState {
+//     fn to_string(&self) -> String {
+//         match self {
+//             Self::Processing => "processing".to_owned(),
+//             Self::Accepted => "accepted".to_owned(),
+//             Self::Canceled => "cancelled".to_owned(), // this typo is intentional
+//             Self::Rejected => "rejected".to_owned(),
+//             Self::TravelRuleSuspected => "travel_rule_suspected".to_owned(),
+//             Self::Refunding => "refunding".to_owned(),
+//             Self::Refunded => "refunded".to_owned(),
+//         }
+//     }
+// }
 
 impl From<&str> for DepositState {
     fn from(value: &str) -> Self {

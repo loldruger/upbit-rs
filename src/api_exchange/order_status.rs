@@ -77,12 +77,12 @@ impl OrderStatus {
     async fn request(uuid: Option<&str>, identifier: Option<&str>) -> Result<Response, ResponseError> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDER_STATUS}")).unwrap();
 
-        if uuid.is_some() {
-            url.query_pairs_mut().append_pair("uuid", uuid.unwrap());
+        if let Some(uuid) = uuid {
+            url.query_pairs_mut().append_pair("uuid", uuid);
         }
 
-        if identifier.is_some() {
-            url.query_pairs_mut().append_pair("identifier", identifier.unwrap());
+        if let Some(identifier) = identifier {
+            url.query_pairs_mut().append_pair("identifier", identifier);
         }
 
         let token_string = Self::set_token_with_query(url.as_str())?;

@@ -66,10 +66,10 @@ impl CandleChartMonth {
             .append_pair("market", market)
             .append_pair("count", count.to_string().as_str());
 
-        if last_candle_time.is_some() {
-            url.query_pairs_mut().append_pair("to", last_candle_time.unwrap().as_str());
+        if let Some(last_candle_time) = last_candle_time {
+            url.query_pairs_mut().append_pair("to", last_candle_time.as_str());
         }
-        
+
         reqwest::Client::new()
             .get(url.as_str())
             .header(ACCEPT, "application/json")

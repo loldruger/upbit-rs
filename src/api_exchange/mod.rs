@@ -5,6 +5,8 @@ pub mod order_chance;
 pub mod order_status;
 pub mod order_status_list;
 
+use std::fmt::Display;
+
 use serde::{Deserialize, Serialize};
 
 use crate::constant::OrderBy;
@@ -20,14 +22,23 @@ pub enum OrderSide {
     Ask,
 }
 
-impl ToString for OrderSide {
-    fn to_string(&self) -> String {
+impl Display for OrderSide {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            OrderSide::Bid => "bid".to_owned(),
-            OrderSide::Ask => "ask".to_owned(),
+            OrderSide::Bid => write!(f, "bid"),
+            OrderSide::Ask => write!(f, "ask"),
         }
     }
 }
+
+// impl ToString for OrderSide {
+//     fn to_string(&self) -> String {
+//         match self {
+//             OrderSide::Bid => "bid".to_owned(),
+//             OrderSide::Ask => "ask".to_owned(),
+//         }
+//     }
+// }
 
 impl From<&str> for OrderSide {
     fn from(value: &str) -> Self {
@@ -52,16 +63,27 @@ pub enum OrderType {
     Best
 }
 
-impl ToString for OrderType {
-    fn to_string(&self) -> String {
+impl Display for OrderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            OrderType::Limit => "limit".to_owned(),
-            OrderType::Price => "price".to_owned(),
-            OrderType::Market => "market".to_owned(),
-            OrderType::Best => "best".to_owned(),
+            OrderType::Limit => write!(f, "limit"),
+            OrderType::Price => write!(f, "price"),
+            OrderType::Market => write!(f, "market"),
+            OrderType::Best => write!(f, "best"),
         }
     }
 }
+
+// impl ToString for OrderType {
+//     fn to_string(&self) -> String {
+//         match self {
+//             OrderType::Limit => "limit".to_owned(),
+//             OrderType::Price => "price".to_owned(),
+//             OrderType::Market => "market".to_owned(),
+//             OrderType::Best => "best".to_owned(),
+//         }
+//     }
+// }
 
 impl From<&str> for OrderType {
     fn from(value: &str) -> Self {
@@ -84,14 +106,23 @@ pub enum OrderCondition {
     FOK,
 }
 
-impl ToString for OrderCondition {
-    fn to_string(&self) -> String {
+impl Display for OrderCondition {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            OrderCondition::IOK => "iok".to_owned(),
-            OrderCondition::FOK => "fok".to_owned()
+            OrderCondition::IOK => write!(f, "iok"),
+            OrderCondition::FOK => write!(f, "fok")
         }
     }
 }
+
+// impl ToString for OrderCondition {
+//     fn to_string(&self) -> String {
+//         match self {
+//             OrderCondition::IOK => "iok".to_owned(),
+//             OrderCondition::FOK => "fok".to_owned()
+//         }
+//     }
+// }
 
 impl From<&str> for OrderCondition {
     fn from(value: &str) -> Self {
@@ -116,16 +147,27 @@ pub enum OrderState {
     Cancel
 }
 
-impl ToString for OrderState {
-    fn to_string(&self) -> String {
+impl Display for OrderState {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            OrderState::Wait => "wait".to_owned(),
-            OrderState::Watch => "watch".to_owned(),
-            OrderState::Done => "done".to_owned(),
-            OrderState::Cancel => "cancel".to_owned(),
+            OrderState::Wait => write!(f, "wait"),
+            OrderState::Watch => write!(f, "watch"),
+            OrderState::Done => write!(f, "done"),
+            OrderState::Cancel => write!(f, "cancel"),
         }
     }
 }
+
+// impl ToString for OrderState {
+//     fn to_string(&self) -> String {
+//         match self {
+//             OrderState::Wait => "wait".to_owned(),
+//             OrderState::Watch => "watch".to_owned(),
+//             OrderState::Done => "done".to_owned(),
+//             OrderState::Cancel => "cancel".to_owned(),
+//         }
+//     }
+// }
 
 impl From<&str> for OrderState {
     fn from(value: &str) -> Self {
@@ -578,7 +620,7 @@ pub async fn get_order_status(uuid: Option<&str>, identifier: Option<&str>) -> R
 /// | locked | 거래에 사용중인 비용 | NumberString |
 /// | executed_volume | 체결된 양 | NumberString |
 /// | trades_count | 해당 주문에 걸린 체결 수 | Integer |
-#[deprecated(since = "1.6.0 (api version 1.4.8)", note = "use get_order_status() instead")]
+#[deprecated(since = "1.6.0", note = "use get_order_status() instead")]
 pub async fn list_order_status() -> Result<Vec<OrderInfo>, ResponseError> {
     OrderInfo::get_order_state_list().await
 }

@@ -68,16 +68,17 @@ impl CandleChartDay {
     async fn request(market: &str, count: i32, last_candle_time: Option<String>, price_unit: Option<String>) -> Result<Response, ResponseError> {
         let url_candle = UrlAssociates::UrlCandleDay.to_string();
         let mut url = Url::parse(&format!("{URL_SERVER}{url_candle}")).unwrap();
+        
         url.query_pairs_mut()
             .append_pair("market", market)
             .append_pair("count", count.to_string().as_str());
 
-        if last_candle_time.is_some() {
-            url.query_pairs_mut().append_pair("to", last_candle_time.unwrap().as_str());
+        if let Some(last_candle_time) = last_candle_time {
+            url.query_pairs_mut().append_pair("to", last_candle_time.as_str());
         }
 
-        if price_unit.is_some() {
-            url.query_pairs_mut().append_pair("convertingPriceUnit", price_unit.unwrap().as_str());
+        if let Some(price_unit) = price_unit {
+            url.query_pairs_mut().append_pair("convertingPriceUnit", price_unit.as_str());
         }
         
         reqwest::Client::new()

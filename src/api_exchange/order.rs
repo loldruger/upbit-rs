@@ -62,36 +62,24 @@ impl OrderInfo {
             .append_pair("side", &side.to_string())
             .append_pair("ord_type", &ord_type.to_string());
             
-        if price.is_some() {
-            let price = format!("{:.8}", price.unwrap());
-            url.query_pairs_mut().append_pair("price", price.as_str());
-        }
-        
-        if volume.is_some() {
-            let volume = format!("{:.8}", volume.unwrap()); 
-            url.query_pairs_mut().append_pair("volume", volume.as_str());
+        if let Some(price) = price {
+            let price = format!("{:.8}", price);
+            url.query_pairs_mut().append_pair("price", &price.to_string());
         }
 
-        if identifier.is_some() {
-            url.query_pairs_mut().append_pair("identifier", identifier.unwrap());
+        if let Some(volume) = volume {
+            let volume = format!("{:.8}", volume);
+            url.query_pairs_mut().append_pair("volume", &volume.to_string());
         }
 
-        // let asdf: Option<String> = if let Some(x) = url.query() {
-        //     let mut y = x.replace('=', ":");
-        //     y = y.replace('&', ",");
-        //     y.insert(0, '{');
-        //     y.insert(y.len(), '}');
-
-        //     Some(y)
-        // } else {
-        //     None
-        // };
+        if let Some(identifier) = identifier {
+            url.query_pairs_mut().append_pair("identifier", identifier);
+        }
 
         let token_string = Self::set_token_with_query(url.as_str())?;
         
         reqwest::Client::new()
             .post(url.as_str())
-            // .json(&asdf)
             .header(ACCEPT, "application/json")
             .header(CONTENT_TYPE, "application/json")
             .header(AUTHORIZATION, &token_string)

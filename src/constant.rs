@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 /// Server domain address
 pub const URL_SERVER: &str = "https://api.upbit.com";
 
@@ -11,7 +13,7 @@ pub const URL_ORDER_CHANCE: &str = "/v1/orders/chance";
 /// URL of API getting order status
 pub const URL_ORDER_STATUS: &str = "/v1/order";
 /// URL of API getting order status list
-#[deprecated(since = "1.6.0 (api version 1.4.8)")]
+#[deprecated(since = "1.6.0")]
 pub const URL_ORDER_STATUS_LIST: &str = "/v1/orders";
 /// URL of API getting order status by uuids
 pub const URL_ORDER_STATUS_BY_UUID: &str = "/v1/orders/uuids";
@@ -72,14 +74,23 @@ pub enum OrderBy {
     Desc
 }
 
-impl ToString for OrderBy {
-    fn to_string(&self) -> String {
+impl Display for OrderBy {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            OrderBy::Asc => "asc".to_owned(),
-            OrderBy::Desc => "desc".to_owned(),
+            OrderBy::Asc => write!(f, "asc"),
+            OrderBy::Desc => write!(f, "desc"),
         }
     }
 }
+
+// impl ToString for OrderBy {
+//     fn to_string(&self) -> String {
+//         match self {
+//             OrderBy::Asc => "asc".to_owned(),
+//             OrderBy::Desc => "desc".to_owned(),
+//         }
+//     }
+// }
 
 impl From<&str> for OrderBy {
     fn from(value: &str) -> Self {
@@ -100,14 +111,23 @@ pub enum WithdrawType {
     Internal 
 }
 
-impl ToString for WithdrawType {
-    fn to_string(&self) -> String {
+impl Display for WithdrawType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            WithdrawType::Default => "default".to_owned(),
-            WithdrawType::Internal => "internal".to_owned(),
+            WithdrawType::Default => write!(f, "default"),
+            WithdrawType::Internal => write!(f, "internal"),
         }
     }
 }
+
+// impl ToString for WithdrawType {
+//     fn to_string(&self) -> String {
+//         match self {
+//             WithdrawType::Default => "default".to_owned(),
+//             WithdrawType::Internal => "internal".to_owned(),
+//         }
+//     }
+// }
 
 impl From<&str> for WithdrawType {
     fn from(value: &str) -> Self {
@@ -127,14 +147,23 @@ pub enum TwoFactorType {
     Naver
 }
 
-impl ToString for TwoFactorType {
-    fn to_string(&self) -> String {
+impl Display for TwoFactorType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            TwoFactorType::KakaoPay => "kakao_pay".to_owned(),
-            TwoFactorType::Naver => "naver".to_owned(),
+            TwoFactorType::KakaoPay => write!(f, "kakao_pay"),
+            TwoFactorType::Naver => write!(f, "naver"),
         }
     }
 }
+
+// impl ToString for TwoFactorType {
+//     fn to_string(&self) -> String {
+//         match self {
+//             TwoFactorType::KakaoPay => "kakao_pay".to_owned(),
+//             TwoFactorType::Naver => "naver".to_owned(),
+//         }
+//     }
+// }
 
 /// List of transaction type
 #[derive(Debug)]
@@ -145,14 +174,23 @@ pub enum TransactionType {
     Deposit
 }
 
-impl ToString for TransactionType {
-    fn to_string(&self) -> String {
+impl Display for TransactionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            TransactionType::Withdraw => "withdraw".to_owned(),
-            TransactionType::Deposit => "deposit".to_owned(),
+            TransactionType::Withdraw => write!(f, "withdraw"),
+            TransactionType::Deposit => write!(f, "deposit"),
         }
     }
 }
+
+// impl ToString for TransactionType {
+//     fn to_string(&self) -> String {
+//         match self {
+//             TransactionType::Withdraw => "withdraw".to_owned(),
+//             TransactionType::Deposit => "deposit".to_owned(),
+//         }
+//     }
+// }
 
 impl From<&str> for TransactionType {
     fn from(value: &str) -> Self {

@@ -58,12 +58,12 @@ impl TradeRecent {
             .append_pair("count", count.to_string().as_str())
             .append_pair("cursor", cursor.as_str());
 
-        if hhmmss.is_some() {
-            url.query_pairs_mut().append_pair("to", hhmmss.unwrap());
+        if let Some(hhmmss) = hhmmss {
+            url.query_pairs_mut().append_pair("to", hhmmss);
         }
 
-        if days_ago.is_some() {
-            url.query_pairs_mut().append_pair("daysAgo", days_ago.unwrap().to_string().as_str());
+        if let Some(days_ago) = days_ago {
+            url.query_pairs_mut().append_pair("daysAgo", days_ago.to_string().as_str());
         }
         
         reqwest::Client::new()

@@ -7,6 +7,8 @@ pub mod candle_day;
 pub mod candle_month;
 pub mod candle_week;
 
+use std::fmt::Display;
+
 pub use order_book::OrderbookInfo;
 use serde::Deserialize;
 pub use ticker_snapshot::TickerSnapshot;
@@ -86,17 +88,28 @@ pub enum UrlAssociates {
     UrlCandleMonth
 }
 
-impl ToString for UrlAssociates {
-    fn to_string(&self) -> String {
+impl Display for UrlAssociates {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             UrlAssociates::UrlCandleMinute(minute) => 
-                format!("{URL_CANDLE_MINUTE}{}", Into::<u8>::into(*minute)),
-            UrlAssociates::UrlCandleDay => format!("{URL_CANDLE_DAY}"),
-            UrlAssociates::UrlCandleWeek => format!("{URL_CANDLE_WEEK}"),
-            UrlAssociates::UrlCandleMonth => format!("{URL_CANDLE_MONTH}"),
+                write!(f, "{URL_CANDLE_MINUTE}{}", Into::<u8>::into(*minute)),
+            UrlAssociates::UrlCandleDay => {write!(f, "{}", URL_CANDLE_DAY)},
+            UrlAssociates::UrlCandleWeek => {write!(f, "{}", URL_CANDLE_WEEK)},
+            UrlAssociates::UrlCandleMonth => {write!(f, "{}", URL_CANDLE_MONTH)},
         }
     }
 }
+// impl ToString for UrlAssociates {
+//     fn to_string(&self) -> String {
+//         match self {
+//             UrlAssociates::UrlCandleMinute(minute) => 
+//                 format!("{URL_CANDLE_MINUTE}{}", Into::<u8>::into(*minute)),
+//             UrlAssociates::UrlCandleDay => {URL_CANDLE_DAY.to_string()},
+//             UrlAssociates::UrlCandleWeek => {URL_CANDLE_WEEK.to_string()},
+//             UrlAssociates::UrlCandleMonth => {URL_CANDLE_MONTH.to_string()},
+//         }
+//     }
+// }
 
 /// 호가 정보를 조회한다. (Inquiry bid price and offered price.)
 /// 

@@ -71,9 +71,9 @@ impl TransactionInfoDerived {
             .append_pair("amount", &format!("{amount}"))
             .append_pair("address", address)
             .append_pair("transaction_type", &transaction_type.to_string());
-            
-        if secondary_address.is_some() {
-            url.query_pairs_mut().append_pair("secondary_address", secondary_address.unwrap());
+        
+        if let Some(secondary_address) = secondary_address {
+            url.query_pairs_mut().append_pair("secondary_address", secondary_address);
         }
 
         let token_string = Self::set_token_with_query(url.as_str())?;

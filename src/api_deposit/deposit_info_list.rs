@@ -79,27 +79,25 @@ impl TransactionInfo {
             .append_pair("page", &format!("{page}"))
             .append_pair("order_by", &order_by.to_string());
     
-        if uuids.is_some() {
-            let uuids = uuids
-                .unwrap()
-                .join("&")
-                .split_inclusive('&')
-                .map(|x| format!("uuids[]={x}"))
-                .collect::<String>();
-            url = Url::parse(&format!("{}&{}", url.as_str(), uuids)).unwrap();
+        let url = if let Some(uuids) = uuids {
+            for uuid in uuids {
+                url.query_pairs_mut().append_pair("uuids", uuid);
             }
 
-        if txids.is_some() {
-            let txids = uuids
-                .unwrap()
-                .join("&")
-                .split_inclusive('&')
-                .map(|x| format!("txids[]={x}"))
-                .collect::<String>();
-            url = Url::parse(&format!("{}&{}", url.as_str(), txids)).unwrap();
-        }
+            url.as_str().replace("uuids", "uuids[]")
 
-        let token_string = Self::set_token_with_query(url.as_str())?;
+        } else if let Some(txids) = txids {
+            for txid in txids {
+                url.query_pairs_mut().append_pair("txids", txid);
+            }
+
+            url.as_str().replace("txids", "txids[]")
+
+        } else {
+            url.as_str().to_string()
+        };
+
+        let token_string = Self::set_token_with_query(&url)?;
 
         reqwest::Client::new()
             .get(url)
