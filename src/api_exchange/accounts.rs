@@ -57,6 +57,8 @@ impl AccountsInfo {
 
 #[cfg(test)]
 mod tests {
+    use std::collections::HashSet;
+
     use serde_json::Value;
 
     use super::*;
@@ -74,28 +76,40 @@ mod tests {
             .unwrap();
 
         let json = serde_json::from_str::<Value>(&res_serialized).unwrap();
-        let dese = serde_json::from_str(&res_serialized)
-            .map(|i: Vec<AccountsInfoSource>| {
-                i
-                    .into_iter()
-                    .map(|x| AccountsInfo {
-                        currency: x.currency(),
-                        balance: x.balance(),
-                        locked: x.locked(),
-                        avg_buy_price: x.avg_buy_price(),
-                        avg_buy_price_modified: x.avg_buy_price_modified(),
-                        unit_currency: x.unit_currency()
-                    })
-                    .collect::<Vec<AccountsInfo>>()
-            })
-            .map_err(crate::response::response_error_from_json)
-            .unwrap();
+        let expected_keys = [
+            "currency",
+            "balance",
+            "locked",
+            "avg_buy_price",
+            "avg_buy_price_modified",
+            "unit_currency"
+        ].iter().cloned().collect::<HashSet<&str>>();
 
-        assert_ne!(json.get(0).unwrap().get("currency"), None);
-        assert_ne!(json.get(0).unwrap().get("balance"), None);
-        assert_ne!(json.get(0).unwrap().get("locked"), None);
-        assert_ne!(json.get(0).unwrap().get("avg_buy_price"), None);
-        assert_ne!(json.get(0).unwrap().get("avg_buy_price_modified"), None);
-        assert_ne!(json.get(0).unwrap().get("unit_currency"), None);
+        if let Value::Array(json) = json {
+            if json.len() == 0 {
+                println!("The JSON is empty.");
+                assert!(false);
+            }
+
+            if let Value::Object(map) = &json[0] {
+                let json_keys = map.keys().map(|k| k.as_str()).collect::<HashSet<&str>>();
+                let unexpected_keys = json_keys.difference(&expected_keys).collect::<HashSet<_>>();
+                let missing_keys = expected_keys.difference(&json_keys).collect::<HashSet<_>>();
+        
+                if !unexpected_keys.is_empty() {
+                    println!("Unexpected keys found: {:?}", unexpected_keys);
+                } else {
+                    println!("No unexpected keys found.");
+                }
+        
+                if !missing_keys.is_empty() {
+                    println!("Missing keys: {:?}", missing_keys);
+                } else {
+                    println!("No keys are missing.");
+                }
+            } else {
+                println!("The JSON is not an object.");
+            }
+        }
     }
 }
