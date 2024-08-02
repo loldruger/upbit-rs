@@ -625,8 +625,12 @@ pub async fn list_order_status() -> Result<Vec<OrderInfo>, ResponseError> {
     OrderInfo::get_order_state_list().await
 }
 
-pub async fn get_order_states_by_uuids(market_id: &str, uuids: Option<Vec<&str>>, identifiers: Option<Vec<&str>>, order_by: OrderBy) -> Result<Vec<OrderInfo>, ResponseError> {
-    OrderInfo::get_order_states_by_uuids(market_id, uuids, identifiers, order_by).await
+pub async fn get_order_states_by_uuids(market_id: &str, uuids: Vec<&str>, order_by: OrderBy) -> Result<Vec<OrderInfo>, ResponseError> {
+    OrderInfo::get_order_states_by_uuids(market_id, uuids, order_by).await
+}
+
+pub async fn get_order_states_by_identifiers(market_id: &str, identifiers: Vec<&str>, order_by: OrderBy) -> Result<Vec<OrderInfo>, ResponseError> {
+    OrderInfo::get_order_states_by_identifiers(market_id, identifiers, order_by).await
 }
 
 pub async fn get_order_states_opened(market_id: &str, state: OrderState, states: Vec<OrderState>, page: u8, limit: u8, order_by: OrderBy) -> Result<Vec<OrderInfo>, ResponseError> {

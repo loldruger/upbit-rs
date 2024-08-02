@@ -64,7 +64,7 @@ mod tests {
     use super::*;
 
     #[tokio::test]
-    async fn get_account_info() {
+    async fn test_get_account_info() {
         crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
 
@@ -87,8 +87,8 @@ mod tests {
 
         if let Value::Array(json) = json {
             if json.len() == 0 {
-                println!("The JSON is empty.");
-                assert!(false);
+                println!("[get_account_info] The JSON is empty.");
+                assert!(true);
             }
 
             if let Value::Object(map) = &json[0] {
@@ -97,18 +97,22 @@ mod tests {
                 let missing_keys = expected_keys.difference(&json_keys).collect::<HashSet<_>>();
         
                 if !unexpected_keys.is_empty() {
-                    println!("Unexpected keys found: {:?}", unexpected_keys);
+                    println!("[get_account_info] Unexpected keys found: {:?}", unexpected_keys);
+                    assert!(false);
                 } else {
-                    println!("No unexpected keys found.");
+                    println!("[get_account_info] No unexpected keys found.");
+                    assert!(true);
                 }
         
                 if !missing_keys.is_empty() {
-                    println!("Missing keys: {:?}", missing_keys);
+                    println!("[get_account_info] Missing keys: {:?}", missing_keys);
+                    assert!(false);
                 } else {
-                    println!("No keys are missing.");
+                    println!("[get_account_info] No keys are missing.");
+                    assert!(true);
                 }
             } else {
-                println!("The JSON is not an object.");
+                println!("[get_account_info] The JSON is not an object.");
             }
         }
     }

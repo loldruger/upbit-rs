@@ -97,7 +97,7 @@ mod tests {
     use super::*;
 
     #[tokio::test]
-    async fn get_order_chance() {
+    async fn test_get_order_chance() {
         crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
     
@@ -160,18 +160,18 @@ mod tests {
         let (missing_keys, extra_keys) = compare_keys(&json, &expected_structure, "");
     
         if !missing_keys.is_empty() {
-            println!("[get_order_chance] Missing keys: {:?}", missing_keys);
+            println!("[test_get_order_chance] Missing keys: {:?}", missing_keys);
             assert!(false);
         } else {
-            println!("[get_order_chance] No keys are missing");
+            println!("[test_get_order_chance] No keys are missing");
             assert!(true);
         }
     
         if !extra_keys.is_empty() {
-            println!("[get_order_chance] Extra keys: {:?}", extra_keys);
+            println!("[test_get_order_chance] Extra keys: {:?}", extra_keys);
             assert!(false);
         } else {
-            println!("[get_order_chance] No extra keys found.");
+            println!("[test_get_order_chance] No extra keys found.");
             assert!(true);
         }
     }

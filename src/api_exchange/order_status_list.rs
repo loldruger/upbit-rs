@@ -19,8 +19,8 @@ use super::{
 };
 
 impl OrderInfo {
-    pub async fn get_order_states_by_uuids(market_id: &str, uuids: Option<Vec<&str>>, identifiers: Option<Vec<&str>>, order_by: OrderBy) -> Result<Vec<Self>, ResponseError> {
-        let res = Self::request_orders_by_uuids(market_id, uuids, identifiers, order_by).await?;
+    pub async fn get_order_states_by_uuids(market_id: &str, uuids: Vec<&str>, order_by: OrderBy) -> Result<Vec<Self>, ResponseError> {
+        let res = Self::request_orders_by_uuids(market_id, uuids, order_by).await?;
         let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest)?;
         
         if res_serialized.contains("error") {
@@ -34,6 +34,21 @@ impl OrderInfo {
         Self::deserialize_response(res_serialized)
     }
 
+    pub async fn get_order_states_by_identifiers(market_id: &str, identifiers: Vec<&str>, order_by: OrderBy) -> Result<Vec<Self>, ResponseError> {
+        let res = Self::request_orders_by_identifiers(market_id, identifiers, order_by).await?;
+        let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest)?;
+        
+        if res_serialized.contains("error") {
+            return Err(serde_json::from_str(&res_serialized)
+                .map(crate::response::response_error)                
+                .ok()
+                .unwrap()
+            )
+        } 
+
+        Self::deserialize_response(res_serialized)
+    }
+    
     pub async fn get_order_states_opened(market_id: &str, state: OrderState, states: Vec<OrderState>, page: u8, limit: u8, order_by: OrderBy) -> Result<Vec<Self>, ResponseError> {
         let res = Self::request_orders_opened(market_id, state, states, page, limit, order_by).await?;
         let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest)?;
@@ -80,6 +95,7 @@ impl OrderInfo {
         Self::deserialize_response(res_serialized)
     }
 
+    #[deprecated(since = "1.6.0")]
     async fn request(url: &str) -> Result<Response, ResponseError> {
         let url = Url::parse(url).unwrap();
         let token_string = Self::set_token()?;
@@ -93,26 +109,41 @@ impl OrderInfo {
             .map_err(crate::response::response_error_from_reqwest)
     }
 
-    async fn request_orders_by_uuids(market_id: &str, uuids: Option<Vec<&str>>, identifiers: Option<Vec<&str>>, order_by: OrderBy) -> Result<Response, ResponseError> {
+    async fn request_orders_by_uuids(market_id: &str, uuids: Vec<&str>, order_by: OrderBy) -> Result<Response, ResponseError> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDER_STATUS_BY_UUID}")).unwrap();
         
         url.query_pairs_mut()
             .append_pair("market", market_id)
             .append_pair("order_by", &order_by.to_string());
 
-        if let Some(uuids) = uuids {
-            for uuid in uuids {
-                url.query_pairs_mut().append_pair("uuids", uuid);
-            }
+        for uuid in uuids {
+            url.query_pairs_mut().append_pair("uuids", uuid);
         }
 
-        if let Some(identifiers) = identifiers {
-            for identifier in identifiers {
-                url.query_pairs_mut().append_pair("identifiers", identifier);
-            }
-        }
-        
         let url = url.as_str().replace("uuids", "uuids[]");
+        let token_string = Self::set_token_with_query(&url)?;
+
+        reqwest::Client::new()
+            .get(url.as_str())
+            .header(ACCEPT, "application/json")
+            .header(AUTHORIZATION, &token_string)
+            .send()
+            .await
+            .map_err(crate::response::response_error_from_reqwest)
+    }
+
+    async fn request_orders_by_identifiers(market_id: &str, identifiers: Vec<&str>, order_by: OrderBy) -> Result<Response, ResponseError> {
+        let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDER_STATUS_BY_UUID}")).unwrap();
+        
+        url.query_pairs_mut()
+            .append_pair("market", market_id)
+            .append_pair("order_by", &order_by.to_string());
+
+        for identifier in identifiers {
+            url.query_pairs_mut().append_pair("identifiers", identifier);
+        }
+
+        let url = url.as_str().replace("identifiers", "identifiers[]");
         let token_string = Self::set_token_with_query(&url)?;
 
         reqwest::Client::new()
@@ -198,3 +229,68 @@ impl OrderInfo {
             .map_err(crate::response::response_error_from_json)
     }
 }
+
+// #[cfg(test)]
+// mod tests {
+//     use std::collections::HashSet;
+
+//     use super::*;
+//     use crate::response::ResponseError;
+
+//     #[tokio::test]
+//     async fn test_get_order_states_by_uuids() {
+//         crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
+//         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
+    
+//         let market_id = "KRW-BTC";
+//         let uuids = vec!["uuid1", "uuid2"];
+//         let identifiers = vec!["identifier1", "identifier2"];
+//         let order_by = OrderBy::Asc;
+
+//         let res = OrderInfo::request_orders_by_uuids(market_id, &uuids, order_by).await?;
+//         let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest)?;
+        
+//     }
+
+//     #[tokio::test]
+//     async fn test_get_order_states_opened() {
+//         let market_id = "KRW-BTC";
+//         let state = OrderState::Wait;
+//         let states = vec![OrderState::Wait, OrderState::Done];
+//         let page = 1;
+//         let limit = 10;
+//         let order_by = OrderBy::Asc;
+
+//         let res = OrderInfo::get_order_states_opened(market_id, state, states, page, limit, order_by).await;
+//         assert!(res.is_ok());
+//     }
+
+//     #[tokio::test]
+//     async fn test_get_order_states_closed() {
+//         let market_id = "KRW-BTC";
+//         let state = OrderState::Wait;
+//         let start_time = "2021-01-01T00:00:00Z";
+//         let end_time = "2021-01-02T00:00:00Z";
+//         let limit = 10;
+//         let order_by = OrderBy::Asc;
+
+//         let res = OrderInfo::get_order_states_closed(market_id, state, start_time, end_time, limit, order_by).await;
+//         assert!(res.is_ok());
+//     }
+
+//     #[tokio::test]
+//     async fn test_get_order_state_list() {
+//         let res = OrderInfo::get_order_state_list().await;
+//         assert!(res.is_ok());
+//     }
+
+//     #[tokio::test]
+//     async fn test_request() {
+//         let url = "https://api.upbit.com/v1/order/status";
+//         let res = OrderInfo::request(url).await;
+//         assert!(res.is_ok());
+//     }
+
+//     #[tokio::test]
+//     async fn test_request_orders_by_uuids() {
+//         let market_id = "KRW-BTC";

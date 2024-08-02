@@ -4,7 +4,7 @@ use upbit;
 use tokio;
 
 #[tokio::test]
-async fn get_account_info() {
+async fn test_get_account_info() {
     upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
     upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
 
@@ -34,7 +34,7 @@ async fn get_account_info() {
 }
 
 #[tokio::test]
-async fn get_order_chance() {
+async fn test_get_order_chance() {
     upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
     upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
 
