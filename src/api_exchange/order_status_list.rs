@@ -31,7 +31,7 @@ impl OrderInfo {
             )
         } 
 
-        Self::deserialize_response(res_serialized)
+        Self::deserialize_order_states_response(res_serialized)
     }
 
     pub async fn get_order_states_by_identifiers(market_id: &str, identifiers: Vec<&str>, order_by: OrderBy) -> Result<Vec<Self>, ResponseError> {
@@ -46,7 +46,7 @@ impl OrderInfo {
             )
         } 
 
-        Self::deserialize_response(res_serialized)
+        Self::deserialize_order_states_response(res_serialized)
     }
     
     pub async fn get_order_states_opened(market_id: &str, state: OrderState, states: Vec<OrderState>, page: u8, limit: u8, order_by: OrderBy) -> Result<Vec<Self>, ResponseError> {
@@ -61,7 +61,7 @@ impl OrderInfo {
             )
         }
 
-        Self::deserialize_response(res_serialized)
+        Self::deserialize_order_states_response(res_serialized)
     }
 
     pub async fn get_order_states_closed(market_id: &str, state: OrderState, start_time: &str, end_time: &str, limit: u16, order_by: OrderBy) -> Result<Vec<Self>, ResponseError> {
@@ -76,7 +76,7 @@ impl OrderInfo {
             )
         }
 
-        Self::deserialize_response(res_serialized)
+        Self::deserialize_order_states_response(res_serialized)
     }
 
     #[deprecated(since = "1.6.0")]
@@ -92,7 +92,7 @@ impl OrderInfo {
             )
         }
 
-        Self::deserialize_response(res_serialized)
+        Self::deserialize_order_states_response(res_serialized)
     }
 
     #[deprecated(since = "1.6.0")]
@@ -199,7 +199,7 @@ impl OrderInfo {
             .map_err(crate::response::response_error_from_reqwest)
     }
 
-    fn deserialize_response(res: String) -> Result<Vec<Self>, ResponseError> {
+    fn deserialize_order_states_response(res: String) -> Result<Vec<Self>, ResponseError> {
         serde_json::from_str(&res)
             .map(|i: Vec<OrderInfoSource>| {
                 i

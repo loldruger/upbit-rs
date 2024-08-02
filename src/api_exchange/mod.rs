@@ -247,18 +247,19 @@ pub async fn order_by_price(
     ord_type: OrderType,
     identifier: Option<&str>,
 ) -> Result<OrderInfo, ResponseError> {
-    OrderInfo::order(
+    OrderInfo::order_by_price(
         market_id,
         side,
-        Some((price + 1.) / price_checker(price_desired)),
-        Some(price_checker(price_desired)),
+        (price + 1.) / price_checker(price_desired),
+        price_checker(price_desired),
         ord_type,
         identifier
     )
     .await
 }
 
-/// 즉시 시장가 판매를 한다. (Sell immediately at market price with specific amount of volume.)
+
+/// 즉시 시장가 판매를 한다. (Sell specific amount of volume immediately at market price.)
 /// 
 /// # Example
 /// ```
@@ -307,12 +308,11 @@ pub async fn order_by_price(
 /// | executed_volume   | 체결된 양                    | NumberString |
 /// | trades_count      | 해당 주문에 걸린 체결 수      | Integer |
 
-pub async fn sell_by_market_price(market_id: &str, volume: f64, identifier: Option<&str>) -> Result<OrderInfo, ResponseError> {
-    OrderInfo::order(
+pub async fn sell_at_market_price(market_id: &str, volume: f64, identifier: Option<&str>) -> Result<OrderInfo, ResponseError> {
+    OrderInfo::order_ask_at_market_price(
         market_id,
         OrderSide::Ask,
-        Some(volume),
-        None,
+        volume,
         OrderType::Market,
         identifier
     )
@@ -641,7 +641,7 @@ pub async fn get_order_states_closed(market_id: &str, state: OrderState, start_t
     OrderInfo::get_order_states_closed(market_id, state, start_time, end_time, limit, order_by).await
 }
 
-fn price_checker(price: f64) -> f64 {
+pub fn price_checker(price: f64) -> f64 {
     let truncation = if price >= 2_000_000.0 { 1000.0 }
     else if price >= 1_000_000.0 { 500.0 }
     else if price >= 500_000.0 { 100.0 }

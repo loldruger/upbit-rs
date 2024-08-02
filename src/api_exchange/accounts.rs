@@ -75,6 +75,10 @@ mod tests {
             .map_err(crate::response::response_error_from_reqwest)
             .unwrap();
 
+        if res_serialized.contains("error") {
+            assert!(false, "Error response: {res_serialized}");
+        }
+        
         let json = serde_json::from_str::<Value>(&res_serialized).unwrap();
         let expected_keys = [
             "currency",
