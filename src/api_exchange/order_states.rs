@@ -303,7 +303,7 @@ mod tests {
         
         let price = 5000.0;
         let price_desired = 1_435_085.0;
-        let identifier = "test_identifier3".to_string();
+        let identifier = "test_identifier4".to_string();
 
         let res = super::super::order_by_price("KRW-ETH", OrderSide::Bid, price, price_desired, OrderType::Limit, Some(&identifier)).await;
 
