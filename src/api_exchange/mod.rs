@@ -628,7 +628,7 @@ pub async fn get_order_status_by_identifier(identifier: &str) -> Result<OrderSta
 /// | locked | 거래에 사용중인 비용 | NumberString |
 /// | executed_volume | 체결된 양 | NumberString |
 /// | trades_count | 해당 주문에 걸린 체결 수 | Integer |
-#[deprecated(since = "1.6.0", note = "use get_order_status() instead")]
+#[deprecated(since = "1.6.0", note = "use get_order_states_*() instead")]
 pub async fn list_order_status() -> Result<Vec<OrderInfo>, ResponseError> {
     OrderInfo::get_order_state_list().await
 }
