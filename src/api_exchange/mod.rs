@@ -2,8 +2,8 @@ pub mod accounts;
 pub mod order;
 pub mod order_cancel;
 pub mod order_chance;
-pub mod order_status;
-pub mod order_status_list;
+pub mod order_states;
+pub mod order_states_list;
 
 use std::fmt::Display;
 
@@ -633,15 +633,15 @@ pub async fn list_order_status() -> Result<Vec<OrderInfo>, ResponseError> {
     OrderInfo::get_order_state_list().await
 }
 
-pub async fn get_order_states_by_uuids(market_id: &str, uuids: Vec<&str>, order_by: OrderBy) -> Result<Vec<OrderInfo>, ResponseError> {
+pub async fn get_order_states_by_uuids(market_id: &str, uuids: &[&str], order_by: OrderBy) -> Result<Vec<OrderInfo>, ResponseError> {
     OrderInfo::get_order_states_by_uuids(market_id, uuids, order_by).await
 }
 
-pub async fn get_order_states_by_identifiers(market_id: &str, identifiers: Vec<&str>, order_by: OrderBy) -> Result<Vec<OrderInfo>, ResponseError> {
+pub async fn get_order_states_by_identifiers(market_id: &str, identifiers: &[&str], order_by: OrderBy) -> Result<Vec<OrderInfo>, ResponseError> {
     OrderInfo::get_order_states_by_identifiers(market_id, identifiers, order_by).await
 }
 
-pub async fn get_order_states_opened(market_id: &str, state: OrderState, states: Vec<OrderState>, page: u8, limit: u8, order_by: OrderBy) -> Result<Vec<OrderInfo>, ResponseError> {
+pub async fn get_order_states_opened(market_id: &str, state: OrderState, states: &[OrderState], page: u8, limit: u8, order_by: OrderBy) -> Result<Vec<OrderInfo>, ResponseError> {
     OrderInfo::get_order_states_opened(market_id, state, states, page, limit, order_by).await
 }
 
@@ -650,16 +650,23 @@ pub async fn get_order_states_closed(market_id: &str, state: OrderState, start_t
 }
 
 pub fn price_checker(price: f64) -> f64 {
-    let truncation = if price >= 2_000_000.0 { 1000.0 }
+    let truncation = 
+    if price >= 2_000_000.0 { 1000.0 }
     else if price >= 1_000_000.0 { 500.0 }
     else if price >= 500_000.0 { 100.0 }
     else if price >= 100_000.0 { 50.0 }
     else if price >= 10_000.0 { 10.0 }
-    else if price >= 1000.0 { 5.0 }
-    else if price >= 100.0 { 1.0 }
-    else if price >= 10.0 { 0.1 }
-    else if price >= 0.0 { 0.01 }
-    else { 0.001 };
+    else if price >= 1000.0 { 1.0 }
+    else if price >= 100.0 { 0.1 }
+    else if price >= 10.0 { 0.01 }
+    else if price >= 1.0 { 0.001 }
+    else if price >= 0.1 { 0.0001 }
+    else if price >= 0.01 { 0.00001 }
+    else if price >= 0.001 { 0.000001 }
+    else if price >= 0.0001 { 0.0000001 }
+    else { 0.00000001 };
 
     f64::trunc(price / truncation) * truncation
 }
+
+
