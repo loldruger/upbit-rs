@@ -121,7 +121,7 @@ impl OrderStatus {
 mod tests {
     use std::collections::{HashMap, HashSet};
 
-    use crate::api_exchange::{price_checker, OrderSide, OrderType};
+    use crate::api_exchange::{OrderSide, OrderType};
 
     use super::*;
 
@@ -238,9 +238,9 @@ mod tests {
             "paid_fee": "",
             "locked": "",
             "executed_volume": "",
-            "executed_funds": "",
+            // "executed_funds": "",
             "trades_count": "",
-            "time_in_force": "",
+            // "time_in_force": "",
             "trades": [
                 {
                     "market": "",
@@ -303,7 +303,7 @@ mod tests {
         
         let price = 5000.0;
         let price_desired = 1_435_085.0;
-        let identifier = "test_identifier2".to_string();
+        let identifier = "test_identifier3".to_string();
 
         let res = super::super::order_by_price("KRW-ETH", OrderSide::Bid, price, price_desired, OrderType::Limit, Some(&identifier)).await;
 

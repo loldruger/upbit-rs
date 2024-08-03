@@ -367,8 +367,12 @@ pub async fn sell_at_market_price(market_id: &str, volume: f64, identifier: Opti
 /// | locked            | 거래에 사용중인 비용          | NumberString |
 /// | executed_volume   | 체결된 양                    | NumberString |
 /// | trades_count      | 해당 주문에 걸린 체결 수      | Integer |
-pub async fn cancel_order(uuid: Option<&str>, identifier: Option<&str>) -> Result<OrderInfo, ResponseError> {
-    OrderInfo::cancel_order(uuid, identifier).await
+pub async fn cancel_order_by_uuid(uuid: &str) -> Result<OrderInfo, ResponseError> {
+    OrderInfo::cancel_order_by_uuid(uuid).await
+}
+
+pub async fn cancel_order_by_identifier(identifier: &str) -> Result<OrderInfo, ResponseError> {
+    OrderInfo::cancel_order_by_identifier(identifier).await
 }
 
 /// 내가 보유한 자산 리스트를 보여줍니다. (inquire your account info)
