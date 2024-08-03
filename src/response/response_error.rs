@@ -42,6 +42,8 @@ pub enum ResponseErrorState {
     CreateBidError,
     /// "디지털 자산 지갑정보를 찾지 못했습니다."
     CoinAddressNotFound,
+    // "이미 등록된 identifier입니다."
+    DuplicatedIdentifier,
     /// "매도 가능 잔고가 부족합니다."
     InsufficientFundsAsk,
     /// "매수 가능 잔고가 부족합니다."
@@ -96,6 +98,7 @@ impl From<&str> for ResponseErrorState {
             "coin_address_not_found" => Self::CoinAddressNotFound,
             "create_ask_error" => Self::CreateAskError,
             "create_bid_error" => Self::CreateBidError,
+            "duplicated_identifier" => Self::DuplicatedIdentifier,
             "nonce_used" => Self::NonceUsed,
             "no_authorization_i_p" => Self::NoAuthorizationIp,
             "out_of_scope" => Self::OutOfScope,

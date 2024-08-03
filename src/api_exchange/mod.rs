@@ -570,8 +570,12 @@ pub async fn get_order_chance(market_id: &str) -> Result<OrderChance, ResponseEr
 /// | trades.funds | 체결된 총 가격 | NumberString |
 /// | trades.side | 체결 종류 | String |
 /// | trades.created_at | 체결 시각 | DateString |
-pub async fn get_order_status(uuid: Option<&str>, identifier: Option<&str>) -> Result<OrderStatus, ResponseError> {
-    OrderStatus::get_order_status(uuid, identifier).await
+pub async fn get_order_status_by_uuid(uuid: &str) -> Result<OrderStatus, ResponseError> {
+    OrderStatus::get_order_status_by_uuid(uuid).await
+}
+
+pub async fn get_order_status_by_identifier(identifier: &str) -> Result<OrderStatus, ResponseError> {
+    OrderStatus::get_order_status_by_identifier(identifier).await
 }
 
 /// 주문 리스트를 조회한다. (inquire every order status.)

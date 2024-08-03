@@ -231,8 +231,8 @@ mod tests {
         crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
 
-        let volume = (5000.0 + 1.) / price_checker(1_435_085.0);
-        let price = price_checker(1_435_085.0);
+        let volume = (5000.0 + 1.) / price_checker(3_435_085.0);
+        let price = price_checker(3_435_085.0);
 
         let res = OrderInfo::request_order_by_price("KRW-ETH", OrderSide::Ask, volume, price, OrderType::Limit, None).await.unwrap();
         let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest).unwrap();
@@ -288,15 +288,14 @@ mod tests {
         }
     }
 
-
     #[tokio::test]
     async fn test_order_bid_at_market_price() {
         crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
 
-        let price = price_checker(1_435_085.0);
+        let price = price_checker(5000.0);
 
-        let res = OrderInfo::request_bid_at_market_price("KRW-ETH", OrderSide::Bid, price, OrderType::Market, None).await.unwrap();
+        let res = OrderInfo::request_bid_at_market_price("KRW-ETH", OrderSide::Bid, price, OrderType::Price, None).await.unwrap();
         let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest).unwrap();
 
         if res_serialized.contains("error") {
@@ -312,8 +311,8 @@ mod tests {
             "state": "",
             "market": "",
             "created_at": "",
-            "volume": "",
-            "remaining_volume": "",
+            // "volume": "",
+            // "remaining_volume": "",
             "reserved_fee": "",
             "remaining_fee": "",
             "paid_fee": "",
@@ -411,6 +410,7 @@ mod tests {
         }
     }
 
+    // async fn test order_bid_by_price
     fn compare_keys(json: &Value, expected: &HashMap<&str, Value>, path: &str) -> (Vec<String>, Vec<String>) {
         let mut missing_keys = Vec::new();
         let mut extra_keys = Vec::new();

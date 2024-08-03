@@ -19,7 +19,7 @@ pub struct OrderInfo {
     pub paid_fee: f64,
     pub locked: f64,
     pub executed_volume: f64,
-    pub executed_funds: f64,
+    pub executed_funds: Option<f64>,
     pub trades_count: i64,
     pub time_in_force: Option<OrderCondition>
 }
@@ -44,7 +44,7 @@ pub struct OrderInfoSource {
     paid_fee: String,
     locked: String,
     executed_volume: String,
-    executed_funds: String,
+    executed_funds: Option<String>,
     trades_count: i64,
     time_in_force: Option<String>
 }
@@ -83,11 +83,13 @@ impl OrderInfoSource {
     /// Convert [String] type of executed_volume into [f64]
     pub fn executed_volume(&self) -> f64 { self.executed_volume.parse().unwrap() }
     /// Convert [String] type of executed_funds into [f64]
-    pub fn executed_funds(&self) -> f64 { self.executed_funds.parse().unwrap() }
+    pub fn executed_funds(&self) -> Option<f64> { 
+        self.executed_funds.as_ref().and_then(|x| x.parse().ok())
+    }
     /// Convert [String] type of trades_count into [f64]
     pub fn trades_count(&self) -> i64 { self.trades_count }
     /// Get time_in_force
     pub fn time_in_force(&self) -> Option<OrderCondition> { 
-        None
+        self.time_in_force.as_ref().and_then(|x| Some(OrderCondition::from(x.as_str())))
     }
 }
