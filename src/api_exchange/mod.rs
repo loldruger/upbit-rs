@@ -239,18 +239,11 @@ impl From<&str> for OrderState {
 /// | executed_volume   | 체결된 양                    | NumberString |
 /// | trades_count      | 해당 주문에 걸린 체결 수      | Integer |
 
-pub async fn order_by_price(
-    market_id: &str,
-    side: OrderSide,
-    price: f64,
-    price_desired: f64,
-    ord_type: OrderType,
-    identifier: Option<&str>,
-) -> Result<OrderInfo, ResponseError> {
+pub async fn order_by_price( market_id: &str, side: OrderSide, price: f64, price_desired: f64, ord_type: OrderType, identifier: Option<&str> ) -> Result<OrderInfo, ResponseError> {
     OrderInfo::order_by_price(
         market_id,
         side,
-        (price + 1.) / price_checker(price_desired),
+        (price + 1.0) / price_checker(price_desired),
         price_checker(price_desired),
         ord_type,
         identifier
@@ -264,12 +257,12 @@ pub async fn order_by_price(
 /// # Example
 /// ```
 /// let order_info = api_exchange::sell_by_market_price("KRW-ETH", 1.0, None).await;
-/// let order_info = api_exchange::sell_by_market_price("KRW-ETH", 1.0, Some("cdd92199-2897-4e14-9448-f923320408ad")).await;
+/// let order_info = api_exchange::sell_by_market_price("KRW-ETH", 1.0, Some("some identifier")).await;
 /// ```
 /// - parameters
 /// > `market` ex) "KRW-ETH" <br>
 /// > `volume` volume you want to sell<br>
-/// > `identifier` (optional) specific identifier you have tagged<br>
+/// > `identifier` (optional) arbitrary identifier that you want to tag<br>
 /// # Response
 /// ```json
 /// {
@@ -323,7 +316,7 @@ pub async fn sell_at_market_price(market_id: &str, volume: f64, identifier: Opti
 /// 
 /// # Example
 /// ```
-/// let order_info = api_exchange::cancel_order("cdd92199-2897-4e14-9448-f923320408ad", None).await;
+/// let order_info = api_exchange::cancel_order_by_uuid("cdd92199-2897-4e14-9448-f923320408ad", None).await;
 /// ```
 /// - parameters
 /// > `uuid` (optional) uuid of order to cancel <br>
@@ -512,7 +505,7 @@ pub async fn get_order_chance(market_id: &str) -> Result<OrderChance, ResponseEr
 /// 
 /// # Example
 /// ```
-/// let order_status = api_exchange::get_order_status("9ca023a5-851b-4fec-9f0a-48cd83c2eaae", None).await;
+/// let order_status = api_exchange::get_order_status_by_uuid("9ca023a5-851b-4fec-9f0a-48cd83c2eaae", None).await;
 /// ```
 /// - parameters
 /// > `uuid` (optional) uuid of order to cancel <br>
@@ -586,7 +579,7 @@ pub async fn get_order_status_by_identifier(identifier: &str) -> Result<OrderSta
 /// 
 /// # Example
 /// ```
-/// let order_status = api_exchange::list_order_status().await;
+/// let order_status = api_exchange::list_order_states().await;
 /// ```
 /// ```json
 /// [

@@ -50,9 +50,9 @@ impl OrderChance {
                         },
                         max_total: x.market.max_total.parse().unwrap(),
                         state: x.market.state.to_owned(),
+                        ask_types: x.market.ask_types.map(|x| x.into_iter().map(|x|x.as_str().into()).collect()),
+                        bid_types: x.market.bid_types.map(|x| x.into_iter().map(|x|x.as_str().into()).collect()),
                     },
-                    ask_types: None,
-                    bid_types: None,
                     bid_account: AccountsInfo {
                         currency: x.bid_account.currency(),
                         balance: x.bid_account.balance(),
@@ -69,6 +69,8 @@ impl OrderChance {
                         avg_buy_price_modified: x.ask_account.avg_buy_price_modified(),
                         unit_currency: x.ask_account.unit_currency(),
                     },
+                    maker_bid_fee: x.maker_bid_fee.parse().unwrap(),
+                    maker_ask_fee: x.maker_ask_fee.parse().unwrap(),
                 }
             })
             .map_err(crate::response::response_error_from_json)

@@ -1,5 +1,7 @@
 use std::fmt::Display;
 
+use serde::{Deserialize, Serialize};
+
 /// Server domain address
 pub const URL_SERVER: &str = "https://api.upbit.com";
 
@@ -197,6 +199,80 @@ impl From<&str> for TransactionType {
         match value {
             "withdraw" => Self::Withdraw,
             "deposit" => Self::Deposit,
+            _ => panic!("")
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub enum AskType {
+    BestFOK,
+    BestIOC,
+    Limit,
+    LimitFOK,
+    LimitIOC,
+    Market
+}
+
+impl Display for AskType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            AskType::BestFOK => write!(f, "best_fok"),
+            AskType::BestIOC => write!(f, "best_ioc"),
+            AskType::Limit => write!(f, "limit"),
+            AskType::LimitFOK => write!(f, "limit_fok"),
+            AskType::LimitIOC => write!(f, "limit_ioc"),
+            AskType::Market => write!(f, "market"),
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub enum BidType {
+    BestFOK,
+    BestIOC,
+    Limit,
+    LimitFOK,
+    LimitIOC,
+    Price
+}
+
+impl Display for BidType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            BidType::BestFOK => write!(f, "best_fok"),
+            BidType::BestIOC => write!(f, "best_ioc"),
+            BidType::Limit => write!(f, "limit"),
+            BidType::LimitFOK => write!(f, "limit_fok"),
+            BidType::LimitIOC => write!(f, "limit_ioc"),
+            BidType::Price => write!(f, "price"),
+        }
+    }
+}
+
+impl From<&str> for AskType {
+    fn from(value: &str) -> Self {
+        match value {
+            "best_fok" => Self::BestFOK,
+            "best_ioc" => Self::BestIOC,
+            "limit" => Self::Limit,
+            "limit_fok" => Self::LimitFOK,
+            "limit_ioc" => Self::LimitIOC,
+            "market" => Self::Market,
+            _ => panic!("")
+        }
+    }
+}
+
+impl From<&str> for BidType {
+    fn from(value: &str) -> Self {
+        match value {
+            "best_fok" => Self::BestFOK,
+            "best_ioc" => Self::BestIOC,
+            "limit" => Self::Limit,
+            "limit_fok" => Self::LimitFOK,
+            "limit_ioc" => Self::LimitIOC,
+            "price" => Self::Price,
             _ => panic!("")
         }
     }

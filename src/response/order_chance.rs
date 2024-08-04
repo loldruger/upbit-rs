@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::api_exchange::OrderSide;
+use crate::{api_exchange::OrderSide, constant::{AskType, BidType}};
 
 use super::accounts_info::*;
 
@@ -10,6 +10,8 @@ pub struct ObjectMarket {
     pub id: String,
     pub name: String,
     // pub order_types: Vec<OrderType>,
+    pub ask_types: Option<Vec<AskType>>,
+    pub bid_types: Option<Vec<BidType>>,
     pub order_sides: Vec<OrderSide>,
     pub bid: ObjectAskBid,
     pub ask: ObjectAskBid,
@@ -31,10 +33,10 @@ pub struct OrderChance {
     pub bid_fee: f32,
     pub ask_fee: f32,
     pub market: ObjectMarket,
-    pub ask_types: Option<Vec<String>>,
-    pub bid_types: Option<Vec<String>>,
     pub bid_account: AccountsInfo,
     pub ask_account: AccountsInfo,
+    pub maker_bid_fee: f32,
+    pub maker_ask_fee: f32,
 }
 
 /// Raw ObjectAskBidSource data of [OrderChanceSource]
@@ -44,6 +46,8 @@ pub struct ObjectMarketSource {
     pub name: String,
     pub order_types: Vec<String>,
     pub order_sides: Vec<String>,
+    pub ask_types: Option<Vec<String>>,
+    pub bid_types: Option<Vec<String>>,
     pub bid: ObjectAskBidSource,
     pub ask: ObjectAskBidSource,
     pub max_total: String,
@@ -68,4 +72,6 @@ pub struct OrderChanceSource {
     pub bid_types: Option<Vec<String>>,
     pub bid_account: AccountsInfoSource,
     pub ask_account: AccountsInfoSource,
+    pub maker_bid_fee: String,
+    pub maker_ask_fee: String,
 }

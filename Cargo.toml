@@ -1,6 +1,6 @@
 [package]
 name = "upbit"
-version = "1.7.1"
+version = "1.7.2"
 edition = "2021"
 authors = ["sy september <loldruger@gmail.com>"]
 description = "rust_upbit_api for upbit api version v1.4.8"
