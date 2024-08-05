@@ -9,7 +9,7 @@ pub mod candle_week;
 
 use std::fmt::Display;
 
-pub use order_book::OrderbookInfo;
+pub use order_book::OrderBookInfo;
 use serde::Deserialize;
 pub use ticker_snapshot::TickerSnapshot;
 pub use trade_recent::TradeRecent;
@@ -206,8 +206,8 @@ impl Display for UrlAssociates {
 /// | bid_price | 매수호가 | Double |
 /// | ask_size | 매도 잔량 | Double |
 /// | bid_size | 매수 잔량 | Double |
-pub async fn get_order_book_info(market: &str) -> Result<OrderbookInfo, ResponseError> {
-    OrderbookInfo::get_orderbook_info(market).await
+pub async fn get_order_book_info(market: &str) -> Result<OrderBookInfo, ResponseError> {
+    OrderBookInfo::get_orderbook_info(market).await
 }
 
 /// 요청 당시 종목의 스냅샷을 반환한다. (Return the snapshot of the ticker at the moment of query.)
@@ -327,7 +327,7 @@ pub async fn get_ticker_snapshot(market: &str) ->Result<TickerSnapshot, Response
 /// | sequential_id | 체결 번호(Unique) | Long |
 /// 
 /// * sequential_id 필드는 체결의 유일성 판단을 위한 근거로 쓰일 수 있습니다. 하지만 체결의 순서를 보장하지는 못합니다.
-pub async fn list_trade_recent(market: &str, hhmmss: Option<&str>, count: i32, cursor: String, days_ago: Option<i32>) -> Result<TradeRecent, ResponseError>{
+pub async fn list_trade_recent(market: &str, hhmmss: Option<&str>, count: i32, cursor: &str, days_ago: Option<i32>) -> Result<TradeRecent, ResponseError>{
     TradeRecent::list_trade_recent(market, hhmmss, count, cursor, days_ago).await
 }
 
@@ -364,7 +364,7 @@ pub async fn get_market_state(is_detailed: bool) -> Result<Vec<MarketState>, Res
 ///
 /// # Example
 /// ```
-/// let candle_of_minute = api_quotation::get_candle_minute("KRW-ETH", None, CandleMinute::Min30).await;
+/// let candle_of_minute = api_quotation::get_candle_minute("KRW-ETH", None, 10, CandleMinute::Min30).await;
 /// ```
 /// - parameters
 /// > `market` ex) KRW-ETH<br>
