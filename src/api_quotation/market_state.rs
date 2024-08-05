@@ -1,16 +1,37 @@
 use reqwest::{Url, Response};
 use reqwest::header::ACCEPT;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use super::super::constant::{URL_SERVER, URL_MARKET_STATE};
 use crate::response::ResponseError;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct MarketState {
     market: String,
     korean_name: String,
     english_name: String,
-    market_warning: Option<bool>,
+    market_warning: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    market_event: Option<MarketEvent>,
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+#[serde(untagged)]
+pub enum MarketEvent {
+    Warning(bool),
+    Caution {
+        caution: Caution,
+        warning: bool,
+    },
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct Caution {
+    CONCENTRATION_OF_SMALL_ACCOUNTS: bool,
+    DEPOSIT_AMOUNT_SOARING: bool,
+    GLOBAL_PRICE_DIFFERENCES: bool,
+    PRICE_FLUCTUATIONS: bool,
+    TRADING_VOLUME_SOARING: bool,
 }
 
 #[derive(Deserialize)]
@@ -18,7 +39,8 @@ pub struct MarketStateSource {
     market: String,
     korean_name: String,
     english_name: String,
-    market_warning: Option<String>, //NONE, CAUTION
+    market_warning: String,
+    market_event: MarketEvent,
 }
 
 impl MarketState {
@@ -34,17 +56,15 @@ impl MarketState {
             )
         }
         
-        serde_json::from_str(&res_serialized)
-            .map(|x: Vec<MarketStateSource>| {
-                x
-                    .into_iter()
-                    .map(|i| {
-                        Self {
-                            market: i.market,
-                            korean_name: i.korean_name,
-                            english_name: i.english_name,
-                            market_warning: i.market_warning.map(|s| !s.contains("NONE"))
-                        }
+        serde_json::from_str::<Vec<MarketStateSource>>(&res_serialized)
+            .map(|x| {
+                x.into_iter()
+                    .map(|i| Self {
+                        market: i.market,
+                        korean_name: i.korean_name,
+                        english_name: i.english_name,
+                        market_warning: Some(i.market_warning),
+                        market_event: Some(i.market_event),
                     })
                     .collect()
             })

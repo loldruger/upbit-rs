@@ -9,6 +9,7 @@ use reqwest::{Url, Response};
 use reqwest::header::ACCEPT;
 use serde::Deserialize;
 
+#[derive(Debug)]
 pub struct CandleChartMinute {
     pub market: String,
     pub candle_date_time_utc: chrono::NaiveDateTime,
@@ -50,29 +51,29 @@ impl CandleChartMinute {
                 .unwrap()
             )
         }
-        
+
         serde_json::from_str(&res_serialized)
-        .map(|x: Vec<CandleChartMinuteSource>| {
-            x
-                .into_iter()
-                .map(|i| {
-                    Self {
-                        market: i.market,
-                        candle_date_time_utc: chrono::NaiveDateTime::parse_from_str(&i.candle_date_time_utc, "%Y-%m-%dT%H:%M:%S").unwrap(),
-                        candle_date_time_kst: chrono::NaiveDateTime::parse_from_str(&i.candle_date_time_kst, "%Y-%m-%dT%H:%M:%S").unwrap(),
-                        opening_price: i.opening_price,
-                        high_price: i.high_price,
-                        low_price: i.low_price,
-                        trade_price: i.trade_price,
-                        timestamp: i.timestamp,
-                        candle_acc_trade_price: i.candle_acc_trade_price,
-                        candle_acc_trade_volume: i.candle_acc_trade_volume,
-                        unit: i.unit,
-                    }
-                })
-                .collect()
-        })
-        .map_err(crate::response::response_error_from_json)
+            .map(|x: Vec<CandleChartMinuteSource>| {
+                x
+                    .into_iter()
+                    .map(|i| {
+                        Self {
+                            market: i.market,
+                            candle_date_time_utc: chrono::NaiveDateTime::parse_from_str(&i.candle_date_time_utc, "%Y-%m-%dT%H:%M:%S").unwrap(),
+                            candle_date_time_kst: chrono::NaiveDateTime::parse_from_str(&i.candle_date_time_kst, "%Y-%m-%dT%H:%M:%S").unwrap(),
+                            opening_price: i.opening_price,
+                            high_price: i.high_price,
+                            low_price: i.low_price,
+                            trade_price: i.trade_price,
+                            timestamp: i.timestamp,
+                            candle_acc_trade_price: i.candle_acc_trade_price,
+                            candle_acc_trade_volume: i.candle_acc_trade_volume,
+                            unit: i.unit,
+                        }
+                    })
+                    .collect()
+            })
+            .map_err(crate::response::response_error_from_json)
     }
 
     async fn request(market: &str, to: Option<String>, count: i32, candle_minute: CandleMinute) -> Result<Response, ResponseError> {

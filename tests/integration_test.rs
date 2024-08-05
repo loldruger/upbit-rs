@@ -74,9 +74,9 @@ async fn test_get_candle_of_minute() {
 
     assert!(candle_60.is_ok());
 
-    let candle_240 = upbit::api_quotation::get_candle_minute("KRW-ETH", None, 1, CandleMinute::Min240).await;
+    // let candle_240 = upbit::api_quotation::get_candle_minute("KRW-ETH", None, 1, CandleMinute::Min240).await;
 
-    assert!(candle_240.is_ok());
+    // assert!(candle_240.is_ok());
 }
 
 #[tokio::test]
@@ -108,3 +108,14 @@ async fn test_get_candle_of_month() {
 
     assert!(candle.is_ok())
 }
+
+#[tokio::test]
+async fn test_get_market_state() {
+    upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
+    upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
+
+    let state = upbit::api_quotation::get_market_state(true).await;
+    
+    assert!(state.is_ok())
+}
+

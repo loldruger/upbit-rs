@@ -73,7 +73,7 @@ impl OrderBookInfo {
 
 #[cfg(test)]
 mod tests {
-    use std::collections::{HashMap, HashSet};
+    use std::collections::HashMap;
 
     use serde_json::{Value, json};
 
