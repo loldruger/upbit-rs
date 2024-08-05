@@ -101,6 +101,7 @@ mod tests {
             "timestamp": "",
             "total_ask_size": "",
             "total_bid_size": "",
+            "level": "",
             "orderbook_units": [
                 {
                     "ask_price": "",

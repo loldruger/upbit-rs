@@ -99,7 +99,7 @@ mod tests {
     use crate::api_quotation::CandleChartDay;
 
     #[tokio::test]
-    async fn test_request_candle() {
+    async fn test_request_candle_day() {
         crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
 
@@ -140,18 +140,18 @@ mod tests {
                 let (missing_keys, extra_keys) = compare_keys(item, &expected_structure, &format!("item[{}].", index));
     
                 if !missing_keys.is_empty() {
-                    println!("[test_request_candle] Missing keys in item[{}]: {:?}", index, missing_keys);
+                    println!("[test_request_candle_day] Missing keys in item[{}]: {:?}", index, missing_keys);
                     assert!(false);
                 } else {
-                    println!("[test_request_candle] No keys are missing in item[{}]", index);
+                    println!("[test_request_candle_day] No keys are missing in item[{}]", index);
                     assert!(true);
                 }
     
                 if !extra_keys.is_empty() {
-                    println!("[test_request_candle] Extra keys in item[{}]: {:?}", index, extra_keys);
+                    println!("[test_request_candle_day] Extra keys in item[{}]: {:?}", index, extra_keys);
                     assert!(false);
                 } else {
-                    println!("[test_request_candle] No extra keys found in item[{}]", index);
+                    println!("[test_request_candle_day] No extra keys found in item[{}]", index);
                     assert!(true);
                 }
             }

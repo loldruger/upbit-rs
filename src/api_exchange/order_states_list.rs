@@ -471,12 +471,12 @@ mod tests {
             "time_in_force": "",
         }]);
 
-    let expected_structure = expected_structure[0]
-        .as_object()
-        .unwrap()
-        .iter()
-        .map(|(k, v)| (k.as_str(), v.clone()))
-        .collect::<HashMap<&str, Value>>();
+        let expected_structure = expected_structure[0]
+            .as_object()
+            .unwrap()
+            .iter()
+            .map(|(k, v)| (k.as_str(), v.clone()))
+            .collect::<HashMap<&str, Value>>();
 
         if let Some(json_array) = json.as_array() {
             for (index, item) in json_array.iter().enumerate() {

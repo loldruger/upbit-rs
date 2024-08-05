@@ -164,18 +164,18 @@ mod tests {
                 let (missing_keys, extra_keys) = compare_keys(item, &expected_structure, &format!("item[{}].", index));
     
                 if !missing_keys.is_empty() {
-                    println!("[test_get_order_states_closed] Missing keys in item[{}]: {:?}", index, missing_keys);
+                    println!("[test_get_ticker_snapshot] Missing keys in item[{}]: {:?}", index, missing_keys);
                     assert!(false);
                 } else {
-                    println!("[test_get_order_states_closed] No keys are missing in item[{}]", index);
+                    println!("[test_get_ticker_snapshot] No keys are missing in item[{}]", index);
                     assert!(true);
                 }
     
                 if !extra_keys.is_empty() {
-                    println!("[test_get_order_states_closed] Extra keys in item[{}]: {:?}", index, extra_keys);
+                    println!("[test_get_ticker_snapshot] Extra keys in item[{}]: {:?}", index, extra_keys);
                     assert!(false);
                 } else {
-                    println!("[test_get_order_states_closed] No extra keys found in item[{}]", index);
+                    println!("[test_get_ticker_snapshot] No extra keys found in item[{}]", index);
                     assert!(true);
                 }
             }
