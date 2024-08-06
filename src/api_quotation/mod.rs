@@ -1,26 +1,26 @@
+pub mod candle_day;
+pub mod candle_minute;
+pub mod candle_month;
+pub mod candle_week;
+pub mod market_state;
 pub mod order_book;
 pub mod ticker_snapshot;
 pub mod trade_recent;
-pub mod market_state;
-pub mod candle_minute;
-pub mod candle_day;
-pub mod candle_month;
-pub mod candle_week;
 
 use std::fmt::Display;
 
+pub use candle_day::CandleChartDay;
+pub use candle_minute::CandleChartMinute;
+pub use candle_month::CandleChartMonth;
+pub use candle_week::CandleChartWeek;
+pub use market_state::MarketState;
 pub use order_book::OrderBookInfo;
 use serde::Deserialize;
 pub use ticker_snapshot::TickerSnapshot;
 pub use trade_recent::TradeRecent;
-pub use market_state::MarketState;
-pub use candle_minute::CandleChartMinute;
-pub use candle_day::CandleChartDay;
-pub use candle_week::CandleChartWeek;
-pub use candle_month::CandleChartMonth;
 
+use crate::constant::{URL_CANDLE_DAY, URL_CANDLE_MINUTE, URL_CANDLE_MONTH, URL_CANDLE_WEEK};
 use crate::response::ResponseError;
-use crate::constant::{URL_CANDLE_MINUTE, URL_CANDLE_DAY, URL_CANDLE_WEEK, URL_CANDLE_MONTH};
 
 /// Kind of change of ticker snapshot
 #[derive(Deserialize)]
@@ -39,7 +39,7 @@ impl From<&str> for SnapshotChangeType {
             "EVEN" => Self::Even,
             "FALL" => Self::Fall,
             "Rise" => Self::Rise,
-            _ => panic!()
+            _ => panic!(),
         }
     }
 }
@@ -62,7 +62,7 @@ pub enum CandleMinute {
     /// Into() coerces it into u8 sized 60
     Min60,
     /// Into() coerces it into u8 sized 240
-    Min240
+    Min240,
 }
 
 impl From<CandleMinute> for u8 {
@@ -85,24 +85,31 @@ pub enum UrlAssociates {
     UrlCandleMinute(CandleMinute),
     UrlCandleWeek,
     UrlCandleDay,
-    UrlCandleMonth
+    UrlCandleMonth,
 }
 
 impl Display for UrlAssociates {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            UrlAssociates::UrlCandleMinute(minute) => 
-                write!(f, "{URL_CANDLE_MINUTE}{}", Into::<u8>::into(*minute)),
-            UrlAssociates::UrlCandleDay => {write!(f, "{}", URL_CANDLE_DAY)},
-            UrlAssociates::UrlCandleWeek => {write!(f, "{}", URL_CANDLE_WEEK)},
-            UrlAssociates::UrlCandleMonth => {write!(f, "{}", URL_CANDLE_MONTH)},
+            UrlAssociates::UrlCandleMinute(minute) => {
+                write!(f, "{URL_CANDLE_MINUTE}{}", Into::<u8>::into(*minute))
+            }
+            UrlAssociates::UrlCandleDay => {
+                write!(f, "{}", URL_CANDLE_DAY)
+            }
+            UrlAssociates::UrlCandleWeek => {
+                write!(f, "{}", URL_CANDLE_WEEK)
+            }
+            UrlAssociates::UrlCandleMonth => {
+                write!(f, "{}", URL_CANDLE_MONTH)
+            }
         }
     }
 }
 // impl ToString for UrlAssociates {
 //     fn to_string(&self) -> String {
 //         match self {
-//             UrlAssociates::UrlCandleMinute(minute) => 
+//             UrlAssociates::UrlCandleMinute(minute) =>
 //                 format!("{URL_CANDLE_MINUTE}{}", Into::<u8>::into(*minute)),
 //             UrlAssociates::UrlCandleDay => {URL_CANDLE_DAY.to_string()},
 //             UrlAssociates::UrlCandleWeek => {URL_CANDLE_WEEK.to_string()},
@@ -112,7 +119,7 @@ impl Display for UrlAssociates {
 // }
 
 /// 호가 정보를 조회한다. (Inquiry bid price and offered price.)
-/// 
+///
 /// # Example
 /// ```rust
 /// let order_book_info = api_quotation::get_order_book_info("KRW-ETH").await;
@@ -121,8 +128,8 @@ impl Display for UrlAssociates {
 /// > `market` ex) KRW-ETH<br>
 /// # Response
 ///  * orderbook_unit 리스트에는 15호가 정보가 들어가며 차례대로 1호가, 2호가 ... 15호가의 정보를 담고 있습니다.
-///  * orderbook_unit list contains information of 15 quotes of bid/ask price, in order, 1st, 2nd .. 15th quote 
-/// 
+///  * orderbook_unit list contains information of 15 quotes of bid/ask price, in order, 1st, 2nd .. 15th quote
+///
 /// ```json
 /// [
 ///  {
@@ -211,7 +218,7 @@ pub async fn get_order_book_info(market: &str) -> Result<OrderBookInfo, Response
 }
 
 /// 요청 당시 종목의 스냅샷을 반환한다. (Return the snapshot of the ticker at the moment of query.)
-/// 
+///
 /// # Example
 /// ```rust
 /// let ticker_snapshot = api_quotation::get_ticker_snapshot("KRW-ETH").await;
@@ -281,12 +288,12 @@ pub async fn get_order_book_info(market: &str) -> Result<OrderBookInfo, Response
 /// | lowest_52_week_price | 52주 신저가 | Double |
 /// | lowest_52_week_date | 52주 신저가 달성일 <br> 포맷: yyyy-MM-dd | String |
 /// | timestamp | 타임스탬프 | Long |
-pub async fn get_ticker_snapshot(market: &str) ->Result<TickerSnapshot, ResponseError> {
+pub async fn get_ticker_snapshot(market: &[&str]) -> Result<TickerSnapshot, ResponseError> {
     TickerSnapshot::get_ticker_snapshot(market).await
 }
 
 /// 호가 정보를 조회한다. (Inquiry bid price and offered price.)
-/// 
+///
 /// # Example
 /// ```rust
 /// let recent_trade_list = api_quotation::list_trade_recent("KRW-ETH").await;
@@ -325,14 +332,20 @@ pub async fn get_ticker_snapshot(market: &str) ->Result<TickerSnapshot, Response
 /// | change_price | 변화량 | Double |
 /// | ask_bid | 매도/매수 | String |
 /// | sequential_id | 체결 번호(Unique) | Long |
-/// 
+///
 /// * sequential_id 필드는 체결의 유일성 판단을 위한 근거로 쓰일 수 있습니다. 하지만 체결의 순서를 보장하지는 못합니다.
-pub async fn list_trade_recent(market: &str, hhmmss: Option<&str>, count: i32, cursor: &str, days_ago: Option<i32>) -> Result<TradeRecent, ResponseError>{
+pub async fn list_trade_recent(
+    market: &str,
+    hhmmss: Option<&str>,
+    count: i32,
+    cursor: &str,
+    days_ago: Option<i32>,
+) -> Result<TradeRecent, ResponseError> {
     TradeRecent::list_trade_recent(market, hhmmss, count, cursor, days_ago).await
 }
 
 /// 업비트에서 거래 가능한 마켓 목록 (List of markets available on Upbit)
-/// 
+///
 /// # Example
 /// ```
 /// let market_state = api_quotation::get_market_state(true).await;
@@ -371,7 +384,7 @@ pub async fn get_market_state(is_detailed: bool) -> Result<Vec<MarketState>, Res
 /// > `to` the time moment of the last candle (exclusive). if empty, latest candle will be retrived. <br>
 ///  >> *  ISO8061 format (yyyy-MM-dd'T'HH:mm:ss'Z' or yyyy-MM-dd HH:mm:ss). <br>
 ///  >> *  though it is commonly UTC time criteria, you can request KST time using like 2023-01-01T00:00:00+09:00 format. <br>
-/// 
+///
 /// > `count` the number of candle to request. maximum value: `200`<br>
 /// > `candle_minute` unit of minute
 ///  >> *  `CandleMinute::Min1`<br>
@@ -413,7 +426,12 @@ pub async fn get_market_state(is_detailed: bool) -> Result<Vec<MarketState>, Res
 /// | candle_acc_trade_price | 누적 거래 금액 | Double |
 /// | candle_acc_trade_volume | 누적 거래량 | Double |
 /// | unit | 분 단위(유닛) | Integer |
-pub async fn get_candle_minute(market: &str, to: Option<String>, count: i32, candle_minute: CandleMinute) -> Result<Vec<CandleChartMinute>, ResponseError> {
+pub async fn get_candle_minute(
+    market: &str,
+    to: Option<String>,
+    count: i32,
+    candle_minute: CandleMinute,
+) -> Result<Vec<CandleChartMinute>, ResponseError> {
     CandleChartMinute::request_candle(market, to, count, candle_minute).await
 }
 
@@ -429,7 +447,7 @@ pub async fn get_candle_minute(market: &str, to: Option<String>, count: i32, can
 /// > `last_candle_time` (optional) the time moment of the last candle (exclusive). if empty, latest candle will be retrived. <br>
 /// >> * ISO8061 format (yyyy-MM-dd'T'HH:mm:ss'Z' or yyyy-MM-dd HH:mm:ss). <br>
 /// >> * though it is commonly UTC time criteria, you can request KST time using like 2023-01-01T00:00:00+09:00 format. <br>
-/// 
+///
 /// > `price_unit` (optional)
 /// # Response
 /// ```json
@@ -467,7 +485,12 @@ pub async fn get_candle_minute(market: &str, to: Option<String>, count: i32, can
 /// | change_price | 전일 종가 대비 변화 금액 | Double |
 /// | change_rate | 전일 종가 대비 변화량 | Double |
 /// | converted_trade_price | 종가 환산 화폐 단위로 환산된 가격(요청에 convertingPriceUnit 파라미터 없을 시 해당 필드 포함되지 않음.) | Double |
-pub async fn get_candle_day(market: &str, count: i32, last_candle_time: Option<String>, price_unit: Option<String>) -> Result<Vec<CandleChartDay>, ResponseError> {
+pub async fn get_candle_day(
+    market: &str,
+    count: i32,
+    last_candle_time: Option<String>,
+    price_unit: Option<String>,
+) -> Result<Vec<CandleChartDay>, ResponseError> {
     CandleChartDay::request_candle(market, count, last_candle_time, price_unit).await
 }
 
@@ -483,7 +506,7 @@ pub async fn get_candle_day(market: &str, count: i32, last_candle_time: Option<S
 /// > `last_candle_time` (optional) the time moment of the last candle (exclusive). if empty, latest candle will be retrived. <br>
 /// >> *  `ISO8061` format (`yyyy-MM-dd'T'HH:mm:ss'Z'` or `yyyy-MM-dd HH:mm:ss`). <br>
 /// >> *  though it is commonly UTC time criteria, you can request KST time using like `2023-01-01T00:00:00+09:00` format. <br>
-/// 
+///
 /// # Response
 /// ```json
 /// [
@@ -515,7 +538,11 @@ pub async fn get_candle_day(market: &str, count: i32, last_candle_time: Option<S
 /// | candle_acc_trade_price | 누적 거래 금액 | Double |
 /// | candle_acc_trade_volume | 누적 거래량 | Double |
 /// | first_day_of_period | 캔들 기간의 가장 첫 날 | String |
-pub async fn get_candle_week(market: &str, count: i32, last_candle_time: Option<String>) -> Result<Vec<CandleChartWeek>, ResponseError> {
+pub async fn get_candle_week(
+    market: &str,
+    count: i32,
+    last_candle_time: Option<String>,
+) -> Result<Vec<CandleChartWeek>, ResponseError> {
     CandleChartWeek::request_candle(market, count, last_candle_time).await
 }
 
@@ -531,7 +558,7 @@ pub async fn get_candle_week(market: &str, count: i32, last_candle_time: Option<
 /// > `last_candle_time` (optional) the time moment of the last candle (exclusive). if empty, latest candle will be retrived. <br>
 ///  >> *  ISO8061 format (yyyy-MM-dd'T'HH:mm:ss'Z' or yyyy-MM-dd HH:mm:ss). <br>
 ///  >> *  though it is commonly UTC time criteria, you can request KST time using like 2023-01-01T00:00:00+09:00 format. <br>
-/// 
+///
 /// # Response
 /// ```json
 /// [
@@ -563,6 +590,10 @@ pub async fn get_candle_week(market: &str, count: i32, last_candle_time: Option<
 /// | candle_acc_trade_price | 누적 거래 금액 | Double |
 /// | candle_acc_trade_volume | 누적 거래량 | Double |
 /// | first_day_of_period | 캔들 기간의 가장 첫 날 | String |
-pub async fn get_candle_month(market: &str, count: i32, last_candle_time: Option<String>) -> Result<Vec<CandleChartMonth>, ResponseError> {
-    CandleChartMonth::request_candle(market, count, last_candle_time).await 
+pub async fn get_candle_month(
+    market: &str,
+    count: i32,
+    last_candle_time: Option<String>,
+) -> Result<Vec<CandleChartMonth>, ResponseError> {
+    CandleChartMonth::request_candle(market, count, last_candle_time).await
 }

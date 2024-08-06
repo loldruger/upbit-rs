@@ -1,6 +1,9 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{api_exchange::OrderSide, constant::{AskType, BidType}};
+use crate::{
+    api_exchange::OrderSide,
+    constant::{AskType, BidType},
+};
 
 use super::accounts_info::*;
 

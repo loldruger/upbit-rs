@@ -1,15 +1,18 @@
 use std::fmt::Display;
 
-use crate::{response::{TransactionInfo, ResponseError, CoinAddressGen, CoinAddressResponse}, constant::{OrderBy, TwoFactorType}};
+use crate::{
+    constant::{OrderBy, TwoFactorType},
+    response::{CoinAddressGen, CoinAddressResponse, ResponseError, TransactionInfo},
+};
 
+mod coin_address_generation;
+mod coin_address_info;
+mod coin_address_info_list;
 mod deposit_info;
 mod deposit_info_list;
 mod deposit_krw;
-mod coin_address_info;
-mod coin_address_info_list;
-mod coin_address_generation;
 
-/// List of kind of Deposit state 
+/// List of kind of Deposit state
 #[derive(Debug)]
 pub enum DepositState {
     /// 입금 진행중
@@ -25,7 +28,7 @@ pub enum DepositState {
     /// 반환절차 진행중
     Refunding,
     /// 반환됨
-    Refunded
+    Refunded,
 }
 
 impl Display for DepositState {
@@ -66,21 +69,21 @@ impl From<&str> for DepositState {
             "travel_rule_suspected" => Self::TravelRuleSuspected,
             "refunding" => Self::Refunding,
             "refunded" => Self::Refunded,
-            _ => panic!()
+            _ => panic!(),
         }
     }
 }
 
 /// 입금 기록을 조회한다. (inquiry the records of deposits.)
-/// 
+///
 /// # Example
 /// ```rust
 /// use constant::OrderBy;
 /// use api_deposit::DepositState;
-/// 
+///
 /// // it returns deposit list of currency "KRW", state "accepted" ordered by asc
 /// let list_deposit_info = api_deposit::list_deposit_info("KRW", DepositState::Accepted, None, None, 10, 0, OrderBy::Asc).await;
-/// 
+///
 /// // it returns deposit list of currency "BTC", state "accepted", txid "98c15999..." ordered by desc
 /// let list_deposit_info = api_deposit::list_deposit_info(
 ///     "BTC",
@@ -94,11 +97,11 @@ impl From<&str> for DepositState {
 ///         0,
 ///         OrderBy::Desc
 ///     ).await;
-/// 
+///
 /// ```
 /// - parameters
 /// > `currency` ex) KRW, BTC, ETH etc. <br>
-/// > `state` 
+/// > `state`
 ///  >> *  `DepositState::Processing` 입금 진행중<br>
 ///  >> *  `DepositState::Accepted` 완료<br>
 ///  >> *  `DepositState::Canceled` 취소됨<br>
@@ -106,19 +109,19 @@ impl From<&str> for DepositState {
 ///  >> *  `DepositState::TravelRuleSuspected` 트래블룰 추가 인증 대기중<br>
 ///  >> *  `DepositState::Refunding` 반환절차 진행중<br>
 ///  >> *  `DepositState::Refunded` 반환됨<br>
-/// 
+///
 /// > `uuids` array of uuid<br>
 /// > `txids` array of txid<br>
 /// > `limit` pagination limit, max `100`<br>
 /// > `page` pagination <br>
-/// > `order_by` 
+/// > `order_by`
 ///  >> *  `OrderBy::Asc` 오름차순<br>
 ///  >> *  `OrderBy::Desc` 내림차순<br>
-/// 
+///
 /// # Response
 /// ```json
 /// [
-///   { 
+///   {
 ///     "type": "deposit",
 ///     "uuid": "94332e99-3a87-4a35-ad98-28b0c969f830",
 ///     "currency": "KRW",
@@ -133,7 +136,7 @@ impl From<&str> for DepositState {
 ///   #....
 /// ]
 /// ```
-/// 
+///
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
 /// | type | 입출금 종류 | String
@@ -154,13 +157,13 @@ pub async fn list_deposit_info(
     txids: Option<&[&str]>,
     limit: u32,
     page: u32,
-    order_by: OrderBy
+    order_by: OrderBy,
 ) -> Result<Vec<TransactionInfo>, ResponseError> {
     TransactionInfo::get_deposit_list(currency, state, uuids, txids, limit, page, order_by).await
 }
 
 /// 개별 입금 조회.
-/// 
+///
 /// # Example
 /// ```rust
 /// let deposit_result = api_deposit::get_deposit_info(Some("KRW"), None, None).await;
@@ -173,7 +176,7 @@ pub async fn list_deposit_info(
 /// # Response
 /// ```json
 /// [
-///   { 
+///   {
 ///     "type": "deposit",
 ///     "uuid": "94332e99-3a87-4a35-ad98-28b0c969f830",
 ///     "currency": "KRW",
@@ -188,7 +191,7 @@ pub async fn list_deposit_info(
 ///   #....
 /// ]
 /// ```
-/// 
+///
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
 /// | type | 입출금 종류 | String
@@ -202,12 +205,16 @@ pub async fn list_deposit_info(
 /// | amount | 입금 금액/수량 | NumberString
 /// | fee | 입금 수수료 | NumberString
 /// | transaction_type | 입금 유형<br> default : 일반입금<br>internal : 바로입금 | String
-pub async fn get_deposit_info(currency: Option<&str>, uuid: Option<&str>, txid: Option<&str>) -> Result<TransactionInfo, ResponseError> {
+pub async fn get_deposit_info(
+    currency: Option<&str>,
+    uuid: Option<&str>,
+    txid: Option<&str>,
+) -> Result<TransactionInfo, ResponseError> {
     TransactionInfo::get_deposit_info(currency, uuid, txid).await
 }
 
 /// 원화를 입금한다.
-/// 
+///
 /// # Example
 /// ```rust
 /// let deposit_result = api_deposit::deposit_krw(10000.0, api_deposit::TwoFactorType::KakaoPay).await;
@@ -245,12 +252,15 @@ pub async fn get_deposit_info(currency: Option<&str>, uuid: Option<&str>, txid: 
 /// | amount | 입금 금액/수량 | NumberString |
 /// | fee | 입금 수수료 | NumberString |
 /// | transaction_type | 입금 유형 | String |
-pub async fn deposit_krw(amount: f64, two_factor_type: TwoFactorType) -> Result<TransactionInfo, ResponseError> {
+pub async fn deposit_krw(
+    amount: f64,
+    two_factor_type: TwoFactorType,
+) -> Result<TransactionInfo, ResponseError> {
     TransactionInfo::deposit_krw(amount, two_factor_type).await
 }
 
 /// 개별 입금 주소 조회
-/// 
+///
 /// # Example
 /// ```
 /// let coin_address_info = api_deposit::get_coin_address_info("ETH", "ETH").await;
@@ -272,12 +282,15 @@ pub async fn deposit_krw(amount: f64, two_factor_type: TwoFactorType) -> Result<
 /// | net_type | 입금 네트워크 | String |
 /// | deposit_address | 입금 주소 | String |
 /// | secondary_address | 2차 입금 주소 | String |
-pub async fn get_coin_address_info(currency: &str, net_type: &str) -> Result<CoinAddressResponse, ResponseError> {
+pub async fn get_coin_address_info(
+    currency: &str,
+    net_type: &str,
+) -> Result<CoinAddressResponse, ResponseError> {
     CoinAddressResponse::get_coin_address_info(currency, net_type).await
 }
 
 /// 전체 입금 주소 조회
-/// 
+///
 /// # Example
 /// ```
 /// let coin_address_info_list = api_deposit::get_coin_address_info().await;
@@ -307,6 +320,9 @@ pub async fn get_coin_address_info_list() -> Result<Vec<CoinAddressResponse>, Re
 }
 
 /// # Currently not working
-pub async fn generate_deposit_address(currency: &str, net_type: &str) -> Result<CoinAddressGen, ResponseError> {
+pub async fn generate_deposit_address(
+    currency: &str,
+    net_type: &str,
+) -> Result<CoinAddressGen, ResponseError> {
     CoinAddressGen::generate_deposit_address(currency, net_type).await
 }

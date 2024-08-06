@@ -27,15 +27,27 @@ pub struct AccountsInfoSource {
 
 impl AccountsInfoSource {
     /// Convert type of currency into [String]
-    pub fn currency(&self) -> String { self.currency.to_owned() }
+    pub fn currency(&self) -> String {
+        self.currency.to_owned()
+    }
     /// Convert type of balance into [f64]
-    pub fn balance(&self) -> f64 { self.balance.parse().unwrap() }
+    pub fn balance(&self) -> f64 {
+        self.balance.parse().unwrap()
+    }
     /// Convert type of locked into [f64]
-    pub fn locked(&self) -> f64 { self.locked.parse().unwrap() }
+    pub fn locked(&self) -> f64 {
+        self.locked.parse().unwrap()
+    }
     /// Convert type of avg_buy_price into [f64]
-    pub fn avg_buy_price(&self) -> f64 { self.avg_buy_price.parse().unwrap() }
+    pub fn avg_buy_price(&self) -> f64 {
+        self.avg_buy_price.parse().unwrap()
+    }
     /// Convert type of avg_buy_price_modified into [bool]
-    pub fn avg_buy_price_modified(&self) -> bool { self.avg_buy_price_modified }
+    pub fn avg_buy_price_modified(&self) -> bool {
+        self.avg_buy_price_modified
+    }
     /// Convert type of unit_currency into [bool]
-    pub fn unit_currency(&self) -> String { self.unit_currency.to_owned() }
+    pub fn unit_currency(&self) -> String {
+        self.unit_currency.to_owned()
+    }
 }

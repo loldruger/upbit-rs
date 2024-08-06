@@ -68,12 +68,12 @@ pub const URL_CANDLE_WEEK: &str = "/v1/candles/weeks";
 /// URL of API listing candle data of month unit
 pub const URL_CANDLE_MONTH: &str = "/v1/candles/months";
 
-/// Kind of order 
+/// Kind of order
 pub enum OrderBy {
     /// 오름차순 (Ascending)
     Asc,
     /// 내림차순 (Descending)
-    Desc
+    Desc,
 }
 
 impl Display for OrderBy {
@@ -85,21 +85,12 @@ impl Display for OrderBy {
     }
 }
 
-// impl ToString for OrderBy {
-//     fn to_string(&self) -> String {
-//         match self {
-//             OrderBy::Asc => "asc".to_owned(),
-//             OrderBy::Desc => "desc".to_owned(),
-//         }
-//     }
-// }
-
 impl From<&str> for OrderBy {
     fn from(value: &str) -> Self {
         match value {
             "asc" => Self::Asc,
             "desc" => Self::Desc,
-            _ => panic!()
+            _ => panic!(),
         }
     }
 }
@@ -110,7 +101,7 @@ pub enum TransactionType {
     /// 일반 입출금(general withdrawal or deposit)
     Default,
     /// 바로 입출금(instant withdrawal or deposit)
-    Internal 
+    Internal,
 }
 
 impl Display for TransactionType {
@@ -122,21 +113,12 @@ impl Display for TransactionType {
     }
 }
 
-// impl ToString for WithdrawType {
-//     fn to_string(&self) -> String {
-//         match self {
-//             WithdrawType::Default => "default".to_owned(),
-//             WithdrawType::Internal => "internal".to_owned(),
-//         }
-//     }
-// }
-
 impl From<&str> for TransactionType {
     fn from(value: &str) -> Self {
         match value {
             "default" => Self::Default,
             "internal" => Self::Internal,
-            _ => panic!("")
+            _ => panic!(""),
         }
     }
 }
@@ -148,7 +130,7 @@ pub enum TwoFactorType {
     KakaoPay,
     /// 네이버 인증
     Naver,
-    KaKao
+    KaKao,
 }
 
 impl Display for TwoFactorType {
@@ -162,22 +144,13 @@ impl Display for TwoFactorType {
     }
 }
 
-// impl ToString for TwoFactorType {
-//     fn to_string(&self) -> String {
-//         match self {
-//             TwoFactorType::KakaoPay => "kakao_pay".to_owned(),
-//             TwoFactorType::Naver => "naver".to_owned(),
-//         }
-//     }
-// }
-
 /// List of transaction type
 #[derive(Debug)]
 pub enum TransferType {
     /// 출금
     Withdraw,
     /// 입금
-    Deposit
+    Deposit,
 }
 
 impl Display for TransferType {
@@ -189,21 +162,12 @@ impl Display for TransferType {
     }
 }
 
-// impl ToString for TransactionType {
-//     fn to_string(&self) -> String {
-//         match self {
-//             TransactionType::Withdraw => "withdraw".to_owned(),
-//             TransactionType::Deposit => "deposit".to_owned(),
-//         }
-//     }
-// }
-
 impl From<&str> for TransferType {
     fn from(value: &str) -> Self {
         match value {
             "withdraw" => Self::Withdraw,
             "deposit" => Self::Deposit,
-            _ => panic!("")
+            _ => panic!(""),
         }
     }
 }
@@ -215,7 +179,7 @@ pub enum AskType {
     Limit,
     LimitFOK,
     LimitIOC,
-    Market
+    Market,
 }
 
 impl Display for AskType {
@@ -238,7 +202,7 @@ pub enum BidType {
     Limit,
     LimitFOK,
     LimitIOC,
-    Price
+    Price,
 }
 
 impl Display for BidType {
@@ -263,7 +227,7 @@ impl From<&str> for AskType {
             "limit_fok" => Self::LimitFOK,
             "limit_ioc" => Self::LimitIOC,
             "market" => Self::Market,
-            _ => panic!("")
+            _ => panic!(""),
         }
     }
 }
@@ -277,7 +241,7 @@ impl From<&str> for BidType {
             "limit_fok" => Self::LimitFOK,
             "limit_ioc" => Self::LimitIOC,
             "price" => Self::Price,
-            _ => panic!("")
+            _ => panic!(""),
         }
     }
 }

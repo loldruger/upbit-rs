@@ -1,41 +1,39 @@
-use reqwest::Response;
 use reqwest::header::{ACCEPT, AUTHORIZATION};
+use reqwest::Response;
 
 use crate::request::Request;
 
 use super::{
     super::constant::{URL_ACCOUNTS, URL_SERVER},
-    super::response::{
-        AccountsInfo,
-        AccountsInfoSource
-    },
-    super::response::ResponseError
+    super::response::ResponseError,
+    super::response::{AccountsInfo, AccountsInfoSource},
 };
 
 impl AccountsInfo {
     pub async fn get_account_info() -> Result<Vec<Self>, ResponseError> {
         let res = Self::request().await?;
-        let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest)?;
+        let res_serialized = res
+            .text()
+            .await
+            .map_err(crate::response::response_error_from_reqwest)?;
 
         if res_serialized.contains("error") {
             return Err(serde_json::from_str(&res_serialized)
-                .map(crate::response::response_error)                
+                .map(crate::response::response_error)
                 .ok()
-                .unwrap()
-            )
+                .unwrap());
         }
 
         serde_json::from_str(&res_serialized)
             .map(|i: Vec<AccountsInfoSource>| {
-                i
-                    .into_iter()
+                i.into_iter()
                     .map(|x| Self {
                         currency: x.currency(),
                         balance: x.balance(),
                         locked: x.locked(),
                         avg_buy_price: x.avg_buy_price(),
                         avg_buy_price_modified: x.avg_buy_price_modified(),
-                        unit_currency: x.unit_currency()
+                        unit_currency: x.unit_currency(),
                     })
                     .collect::<Vec<Self>>()
             })
@@ -44,7 +42,7 @@ impl AccountsInfo {
 
     async fn request() -> Result<Response, ResponseError> {
         let token_string = Self::set_token()?;
-        
+
         reqwest::Client::new()
             .get(format!("{URL_SERVER}{URL_ACCOUNTS}"))
             .header(ACCEPT, "application/json")
@@ -78,7 +76,7 @@ mod tests {
         if res_serialized.contains("error") {
             assert!(false, "Error response: {res_serialized}");
         }
-        
+
         let json = serde_json::from_str::<Value>(&res_serialized).unwrap();
         let expected_keys = [
             "currency",
@@ -86,8 +84,11 @@ mod tests {
             "locked",
             "avg_buy_price",
             "avg_buy_price_modified",
-            "unit_currency"
-        ].iter().cloned().collect::<HashSet<&str>>();
+            "unit_currency",
+        ]
+        .iter()
+        .cloned()
+        .collect::<HashSet<&str>>();
 
         if let Value::Array(json) = json {
             if json.len() == 0 {
@@ -99,15 +100,18 @@ mod tests {
                 let json_keys = map.keys().map(|k| k.as_str()).collect::<HashSet<&str>>();
                 let unexpected_keys = json_keys.difference(&expected_keys).collect::<HashSet<_>>();
                 let missing_keys = expected_keys.difference(&json_keys).collect::<HashSet<_>>();
-        
+
                 if !unexpected_keys.is_empty() {
-                    println!("[get_account_info] Unexpected keys found: {:?}", unexpected_keys);
+                    println!(
+                        "[get_account_info] Unexpected keys found: {:?}",
+                        unexpected_keys
+                    );
                     assert!(false);
                 } else {
                     println!("[get_account_info] No unexpected keys found.");
                     assert!(true);
                 }
-        
+
                 if !missing_keys.is_empty() {
                     println!("[get_account_info] Missing keys: {:?}", missing_keys);
                     assert!(false);

@@ -1,11 +1,11 @@
+/// Module for deposit APIs
+pub mod api_deposit;
 /// Module for exchange APIs
 pub mod api_exchange;
 /// Module for quotation APIs
 pub mod api_quotation;
 /// Module for withdrawal APIs
 pub mod api_withdraw;
-/// Module for deposit APIs
-pub mod api_deposit;
 /// Set of constants
 pub mod constant;
 /// Set of concrete request bodies

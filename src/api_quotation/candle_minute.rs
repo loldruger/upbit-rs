@@ -1,12 +1,9 @@
 use super::{
-    UrlAssociates,
-    CandleMinute,
-    super::constant::URL_SERVER,
-    super::response::ResponseError
+    super::constant::URL_SERVER, super::response::ResponseError, CandleMinute, UrlAssociates,
 };
 
-use reqwest::{Url, Response};
 use reqwest::header::ACCEPT;
+use reqwest::{Response, Url};
 use serde::Deserialize;
 
 #[derive(Debug)]
@@ -21,7 +18,7 @@ pub struct CandleChartMinute {
     pub timestamp: i64,
     pub candle_acc_trade_price: f64,
     pub candle_acc_trade_volume: f64,
-    pub unit: i64
+    pub unit: i64,
 }
 
 #[derive(Deserialize)]
@@ -36,54 +33,72 @@ pub struct CandleChartMinuteSource {
     timestamp: i64,
     candle_acc_trade_price: f64,
     candle_acc_trade_volume: f64,
-    unit: i64
+    unit: i64,
 }
 
 impl CandleChartMinute {
-    pub async fn request_candle(market: &str, to: Option<String>, count: i32, candle_minute: CandleMinute) -> Result<Vec<Self>, ResponseError> {
+    pub async fn request_candle(
+        market: &str,
+        to: Option<String>,
+        count: i32,
+        candle_minute: CandleMinute,
+    ) -> Result<Vec<Self>, ResponseError> {
         let res = Self::request(market, to, count, candle_minute).await?;
-        let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest)?;
-        
+        let res_serialized = res
+            .text()
+            .await
+            .map_err(crate::response::response_error_from_reqwest)?;
+
         if res_serialized.contains("error") {
             return Err(serde_json::from_str(&res_serialized)
-                .map(crate::response::response_error)                
+                .map(crate::response::response_error)
                 .ok()
-                .unwrap()
-            )
+                .unwrap());
         }
 
         serde_json::from_str(&res_serialized)
             .map(|x: Vec<CandleChartMinuteSource>| {
-                x
-                    .into_iter()
-                    .map(|i| {
-                        Self {
-                            market: i.market,
-                            candle_date_time_utc: chrono::NaiveDateTime::parse_from_str(&i.candle_date_time_utc, "%Y-%m-%dT%H:%M:%S").unwrap(),
-                            candle_date_time_kst: chrono::NaiveDateTime::parse_from_str(&i.candle_date_time_kst, "%Y-%m-%dT%H:%M:%S").unwrap(),
-                            opening_price: i.opening_price,
-                            high_price: i.high_price,
-                            low_price: i.low_price,
-                            trade_price: i.trade_price,
-                            timestamp: i.timestamp,
-                            candle_acc_trade_price: i.candle_acc_trade_price,
-                            candle_acc_trade_volume: i.candle_acc_trade_volume,
-                            unit: i.unit,
-                        }
+                x.into_iter()
+                    .map(|i| Self {
+                        market: i.market,
+                        candle_date_time_utc: chrono::NaiveDateTime::parse_from_str(
+                            &i.candle_date_time_utc,
+                            "%Y-%m-%dT%H:%M:%S",
+                        )
+                        .unwrap(),
+                        candle_date_time_kst: chrono::NaiveDateTime::parse_from_str(
+                            &i.candle_date_time_kst,
+                            "%Y-%m-%dT%H:%M:%S",
+                        )
+                        .unwrap(),
+                        opening_price: i.opening_price,
+                        high_price: i.high_price,
+                        low_price: i.low_price,
+                        trade_price: i.trade_price,
+                        timestamp: i.timestamp,
+                        candle_acc_trade_price: i.candle_acc_trade_price,
+                        candle_acc_trade_volume: i.candle_acc_trade_volume,
+                        unit: i.unit,
                     })
                     .collect()
             })
             .map_err(crate::response::response_error_from_json)
     }
 
-    async fn request(market: &str, to: Option<String>, count: i32, candle_minute: CandleMinute) -> Result<Response, ResponseError> {
+    async fn request(
+        market: &str,
+        to: Option<String>,
+        count: i32,
+        candle_minute: CandleMinute,
+    ) -> Result<Response, ResponseError> {
         let url_candle = UrlAssociates::UrlCandleMinute(candle_minute).to_string();
-        let mut url = Url::parse(&format!("{URL_SERVER}{url_candle}")).unwrap();
-        
+        let mut url = Url::parse(&format!("{URL_SERVER}{url_candle}"))
+            .map_err(crate::response::response_error_internal_url_parse_error)?;
+
         url.query_pairs_mut()
             .append_pair("market", market)
             .append_pair("count", count.to_string().as_str());
-        
+
         if let Some(to) = to {
             url.query_pairs_mut().append_pair("to", to.as_str());
         }
@@ -110,14 +125,22 @@ mod tests {
         crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
 
-        let res = CandleChartMinute::request("KRW-ETH", None, 1, CandleMinute::Min30).await.unwrap();
-        let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest).unwrap();
-        
+        let res = CandleChartMinute::request("KRW-ETH", None, 1, CandleMinute::Min30)
+            .await
+            .unwrap();
+        let res_serialized = res
+            .text()
+            .await
+            .map_err(crate::response::response_error_from_reqwest)
+            .unwrap();
+
         if res_serialized.contains("error") {
             assert!(false, "Error response: {res_serialized}");
         }
 
-        let json = serde_json::from_str::<Value>(&res_serialized).map_err(crate::response::response_error_from_json).unwrap();
+        let json = serde_json::from_str::<Value>(&res_serialized)
+            .map_err(crate::response::response_error_from_json)
+            .unwrap();
         let expected_structure = serde_json::json!([{
             "market": "",
             "candle_date_time_utc": "",
@@ -141,21 +164,34 @@ mod tests {
 
         if let Some(json_array) = json.as_array() {
             for (index, item) in json_array.iter().enumerate() {
-                let (missing_keys, extra_keys) = compare_keys(item, &expected_structure, &format!("item[{}].", index));
-    
+                let (missing_keys, extra_keys) =
+                    compare_keys(item, &expected_structure, &format!("item[{}].", index));
+
                 if !missing_keys.is_empty() {
-                    println!("[test_request_candle_minute] Missing keys in item[{}]: {:?}", index, missing_keys);
+                    println!(
+                        "[test_request_candle_minute] Missing keys in item[{}]: {:?}",
+                        index, missing_keys
+                    );
                     assert!(false);
                 } else {
-                    println!("[test_request_candle_minute] No keys are missing in item[{}]", index);
+                    println!(
+                        "[test_request_candle_minute] No keys are missing in item[{}]",
+                        index
+                    );
                     assert!(true);
                 }
-    
+
                 if !extra_keys.is_empty() {
-                    println!("[test_request_candle_minute] Extra keys in item[{}]: {:?}", index, extra_keys);
+                    println!(
+                        "[test_request_candle_minute] Extra keys in item[{}]: {:?}",
+                        index, extra_keys
+                    );
                     assert!(false);
                 } else {
-                    println!("[test_request_candle_minute] No extra keys found in item[{}]", index);
+                    println!(
+                        "[test_request_candle_minute] No extra keys found in item[{}]",
+                        index
+                    );
                     assert!(true);
                 }
             }
@@ -164,10 +200,14 @@ mod tests {
         }
     }
 
-    fn compare_keys(json: &Value, expected: &HashMap<&str, Value>, path: &str) -> (Vec<String>, Vec<String>) {
+    fn compare_keys(
+        json: &Value,
+        expected: &HashMap<&str, Value>,
+        path: &str,
+    ) -> (Vec<String>, Vec<String>) {
         let mut missing_keys = Vec::new();
         let mut extra_keys = Vec::new();
-    
+
         if let Some(actual_map) = json.as_object() {
             for (key, _) in expected {
                 if !actual_map.contains_key(*key) {
@@ -180,7 +220,7 @@ mod tests {
                 }
             }
         }
-    
+
         (missing_keys, extra_keys)
     }
 }

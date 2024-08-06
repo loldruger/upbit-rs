@@ -1,10 +1,10 @@
 use crate::response::ResponseError;
 
-use super::UrlAssociates;
 use super::super::constant::URL_SERVER;
+use super::UrlAssociates;
 
-use reqwest::{Url, Response};
 use reqwest::header::ACCEPT;
+use reqwest::{Response, Url};
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -19,58 +19,66 @@ pub struct CandleChartWeek {
     timestamp: i64,
     candle_acc_trade_price: f64,
     candle_acc_trade_volume: f64,
-    first_day_of_period: String
+    first_day_of_period: String,
 }
 
 impl CandleChartWeek {
-    pub async fn request_candle(market: &str, count: i32, last_candle_time: Option<String>) -> Result<Vec<Self>, ResponseError> {
+    pub async fn request_candle(
+        market: &str,
+        count: i32,
+        last_candle_time: Option<String>,
+    ) -> Result<Vec<Self>, ResponseError> {
         let res = Self::request(market, count, last_candle_time).await?;
-        let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest)?;
-        
+        let res_serialized = res
+            .text()
+            .await
+            .map_err(crate::response::response_error_from_reqwest)?;
+
         if res_serialized.contains("error") {
             return Err(serde_json::from_str(&res_serialized)
-                .map(crate::response::response_error)                
+                .map(crate::response::response_error)
                 .ok()
-                .unwrap()
-            )
+                .unwrap());
         }
-        
+
         serde_json::from_str(&res_serialized)
-            .map(|x: Vec<Self>| {       
-                x
-                    .into_iter()
-                    .map(|i| {
-                        Self {
-                            market: i.market,
-                            candle_date_time_utc: i.candle_date_time_utc,
-                            candle_date_time_kst: i.candle_date_time_kst,
-                            opening_price: i.opening_price,
-                            high_price: i.high_price,
-                            low_price: i.low_price,
-                            trade_price: i.trade_price,
-                            timestamp: i.timestamp,
-                            candle_acc_trade_price: i.candle_acc_trade_price,
-                            candle_acc_trade_volume: i.candle_acc_trade_volume,
-                            first_day_of_period: i.first_day_of_period,
-                        }
-                    }
-                )
-                .collect()
-        })
-        .map_err(crate::response::response_error_from_json)
+            .map(|x: Vec<Self>| {
+                x.into_iter()
+                    .map(|i| Self {
+                        market: i.market,
+                        candle_date_time_utc: i.candle_date_time_utc,
+                        candle_date_time_kst: i.candle_date_time_kst,
+                        opening_price: i.opening_price,
+                        high_price: i.high_price,
+                        low_price: i.low_price,
+                        trade_price: i.trade_price,
+                        timestamp: i.timestamp,
+                        candle_acc_trade_price: i.candle_acc_trade_price,
+                        candle_acc_trade_volume: i.candle_acc_trade_volume,
+                        first_day_of_period: i.first_day_of_period,
+                    })
+                    .collect()
+            })
+            .map_err(crate::response::response_error_from_json)
     }
 
-    async fn request(market: &str, count: i32, last_candle_time: Option<String>) -> Result<Response, ResponseError> {
+    async fn request(
+        market: &str,
+        count: i32,
+        last_candle_time: Option<String>,
+    ) -> Result<Response, ResponseError> {
         let url_candle = UrlAssociates::UrlCandleWeek.to_string();
-        let mut url = Url::parse(&format!("{URL_SERVER}{url_candle}")).unwrap();
+        let mut url = Url::parse(&format!("{URL_SERVER}{url_candle}"))
+            .map_err(crate::response::response_error_internal_url_parse_error)?;
         url.query_pairs_mut()
             .append_pair("market", market)
             .append_pair("count", count.to_string().as_str());
-        
+
         if let Some(last_candle_time) = last_candle_time {
-            url.query_pairs_mut().append_pair("to", last_candle_time.as_str());
+            url.query_pairs_mut()
+                .append_pair("to", last_candle_time.as_str());
         }
-        
+
         reqwest::Client::new()
             .get(url.as_str())
             .header(ACCEPT, "application/json")
@@ -94,13 +102,19 @@ mod tests {
         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
 
         let res = CandleChartWeek::request("KRW-ETH", 1, None).await.unwrap();
-        let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest).unwrap();
-        
+        let res_serialized = res
+            .text()
+            .await
+            .map_err(crate::response::response_error_from_reqwest)
+            .unwrap();
+
         if res_serialized.contains("error") {
             assert!(false, "Error response: {res_serialized}");
         }
 
-        let json = serde_json::from_str::<Value>(&res_serialized).map_err(crate::response::response_error_from_json).unwrap();
+        let json = serde_json::from_str::<Value>(&res_serialized)
+            .map_err(crate::response::response_error_from_json)
+            .unwrap();
         let expected_structure = serde_json::json!([{
             "market": "",
             "candle_date_time_utc": "",
@@ -124,21 +138,34 @@ mod tests {
 
         if let Some(json_array) = json.as_array() {
             for (index, item) in json_array.iter().enumerate() {
-                let (missing_keys, extra_keys) = compare_keys(item, &expected_structure, &format!("item[{}].", index));
-    
+                let (missing_keys, extra_keys) =
+                    compare_keys(item, &expected_structure, &format!("item[{}].", index));
+
                 if !missing_keys.is_empty() {
-                    println!("[test_request_candle_week] Missing keys in item[{}]: {:?}", index, missing_keys);
+                    println!(
+                        "[test_request_candle_week] Missing keys in item[{}]: {:?}",
+                        index, missing_keys
+                    );
                     assert!(false);
                 } else {
-                    println!("[test_request_candle_week] No keys are missing in item[{}]", index);
+                    println!(
+                        "[test_request_candle_week] No keys are missing in item[{}]",
+                        index
+                    );
                     assert!(true);
                 }
-    
+
                 if !extra_keys.is_empty() {
-                    println!("[test_request_candle_week] Extra keys in item[{}]: {:?}", index, extra_keys);
+                    println!(
+                        "[test_request_candle_week] Extra keys in item[{}]: {:?}",
+                        index, extra_keys
+                    );
                     assert!(false);
                 } else {
-                    println!("[test_request_candle_week] No extra keys found in item[{}]", index);
+                    println!(
+                        "[test_request_candle_week] No extra keys found in item[{}]",
+                        index
+                    );
                     assert!(true);
                 }
             }
@@ -147,10 +174,14 @@ mod tests {
         }
     }
 
-    fn compare_keys(json: &Value, expected: &HashMap<&str, Value>, path: &str) -> (Vec<String>, Vec<String>) {
+    fn compare_keys(
+        json: &Value,
+        expected: &HashMap<&str, Value>,
+        path: &str,
+    ) -> (Vec<String>, Vec<String>) {
         let mut missing_keys = Vec::new();
         let mut extra_keys = Vec::new();
-    
+
         if let Some(actual_map) = json.as_object() {
             for (key, _) in expected {
                 if !actual_map.contains_key(*key) {
@@ -163,7 +194,7 @@ mod tests {
                 }
             }
         }
-    
+
         (missing_keys, extra_keys)
     }
 }

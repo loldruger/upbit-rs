@@ -3,8 +3,8 @@ use crate::response::ResponseError;
 use super::super::constant::{URL_SERVER, URL_TICKER};
 use super::SnapshotChangeType;
 
-use reqwest::Url;
 use reqwest::header::ACCEPT;
+use reqwest::Url;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -34,22 +34,24 @@ pub struct TickerSnapshot {
     highest_52_week_date: String,
     lowest_52_week_price: f64,
     lowest_52_week_date: String,
-    timestamp: i64
+    timestamp: i64,
 }
 
 impl TickerSnapshot {
-    pub async fn get_ticker_snapshot(market: &str) -> Result<Self, ResponseError> {
+    pub async fn get_ticker_snapshot(market: &[&str]) -> Result<Self, ResponseError> {
         let res = Self::request(market).await?;
-        let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest)?;
-        
+        let res_serialized = res
+            .text()
+            .await
+            .map_err(crate::response::response_error_from_reqwest)?;
+
         if res_serialized.contains("error") {
             return Err(serde_json::from_str(&res_serialized)
-                .map(crate::response::response_error)                
+                .map(crate::response::response_error)
                 .ok()
-                .unwrap()
-            )
+                .unwrap());
         }
-        
+
         serde_json::from_str(&res_serialized)
             .map(|mut x: Vec<Self>| {
                 let x = x.pop().unwrap();
@@ -85,10 +87,12 @@ impl TickerSnapshot {
             .map_err(crate::response::response_error_from_json)
     }
 
-    async fn request(market: &str) -> Result<reqwest::Response, ResponseError> {
-        let mut url = Url::parse(&format!("{URL_SERVER}{URL_TICKER}")).unwrap();
-        url.query_pairs_mut().append_pair("markets", market);
-        
+    async fn request(market: &[&str]) -> Result<reqwest::Response, ResponseError> {
+        let mut url = Url::parse(&format!("{URL_SERVER}{URL_TICKER}"))
+            .map_err(crate::response::response_error_internal_url_parse_error)?;
+        url.query_pairs_mut()
+            .append_pair("markets", &market.join(","));
+
         reqwest::Client::new()
             .get(url.as_str())
             .header(ACCEPT, "application/json")
@@ -102,7 +106,7 @@ impl TickerSnapshot {
 mod tests {
     use std::collections::HashMap;
 
-    use serde_json::{Value, json};
+    use serde_json::{json, Value};
 
     use super::*;
 
@@ -110,8 +114,8 @@ mod tests {
     async fn test_get_ticker_snapshot() {
         crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
-    
-        let res = TickerSnapshot::request("KRW-ETH").await.unwrap();
+
+        let res = TickerSnapshot::request(&["KRW-ETH"]).await.unwrap();
         let res_serialized = res
             .text()
             .await
@@ -161,21 +165,34 @@ mod tests {
 
         if let Some(json_array) = json.as_array() {
             for (index, item) in json_array.iter().enumerate() {
-                let (missing_keys, extra_keys) = compare_keys(item, &expected_structure, &format!("item[{}].", index));
-    
+                let (missing_keys, extra_keys) =
+                    compare_keys(item, &expected_structure, &format!("item[{}].", index));
+
                 if !missing_keys.is_empty() {
-                    println!("[test_get_ticker_snapshot] Missing keys in item[{}]: {:?}", index, missing_keys);
+                    println!(
+                        "[test_get_ticker_snapshot] Missing keys in item[{}]: {:?}",
+                        index, missing_keys
+                    );
                     assert!(false);
                 } else {
-                    println!("[test_get_ticker_snapshot] No keys are missing in item[{}]", index);
+                    println!(
+                        "[test_get_ticker_snapshot] No keys are missing in item[{}]",
+                        index
+                    );
                     assert!(true);
                 }
-    
+
                 if !extra_keys.is_empty() {
-                    println!("[test_get_ticker_snapshot] Extra keys in item[{}]: {:?}", index, extra_keys);
+                    println!(
+                        "[test_get_ticker_snapshot] Extra keys in item[{}]: {:?}",
+                        index, extra_keys
+                    );
                     assert!(false);
                 } else {
-                    println!("[test_get_ticker_snapshot] No extra keys found in item[{}]", index);
+                    println!(
+                        "[test_get_ticker_snapshot] No extra keys found in item[{}]",
+                        index
+                    );
                     assert!(true);
                 }
             }
@@ -184,10 +201,14 @@ mod tests {
         }
     }
 
-    fn compare_keys(json: &Value, expected: &HashMap<&str, Value>, path: &str) -> (Vec<String>, Vec<String>) {
+    fn compare_keys(
+        json: &Value,
+        expected: &HashMap<&str, Value>,
+        path: &str,
+    ) -> (Vec<String>, Vec<String>) {
         let mut missing_keys = Vec::new();
         let mut extra_keys = Vec::new();
-    
+
         if let Some(actual_map) = json.as_object() {
             for (key, _) in expected {
                 if !actual_map.contains_key(*key) {
@@ -200,7 +221,7 @@ mod tests {
                 }
             }
         }
-    
+
         (missing_keys, extra_keys)
     }
 }

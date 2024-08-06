@@ -1,8 +1,12 @@
 use serde::Deserialize;
 
-use crate::{request::{Request, RequestWithQuery}, constant::{TransactionType, TransferType}, api_deposit::DepositState};
+use crate::{
+    api_deposit::DepositState,
+    constant::{TransactionType, TransferType},
+    request::{Request, RequestWithQuery},
+};
 
-use super::{AccountsInfoSource, AccountsInfo};
+use super::{AccountsInfo, AccountsInfoSource};
 
 /// Deserialized derived TransactionInfoDerived data
 #[derive(Debug)]
@@ -35,36 +39,60 @@ pub struct TransactionInfoDerivedSource {
     amount: String,
     fee: String,
     // krw_amount: String,
-    transaction_type: String
+    transaction_type: String,
 }
 
 impl TransactionInfoDerivedSource {
     /// Convert [String] type value into [TransactionType]
-    pub fn r#type(&self) -> TransferType { self.r#type.as_str().into() }
-    /// Get uuid 
-    pub fn uuid(&self) -> String { self.uuid.clone() }
+    pub fn r#type(&self) -> TransferType {
+        self.r#type.as_str().into()
+    }
+    /// Get uuid
+    pub fn uuid(&self) -> String {
+        self.uuid.clone()
+    }
     /// Get currency
-    pub fn currency(&self) -> String {self.currency.clone()}
+    pub fn currency(&self) -> String {
+        self.currency.clone()
+    }
     /// Get net_type
-    pub fn net_type(&self) -> Option<String> {self.net_type.clone().or(None)}
+    pub fn net_type(&self) -> Option<String> {
+        self.net_type.clone().or(None)
+    }
     /// Get txid
-    pub fn txid(&self) -> String { self.txid.clone() }
+    pub fn txid(&self) -> String {
+        self.txid.clone()
+    }
     /// Convert [String] state value into [DepositState]
-    pub fn state(&self) -> DepositState { self.state.as_str().into() }
+    pub fn state(&self) -> DepositState {
+        self.state.as_str().into()
+    }
     /// Convert [String] created_at value into [chrono::NaiveDateTime]
-    pub fn created_at(&self) -> chrono::NaiveDateTime {chrono::NaiveDateTime::parse_from_str(&self.created_at, "%Y-%m-%dT%H:%M:%S%z").unwrap()}
+    pub fn created_at(&self) -> chrono::NaiveDateTime {
+        chrono::NaiveDateTime::parse_from_str(&self.created_at, "%Y-%m-%dT%H:%M:%S%z").unwrap()
+    }
     /// Convert [String] done_at value into [chrono::NaiveDateTime]
     pub fn done_at(&self) -> Option<chrono::NaiveDateTime> {
-        chrono::NaiveDateTime::parse_from_str(&self.done_at.clone().or(None)?, "%Y-%m-%dT%H:%M:%S%z").ok()
+        chrono::NaiveDateTime::parse_from_str(
+            &self.done_at.clone().or(None)?,
+            "%Y-%m-%dT%H:%M:%S%z",
+        )
+        .ok()
     }
     /// Convert [String] amount value into [f64]
-    pub fn amount(&self) -> f64 { self.amount.parse().unwrap() }
+    pub fn amount(&self) -> f64 {
+        self.amount.parse().unwrap()
+    }
     /// Convert [String] fee value into [f64]
-    pub fn fee(&self) -> f64 { self.fee.parse().unwrap() }
+    pub fn fee(&self) -> f64 {
+        self.fee.parse().unwrap()
+    }
     /// Convert [String] krw_amount value into [f64]
     // pub fn krw_amount(&self) -> f64 { self.krw_amount.parse().unwrap() }
     /// Convert [String] transaction_type value into [WithdrawType]
-    pub fn transaction_type(&self) -> TransactionType { self.transaction_type.as_str().into() }
+    pub fn transaction_type(&self) -> TransactionType {
+        self.transaction_type.as_str().into()
+    }
 }
 
 /// Deserialized TransactionInfo data
@@ -129,41 +157,89 @@ pub struct TransactionInfoSource {
 
 impl TransactionInfoSource {
     /// Convert [String] type value into [TransactionType]
-    pub fn r#type(&self) -> TransferType { self.r#type.as_str().into() }
-    /// Get uuid 
-    pub fn uuid(&self) -> String { self.uuid.clone() }
+    pub fn r#type(&self) -> TransferType {
+        self.r#type.as_str().into()
+    }
+    /// Get uuid
+    pub fn uuid(&self) -> String {
+        self.uuid.clone()
+    }
     /// Get currency
-    pub fn currency(&self) -> String {self.currency.clone()}
+    pub fn currency(&self) -> String {
+        self.currency.clone()
+    }
     /// Get net_type
-    pub fn net_type(&self) -> Option<String> {self.net_type.clone().or(None)}
+    pub fn net_type(&self) -> Option<String> {
+        self.net_type.clone().or(None)
+    }
     /// Get txid
-    pub fn txid(&self) -> String { self.txid.clone() }
+    pub fn txid(&self) -> String {
+        self.txid.clone()
+    }
     /// Convert [String] state value into [DepositState]
-    pub fn state(&self) -> DepositState { self.state.as_str().into() }
+    pub fn state(&self) -> DepositState {
+        self.state.as_str().into()
+    }
     /// Convert [String] created_at value into [chrono::NaiveDateTime]
-    pub fn created_at(&self) -> chrono::NaiveDateTime {chrono::NaiveDateTime::parse_from_str(&self.created_at, "%Y-%m-%dT%H:%M:%S%z").unwrap()}
+    pub fn created_at(&self) -> chrono::NaiveDateTime {
+        chrono::NaiveDateTime::parse_from_str(&self.created_at, "%Y-%m-%dT%H:%M:%S%z").unwrap()
+    }
     /// Convert [String] done_at value into [chrono::NaiveDateTime]
     pub fn done_at(&self) -> Option<chrono::NaiveDateTime> {
-        chrono::NaiveDateTime::parse_from_str(&self.done_at.clone().or(None)?, "%Y-%m-%dT%H:%M:%S%z").ok()
+        chrono::NaiveDateTime::parse_from_str(
+            &self.done_at.clone().or(None)?,
+            "%Y-%m-%dT%H:%M:%S%z",
+        )
+        .ok()
     }
     /// Convert [String] amount value into [f64]
-    pub fn amount(&self) -> f64 { self.amount.parse().unwrap() }
+    pub fn amount(&self) -> f64 {
+        self.amount.parse().unwrap()
+    }
     /// Convert [String] fee value into [f64]
-    pub fn fee(&self) -> f64 { self.fee.parse().unwrap() }
+    pub fn fee(&self) -> f64 {
+        self.fee.parse().unwrap()
+    }
     /// Convert [String] transaction_type value into [WithdrawType]
-    pub fn transaction_type(&self) -> TransactionType { self.transaction_type.as_str().into() }
-    pub fn holder(&self) -> String { self.holder.clone() }
-    pub fn bank(&self) -> String { self.bank.clone() }
-    pub fn flat_amount(&self) -> String { self.fiat_amount.clone() }
-    pub fn memo(&self) -> String { self.memo.clone() }
-    pub fn fiat_currency(&self) -> String { self.fiat_currency.clone() }
-    pub fn confirmations(&self) -> String { self.confirmations.clone() }
-    pub fn krw_amount(&self) -> String { self.krw_amount.clone() }
-    pub fn network_name(&self) -> String { self.network_name.clone() }
-    pub fn cancelable(&self) -> String { self.cancelable.clone() }
-    pub fn blockchain_url(&self) -> String { self.blockchain_url.clone() }
-    pub fn state_i18n(&self) -> String { self.state_i18n.clone() }
-    pub fn address(&self) -> String { self.address.clone() }
+    pub fn transaction_type(&self) -> TransactionType {
+        self.transaction_type.as_str().into()
+    }
+    pub fn holder(&self) -> String {
+        self.holder.clone()
+    }
+    pub fn bank(&self) -> String {
+        self.bank.clone()
+    }
+    pub fn flat_amount(&self) -> String {
+        self.fiat_amount.clone()
+    }
+    pub fn memo(&self) -> String {
+        self.memo.clone()
+    }
+    pub fn fiat_currency(&self) -> String {
+        self.fiat_currency.clone()
+    }
+    pub fn confirmations(&self) -> String {
+        self.confirmations.clone()
+    }
+    pub fn krw_amount(&self) -> String {
+        self.krw_amount.clone()
+    }
+    pub fn network_name(&self) -> String {
+        self.network_name.clone()
+    }
+    pub fn cancelable(&self) -> String {
+        self.cancelable.clone()
+    }
+    pub fn blockchain_url(&self) -> String {
+        self.blockchain_url.clone()
+    }
+    pub fn state_i18n(&self) -> String {
+        self.state_i18n.clone()
+    }
+    pub fn address(&self) -> String {
+        self.address.clone()
+    }
 }
 
 /// Raw MemberLevel of [WithdrawChanceSource] from serialized data
@@ -187,7 +263,7 @@ pub struct WithdrawCurrency {
     pub withdraw_fee: f64,
     pub is_coin: bool,
     pub wallet_state: String,
-    pub wallet_support: Vec<String>
+    pub wallet_support: Vec<String>,
 }
 
 /// Raw withdraw currency from serialized data
@@ -197,15 +273,25 @@ pub struct WithdrawCurrencySource {
     withdraw_fee: String,
     is_coin: bool,
     wallet_state: String,
-    wallet_support: Vec<String>
+    wallet_support: Vec<String>,
 }
 
 impl WithdrawCurrencySource {
-    pub fn code(&self) -> String { self.code.clone() }
-    pub fn withdraw_fee(&self) -> f64 { self.withdraw_fee.parse().unwrap() }
-    pub fn is_coin(&self) -> bool { self.is_coin }
-    pub fn wallet_state(&self) -> String { self.wallet_state.clone() }
-    pub fn wallet_support(&self) -> Vec<String> { self.wallet_support.clone() }
+    pub fn code(&self) -> String {
+        self.code.clone()
+    }
+    pub fn withdraw_fee(&self) -> f64 {
+        self.withdraw_fee.parse().unwrap()
+    }
+    pub fn is_coin(&self) -> bool {
+        self.is_coin
+    }
+    pub fn wallet_state(&self) -> String {
+        self.wallet_state.clone()
+    }
+    pub fn wallet_support(&self) -> Vec<String> {
+        self.wallet_support.clone()
+    }
 }
 
 /// Deserialized WithdrawLimit of [WithdrawChanceSource] data
@@ -218,7 +304,7 @@ pub struct WithdrawLimit {
     pub remaining_daily: f64,
     pub remaining_daily_krw: f64,
     pub fixed: Option<i32>,
-    pub can_withdraw: bool
+    pub can_withdraw: bool,
 }
 
 /// Raw withdraw limit from serialized data
@@ -231,18 +317,34 @@ pub struct WithdrawLimitSource {
     remaining_daily: String,
     remaining_daily_krw: String,
     fixed: Option<i32>,
-    can_withdraw: bool
+    can_withdraw: bool,
 }
 
 impl WithdrawLimitSource {
-    pub fn currency(&self) -> String { self.currency.clone() }
-    pub fn minimum(&self) -> Option<f64> { self.minimum.clone().map(|x| x.parse::<f64>().unwrap()) }
-    pub fn onetime(&self) -> Option<f64> { self.onetime.clone().map(|x| x.parse::<f64>().unwrap()) }
-    pub fn daily(&self) -> f64 { self.daily.parse().unwrap() }
-    pub fn remaining_daily(&self) -> f64 { self.remaining_daily.parse().unwrap() }
-    pub fn remaining_daily_krw(&self) -> f64 { self.remaining_daily_krw.parse().unwrap() }
-    pub fn fixed(&self) -> Option<i32> { self.fixed }
-    pub fn can_withdraw(&self) -> bool { self.can_withdraw }
+    pub fn currency(&self) -> String {
+        self.currency.clone()
+    }
+    pub fn minimum(&self) -> Option<f64> {
+        self.minimum.clone().map(|x| x.parse::<f64>().unwrap())
+    }
+    pub fn onetime(&self) -> Option<f64> {
+        self.onetime.clone().map(|x| x.parse::<f64>().unwrap())
+    }
+    pub fn daily(&self) -> f64 {
+        self.daily.parse().unwrap()
+    }
+    pub fn remaining_daily(&self) -> f64 {
+        self.remaining_daily.parse().unwrap()
+    }
+    pub fn remaining_daily_krw(&self) -> f64 {
+        self.remaining_daily_krw.parse().unwrap()
+    }
+    pub fn fixed(&self) -> Option<i32> {
+        self.fixed
+    }
+    pub fn can_withdraw(&self) -> bool {
+        self.can_withdraw
+    }
 }
 
 /// Deserialized WithdrawChance of [WithdrawChanceSource] data
@@ -251,7 +353,7 @@ pub struct WithdrawChance {
     pub member_level: MemberLevel,
     pub currency: WithdrawCurrency,
     pub account: AccountsInfo,
-    pub withdraw_limit: WithdrawLimit
+    pub withdraw_limit: WithdrawLimit,
 }
 
 /// Raw withdraw chance info from serialized data
@@ -260,7 +362,7 @@ pub struct WithdrawChanceSource {
     pub member_level: MemberLevel,
     pub currency: WithdrawCurrencySource,
     pub account: AccountsInfoSource,
-    pub withdraw_limit: WithdrawLimitSource
+    pub withdraw_limit: WithdrawLimitSource,
 }
 
 /// Raw withdraw chance info from serialized data
@@ -270,7 +372,7 @@ pub struct WithdrawCoinAddress {
     pub net_type: String,
     pub network_name: String,
     pub withdraw_address: String,
-    pub secondary_address: Option<String>
+    pub secondary_address: Option<String>,
 }
 
 impl Request for WithdrawCoinAddress {}
@@ -280,7 +382,7 @@ impl Request for WithdrawCoinAddress {}
 #[serde(untagged)]
 pub enum CoinAddressGenResponse {
     First(CoinAddressGenFirstResponse),
-    Second(CoinAddressGenSecondaryResponse)
+    Second(CoinAddressGenSecondaryResponse),
 }
 
 /// Response body of coin address generator
@@ -292,12 +394,12 @@ pub struct CoinAddressGen {
 impl RequestWithQuery for CoinAddressGen {}
 
 /// Raw CoinAddressGenFirstResponse from serialized data
-/// 
-/// Which is first response 
+///
+/// Which is first response
 #[derive(Deserialize, Debug)]
 pub struct CoinAddressGenFirstResponse {
     pub success: bool,
-    pub message: String
+    pub message: String,
 }
 
 /// Raw CoinAddressGenSecondResponse from serialized data
@@ -306,7 +408,7 @@ pub struct CoinAddressGenSecondaryResponse {
     pub currency: String,
     pub net_type: Option<String>,
     pub deposit_address: String,
-    pub secondary_address: Option<String>
+    pub secondary_address: Option<String>,
 }
 
 /// Response body of coin address info
@@ -315,7 +417,7 @@ pub struct CoinAddressResponse {
     pub currency: String,
     pub net_type: String,
     pub deposit_address: Option<String>,
-    pub secondary_address: Option<String>
+    pub secondary_address: Option<String>,
 }
 
 impl Request for CoinAddressResponse {}

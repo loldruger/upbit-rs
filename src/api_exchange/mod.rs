@@ -11,13 +11,13 @@ use serde::{Deserialize, Serialize};
 
 use crate::constant::OrderBy;
 
-use super::response::{AccountsInfo, OrderInfo, OrderChance, OrderStatus, ResponseError};
+use super::response::{AccountsInfo, OrderChance, OrderInfo, OrderStatus, ResponseError};
 
 /// Side of order
 #[derive(Serialize, Deserialize, Debug, Copy, Clone, PartialEq, Eq)]
 pub enum OrderSide {
     /// 매수
-    Bid, 
+    Bid,
     /// 매도
     Ask,
 }
@@ -45,7 +45,7 @@ impl From<&str> for OrderSide {
         match value {
             "bid" => OrderSide::Bid,
             "ask" => OrderSide::Ask,
-            _ => panic!("value must be either \"bid\" or \"ask!\"")
+            _ => panic!("value must be either \"bid\" or \"ask!\""),
         }
     }
 }
@@ -60,7 +60,7 @@ pub enum OrderType {
     /// 시장가 주문(매도)
     Market,
     /// 최유리 주문
-    Best
+    Best,
 }
 
 impl Display for OrderType {
@@ -92,12 +92,12 @@ impl From<&str> for OrderType {
             "price" => OrderType::Price,
             "market" => OrderType::Market,
             "best" => OrderType::Best,
-            _ => panic!("value must be one of \"limit\", \"price!\", \"market\" or \"best\".")
+            _ => panic!("value must be one of \"limit\", \"price!\", \"market\" or \"best\"."),
         }
     }
 }
 
-/// New Order type 
+/// New Order type
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub enum OrderCondition {
     /// Immediate or Cancel
@@ -110,7 +110,7 @@ impl Display for OrderCondition {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             OrderCondition::IOK => write!(f, "iok"),
-            OrderCondition::FOK => write!(f, "fok")
+            OrderCondition::FOK => write!(f, "fok"),
         }
     }
 }
@@ -129,7 +129,7 @@ impl From<&str> for OrderCondition {
         match value {
             "iok" => OrderCondition::IOK,
             "fok" => OrderCondition::FOK,
-            _ => panic!("value must be one of \"iok\" or \"fok\".")
+            _ => panic!("value must be one of \"iok\" or \"fok\"."),
         }
     }
 }
@@ -144,7 +144,7 @@ pub enum OrderState {
     /// 전체 체결 완료
     Done,
     /// 주문 취소
-    Cancel
+    Cancel,
 }
 
 impl Display for OrderState {
@@ -176,30 +176,30 @@ impl From<&str> for OrderState {
             "watch" => OrderState::Watch,
             "done" => OrderState::Done,
             "cancel" => OrderState::Cancel,
-            _ => panic!("value must be one of \"wait\", \"watch!\", \"done!\" or \"cancel\"")
+            _ => panic!("value must be one of \"wait\", \"watch!\", \"done!\" or \"cancel\""),
         }
     }
 }
 
 /// 주문 요청을 한다. (Make an order(buy or sell) with desired price )
-/// 
+///
 /// # Example
 /// ```
 /// let order_info = api_exchange::order_by_price("KRW-ETH", OrderSide::Bid, 5000.0, 1_435_085.0, OrderType::Limit, None).await;
 /// ```
 /// - parameters
 /// > `market` ex) "KRW-ETH" <br>
-/// > `side` 
+/// > `side`
 /// >> *  `OrderSide::BID` 매수<br>
 /// >> *  `OrderSide::ASK` 매도<br>
-/// 
+///
 /// > `price` price that how much you want to buy<br>
 /// > `price_desired` price that you want to bid at<br>
-/// > `ord_type` 
+/// > `ord_type`
 /// >> *  `OrderType::LIMIT` 지정가 주문<br>
 /// >> *  `OrderType::PRICE` 시장가 주문(매수)<br>
 /// >> *  `OrderType::MARKET` 시장가 주문(매도)<br>
-/// 
+///
 /// > `identifier` (optional) specific identifier you have tagged<br>
 /// # Response
 /// ```json
@@ -239,21 +239,27 @@ impl From<&str> for OrderState {
 /// | executed_volume   | 체결된 양                    | NumberString |
 /// | trades_count      | 해당 주문에 걸린 체결 수      | Integer |
 
-pub async fn order_by_price( market_id: &str, side: OrderSide, price: f64, price_desired: f64, ord_type: OrderType, identifier: Option<&str> ) -> Result<OrderInfo, ResponseError> {
+pub async fn order_by_price(
+    market_id: &str,
+    side: OrderSide,
+    price: f64,
+    price_desired: f64,
+    ord_type: OrderType,
+    identifier: Option<&str>,
+) -> Result<OrderInfo, ResponseError> {
     OrderInfo::order_by_price(
         market_id,
         side,
         (price + 1.0) / price_checker(price_desired),
         price_checker(price_desired),
         ord_type,
-        identifier
+        identifier,
     )
     .await
 }
 
-
 /// 즉시 시장가 판매를 한다. (Sell specific amount of volume immediately at market price.)
-/// 
+///
 /// # Example
 /// ```
 /// let order_info = api_exchange::sell_by_market_price("KRW-ETH", 1.0, None).await;
@@ -301,19 +307,23 @@ pub async fn order_by_price( market_id: &str, side: OrderSide, price: f64, price
 /// | executed_volume   | 체결된 양                    | NumberString |
 /// | trades_count      | 해당 주문에 걸린 체결 수      | Integer |
 
-pub async fn sell_at_market_price(market_id: &str, volume: f64, identifier: Option<&str>) -> Result<OrderInfo, ResponseError> {
+pub async fn sell_at_market_price(
+    market_id: &str,
+    volume: f64,
+    identifier: Option<&str>,
+) -> Result<OrderInfo, ResponseError> {
     OrderInfo::order_ask_at_market_price(
         market_id,
         OrderSide::Ask,
         volume,
         OrderType::Market,
-        identifier
+        identifier,
     )
     .await
 }
 
 /// 주문을 취소한다. (Cancel an order.)
-/// 
+///
 /// # Example
 /// ```
 /// let order_info = api_exchange::cancel_order_by_uuid("cdd92199-2897-4e14-9448-f923320408ad", None).await;
@@ -321,7 +331,7 @@ pub async fn sell_at_market_price(market_id: &str, volume: f64, identifier: Opti
 /// - parameters
 /// > `uuid` (optional) uuid of order to cancel <br>
 /// > `identifier` (optional) specific identifier you have tagged<br>
-/// 
+///
 /// * One of the two parameter must be input. Error when both parameter are entered or neither parameter are entered.
 /// # Response
 /// ```json
@@ -369,7 +379,7 @@ pub async fn cancel_order_by_identifier(identifier: &str) -> Result<OrderInfo, R
 }
 
 /// 내가 보유한 자산 리스트를 보여줍니다. (inquire your account info)
-/// 
+///
 /// # Example
 /// ```
 /// let order_info = api_exchange::get_account_info().await;
@@ -408,14 +418,14 @@ pub async fn get_account_info() -> Result<Vec<AccountsInfo>, ResponseError> {
 }
 
 /// 마켓별 주문 가능 정보를 확인한다. (check specific market status.)
-/// 
+///
 /// # Example
 /// ```
 /// let order_chance = api_exchange::get_order_chance("KRW-ETH").await;
 /// ```
 /// - parameters
 /// > `market` ex) KRW-ETH<br>
-/// 
+///
 /// # Response
 /// ```json
 /// {
@@ -502,7 +512,7 @@ pub async fn get_order_chance(market_id: &str) -> Result<OrderChance, ResponseEr
 }
 
 /// 주문 UUID 를 통해 개별 주문건을 조회한다. (inquire each order status via order UUID.)
-/// 
+///
 /// # Example
 /// ```
 /// let order_status = api_exchange::get_order_status_by_uuid("9ca023a5-851b-4fec-9f0a-48cd83c2eaae", None).await;
@@ -510,7 +520,7 @@ pub async fn get_order_chance(market_id: &str) -> Result<OrderChance, ResponseEr
 /// - parameters
 /// > `uuid` (optional) uuid of order to cancel <br>
 /// > `identifier` (optional) specific identifier you have tagged<br>
-/// 
+///
 /// * One of the two parameter must be input. Error when both parameter are entered or neither parameter are entered.
 /// # Response
 /// ```json
@@ -571,12 +581,14 @@ pub async fn get_order_status_by_uuid(uuid: &str) -> Result<OrderStatus, Respons
     OrderStatus::get_order_status_by_uuid(uuid).await
 }
 
-pub async fn get_order_status_by_identifier(identifier: &str) -> Result<OrderStatus, ResponseError> {
+pub async fn get_order_status_by_identifier(
+    identifier: &str,
+) -> Result<OrderStatus, ResponseError> {
     OrderStatus::get_order_status_by_identifier(identifier).await
 }
 
 /// 주문 리스트를 조회한다. (inquire every order status.)
-/// 
+///
 /// # Example
 /// ```
 /// let order_status = api_exchange::list_order_states().await;
@@ -627,40 +639,75 @@ pub async fn list_order_status() -> Result<Vec<OrderInfo>, ResponseError> {
     OrderInfo::get_order_state_list().await
 }
 
-pub async fn get_order_states_by_uuids(market_id: &str, uuids: &[&str], order_by: OrderBy) -> Result<Vec<OrderInfo>, ResponseError> {
+pub async fn get_order_states_by_uuids(
+    market_id: &str,
+    uuids: &[&str],
+    order_by: OrderBy,
+) -> Result<Vec<OrderInfo>, ResponseError> {
     OrderInfo::get_order_states_by_uuids(market_id, uuids, order_by).await
 }
 
-pub async fn get_order_states_by_identifiers(market_id: &str, identifiers: &[&str], order_by: OrderBy) -> Result<Vec<OrderInfo>, ResponseError> {
+pub async fn get_order_states_by_identifiers(
+    market_id: &str,
+    identifiers: &[&str],
+    order_by: OrderBy,
+) -> Result<Vec<OrderInfo>, ResponseError> {
     OrderInfo::get_order_states_by_identifiers(market_id, identifiers, order_by).await
 }
 
-pub async fn get_order_states_opened(market_id: &str, state: OrderState, states: &[OrderState], page: u8, limit: u8, order_by: OrderBy) -> Result<Vec<OrderInfo>, ResponseError> {
+pub async fn get_order_states_opened(
+    market_id: &str,
+    state: OrderState,
+    states: &[OrderState],
+    page: u8,
+    limit: u8,
+    order_by: OrderBy,
+) -> Result<Vec<OrderInfo>, ResponseError> {
     OrderInfo::get_order_states_opened(market_id, state, states, page, limit, order_by).await
 }
 
-pub async fn get_order_states_closed(market_id: &str, state: OrderState, start_time: Option<&str>, end_time: Option<&str>, limit: u16, order_by: OrderBy) -> Result<Vec<OrderInfo>, ResponseError> {
-    OrderInfo::get_order_states_closed(market_id, state, start_time, end_time, limit, order_by).await
+pub async fn get_order_states_closed(
+    market_id: &str,
+    state: OrderState,
+    start_time: Option<&str>,
+    end_time: Option<&str>,
+    limit: u16,
+    order_by: OrderBy,
+) -> Result<Vec<OrderInfo>, ResponseError> {
+    OrderInfo::get_order_states_closed(market_id, state, start_time, end_time, limit, order_by)
+        .await
 }
 
 pub fn price_checker(price: f64) -> f64 {
-    let truncation = 
-    if price >= 2_000_000.0 { 1000.0 }
-    else if price >= 1_000_000.0 { 500.0 }
-    else if price >= 500_000.0 { 100.0 }
-    else if price >= 100_000.0 { 50.0 }
-    else if price >= 10_000.0 { 10.0 }
-    else if price >= 1000.0 { 1.0 }
-    else if price >= 100.0 { 0.1 }
-    else if price >= 10.0 { 0.01 }
-    else if price >= 1.0 { 0.001 }
-    else if price >= 0.1 { 0.0001 }
-    else if price >= 0.01 { 0.00001 }
-    else if price >= 0.001 { 0.000001 }
-    else if price >= 0.0001 { 0.0000001 }
-    else { 0.00000001 };
+    let truncation = if price >= 2_000_000.0 {
+        1000.0
+    } else if price >= 1_000_000.0 {
+        500.0
+    } else if price >= 500_000.0 {
+        100.0
+    } else if price >= 100_000.0 {
+        50.0
+    } else if price >= 10_000.0 {
+        10.0
+    } else if price >= 1000.0 {
+        1.0
+    } else if price >= 100.0 {
+        0.1
+    } else if price >= 10.0 {
+        0.01
+    } else if price >= 1.0 {
+        0.001
+    } else if price >= 0.1 {
+        0.0001
+    } else if price >= 0.01 {
+        0.00001
+    } else if price >= 0.001 {
+        0.000001
+    } else if price >= 0.0001 {
+        0.0000001
+    } else {
+        0.00000001
+    };
 
     f64::trunc(price / truncation) * truncation
 }
-
-

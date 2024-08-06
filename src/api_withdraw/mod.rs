@@ -1,14 +1,17 @@
-mod withdraw_info;
-mod withdraw_info_list;
+mod withdraw_address;
 mod withdraw_chance;
 mod withdraw_coin;
+mod withdraw_info;
+mod withdraw_info_list;
 mod withdraw_krw;
-mod withdraw_address;
 
 use core::fmt::Display;
 
-use crate::{constant::{OrderBy, TransactionType, TwoFactorType}, response::{WithdrawChance, WithdrawCoinAddress}};
-use super::response::{TransactionInfo, TransactionInfoDerived, ResponseError};
+use super::response::{ResponseError, TransactionInfo, TransactionInfoDerived};
+use crate::{
+    constant::{OrderBy, TransactionType, TwoFactorType},
+    response::{WithdrawChance, WithdrawCoinAddress},
+};
 
 /// List of withdraw state
 pub enum WithdrawState {
@@ -23,7 +26,7 @@ pub enum WithdrawState {
     /// 취소됨
     Canceled,
     /// 거절됨
-    Rejected
+    Rejected,
 }
 
 impl Display for WithdrawState {
@@ -61,21 +64,21 @@ impl From<&str> for WithdrawState {
             "failed" => WithdrawState::Failed,
             "canceled" => WithdrawState::Canceled,
             "rejected" => WithdrawState::Rejected,
-            _ => panic!()
+            _ => panic!(),
         }
     }
 }
 
 /// 출금 기록을 조회한다. (inquiry the records of withdraws.)
-/// 
+///
 /// # Example
 /// ```rust
 /// use constant::OrderBy;
 /// use api_withdraw::WithdrawState;
-/// 
+///
 /// // it returns withdraw list of currency "KRW", state "done" ordered by asc
 /// let list_withdraw_info = api_withdraw::list_withdraw_info("KRW", WithdrawState::Done, None, None, 10, 0, OrderBy::Asc).await;
-/// 
+///
 /// // it returns withdraw list of currency "BTC", state "done", txid "98c15999..." ordered by desc
 /// let list_withdraw_info = api_withdraw::list_withdraw_info(
 ///     "BTC",
@@ -89,26 +92,26 @@ impl From<&str> for WithdrawState {
 ///         0,
 ///         OrderBy::Desc
 ///     ).await;
-/// 
+///
 /// ```
 /// - parameters
 /// > `currency` ex) KRW, BTC, ETH etc. <br>
-/// > `state` 
+/// > `state`
 ///  >> *  `WithdrawState::Waiting` 대기중<br>
 ///  >> *  `WithdrawState::Processing` 진행중<br>
 ///  >> *  `WithdrawState::Done` 완료<br>
 ///  >> *  `WithdrawState::Failed` 실패<br>
 ///  >> *  `WithdrawState::Canceled` 취소됨<br>
 ///  >> *  `WithdrawState::Rejected` 거절됨<br>
-/// 
+///
 /// > `uuids` array of uuid<br>
 /// > `txids` array of txid<br>
 /// > `limit` pagination limit, max `100`<br>
 /// > `page` pagination <br>
-/// > `order_by` 
+/// > `order_by`
 ///  >> *  `OrderBy::Asc` 오름차순<br>
 ///  >> *  `OrderBy::Desc` 내림차순<br>
-/// 
+///
 /// # Response
 /// ```json
 /// [
@@ -127,7 +130,7 @@ impl From<&str> for WithdrawState {
 ///   # ....
 /// ]
 /// ```
-/// 
+///
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
 /// | type | 입출금 종류 | String
@@ -148,13 +151,13 @@ pub async fn list_withdraw_info(
     txids: Option<&[&str]>,
     limit: u32,
     page: u32,
-    order_by: OrderBy
+    order_by: OrderBy,
 ) -> Result<Vec<TransactionInfo>, ResponseError> {
     TransactionInfo::get_withdraw_list(currency, state, uuids, txids, limit, page, order_by).await
 }
 
 /// 개별 출금 조회.
-/// 
+///
 /// # Example
 /// ```rust
 /// let withdraw_info = api_withdraw::get_withdraw_info(None, Some("9f432943-54e0-40b7-825f-b6fec8b42b79"), None).await;
@@ -181,7 +184,7 @@ pub async fn list_withdraw_info(
 ///   # ....
 /// ]
 /// ```
-/// 
+///
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
 /// | type | 입출금 종류 | String
@@ -195,12 +198,16 @@ pub async fn list_withdraw_info(
 /// | amount | 출금 금액/수량 | NumberString
 /// | fee | 출금 수수료 | NumberString
 /// | transaction_type | 출금 유형<br> default : 일반출금<br>internal : 바로출금 | String
-pub async fn get_withdraw_info(currency: Option<&str>, uuid: Option<&str>, txid: Option<&str>) -> Result<TransactionInfo, ResponseError> {
+pub async fn get_withdraw_info(
+    currency: Option<&str>,
+    uuid: Option<&str>,
+    txid: Option<&str>,
+) -> Result<TransactionInfo, ResponseError> {
     TransactionInfo::get_withdraw_info(currency, uuid, txid).await
 }
 
 /// 출금 가능 정보를 조회한다.
-/// 
+///
 /// # Example
 /// ```rust
 /// let withdraw_chance = api_withdraw::get_withdraw_chance("ETH", "ETH").await;
@@ -280,12 +287,15 @@ pub async fn get_withdraw_info(currency: Option<&str>, uuid: Option<&str>, txid:
 /// | withdraw_limit.remaining_daily_krw | 통합 1일 잔여 출금 한도 | NumberString |
 /// | withdraw_limit.fixed | 출금 금액/수량 소수점 자리 수 | Integer |
 /// | withdraw_limit.can_withdraw | 출금 지원 여부 | Boolean |
-pub async fn get_withdraw_chance(currency: &str, net_type: &str) -> Result<WithdrawChance, ResponseError> {
+pub async fn get_withdraw_chance(
+    currency: &str,
+    net_type: &str,
+) -> Result<WithdrawChance, ResponseError> {
     WithdrawChance::get_withdraw_chance(currency, net_type).await
 }
 
 /// 가상화폐를 출금한다.
-/// 
+///
 /// # Example
 /// ```rust
 /// let withdraw_result_more_info = api_withdraw::withdraw_coin("ETH", "ETH", 0.005, "0x40268F1e99F76b658c6D52d89166EE289EfC225d", None, TransactionType::Default).await;
@@ -335,7 +345,7 @@ pub async fn withdraw_coin(
     amount: f64,
     address: &str,
     secondary_address: Option<&str>,
-    transaction_type: TransactionType
+    transaction_type: TransactionType,
 ) -> Result<TransactionInfoDerived, ResponseError> {
     TransactionInfoDerived::withdraw_coin(
         currency,
@@ -344,11 +354,12 @@ pub async fn withdraw_coin(
         address,
         secondary_address,
         transaction_type,
-    ).await
+    )
+    .await
 }
 
 /// 원화를 출금한다.
-/// 
+///
 /// # Example
 /// ```rust
 /// let withdraw_result_with_kakao_auth = api_withdraw::withdraw_krw(10000.0, api_withdraw::TwoFactorType::Kakao).await;
@@ -387,12 +398,15 @@ pub async fn withdraw_coin(
 /// | amount| 출금 금액/수량 | NumberString |
 /// | fee| 출금 수수료 | NumberString |
 /// | transaction_type| 출금 유형 | String |
-pub async fn withdraw_krw(amount: f64, two_factor_type: TwoFactorType) -> Result<TransactionInfo, ResponseError> {
+pub async fn withdraw_krw(
+    amount: f64,
+    two_factor_type: TwoFactorType,
+) -> Result<TransactionInfo, ResponseError> {
     TransactionInfo::withdraw_krw(amount, two_factor_type).await
 }
 
 /// 출금 허용 주소 리스트 조회
-/// 
+///
 /// # Example
 /// ```rust
 /// let withdraw_address = api_withdraw::withdraw_krw(10000.0, TwoFactorType::KakaoPay).await;
