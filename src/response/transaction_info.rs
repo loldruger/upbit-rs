@@ -17,7 +17,7 @@ pub struct TransactionInfoDerived {
     pub done_at: Option<chrono::NaiveDateTime>,
     pub amount: f64,
     pub fee: f64,
-    pub krw_amount: f64,
+    // pub krw_amount: f64,
     pub transaction_type: TransactionType,
 }
 
@@ -34,7 +34,7 @@ pub struct TransactionInfoDerivedSource {
     done_at: Option<String>,
     amount: String,
     fee: String,
-    krw_amount: String,
+    // krw_amount: String,
     transaction_type: String
 }
 
@@ -62,7 +62,7 @@ impl TransactionInfoDerivedSource {
     /// Convert [String] fee value into [f64]
     pub fn fee(&self) -> f64 { self.fee.parse().unwrap() }
     /// Convert [String] krw_amount value into [f64]
-    pub fn krw_amount(&self) -> f64 { self.krw_amount.parse().unwrap() }
+    // pub fn krw_amount(&self) -> f64 { self.krw_amount.parse().unwrap() }
     /// Convert [String] transaction_type value into [WithdrawType]
     pub fn transaction_type(&self) -> TransactionType { self.transaction_type.as_str().into() }
 }
@@ -136,7 +136,8 @@ pub struct MemberLevel {
     pub email_verified: bool,
     pub identity_auth_verified: bool,
     pub bank_account_verified: bool,
-    pub kakao_pay_auth_verified: bool,
+    pub two_factor_auth_verified: bool,
+    // pub kakao_pay_auth_verified: bool,
     pub locked: bool,
     pub wallet_locked: bool,
 }

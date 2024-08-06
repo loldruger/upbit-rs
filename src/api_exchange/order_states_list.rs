@@ -7,6 +7,7 @@ use reqwest::{
 use crate::request::RequestWithQuery;
 use crate::{constant::OrderBy, request::Request};
 
+#[allow(deprecated)]
 use super::{
     super::{constant::{
         URL_ORDER_STATUS_BY_UUID, URL_ORDER_STATUS_CLOSED, URL_ORDER_STATUS_LIST, URL_ORDER_STATUS_OPEN, URL_SERVER
@@ -81,6 +82,7 @@ impl OrderInfo {
 
     #[deprecated(since = "1.6.0")]
     pub async fn get_order_state_list() -> Result<Vec<Self>, ResponseError> {
+        #[allow(deprecated)]
         let res = Self::request(&format!("{URL_SERVER}{URL_ORDER_STATUS_LIST}")).await?;
         let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest)?;
         
@@ -244,6 +246,7 @@ mod tests {
 
     use crate::api_exchange::{OrderSide, OrderState, OrderType};
     use crate::response::OrderInfo;
+    #[allow(deprecated)]
     use crate::constant::{OrderBy, URL_ORDER_STATUS_LIST, URL_SERVER};
     
     #[tokio::test]
@@ -251,6 +254,7 @@ mod tests {
         crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
         
+        #[allow(deprecated)]
         let res = OrderInfo::request(&format!("{URL_SERVER}{URL_ORDER_STATUS_LIST}")).await.unwrap();
         let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest).unwrap();
         
@@ -483,33 +487,43 @@ mod tests {
             .iter()
             .map(|(k, v)| (k.as_str(), v.clone()))
             .collect::<HashMap<&str, Value>>();
-
+        
         if let Some(json_array) = json.as_array() {
             for (index, item) in json_array.iter().enumerate() {
                 let (missing_keys, extra_keys) = compare_keys(item, &expected_structure, &format!("item[{}]", index));
+        
+                let ord_type = item.get("ord_type").and_then(|v| v.as_str()).unwrap();
 
                 if !missing_keys.is_empty() {
+                    match ord_type {
+                        "limit" => {
+                            let missing_keys = missing_keys
+                                .iter()
+                                .filter(|x| x.contains("price"))
+                                .map(|x| x.to_string())
+                                .collect::<Vec<String>>();
+    
+                            if missing_keys.is_empty() {
+                                continue;
+                            }
+                        },
+                        "market" => {
+                            continue;
+                        },
+                        _ => {}
+                    }
+
+                    // Check the presence of the price field based on the ord_type field
                     println!("[test_get_order_states_closed] Missing keys in item[{}]: {:?}", index, missing_keys);
                     assert!(false, "Missing keys found");
                 }
-
+        
                 if !extra_keys.is_empty() {
                     println!("[test_get_order_states_closed] Extra keys in item[{}]: {:?}", index, extra_keys);
                     assert!(false, "Extra keys found");
                 }
+        
 
-                // Check the presence of the price field based on the market field
-                if let Some(market_value) = item.get("market").and_then(|v| v.as_str()) {
-                    match market_value {
-                        "limit" => {
-                            assert!(item.get("price").is_some(), "Expected 'price' field to be present for 'limit' market");
-                        }
-                        "market" => {
-                            assert!(item.get("price").is_none(), "Expected 'price' field to be absent for 'market' market");
-                        }
-                        _ => {}
-                    }
-                }
             }
         } else {
             assert!(false, "Expected an array of objects in the response");

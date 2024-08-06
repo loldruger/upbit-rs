@@ -101,6 +101,7 @@ impl OrderInfo {
             .map_err(crate::response::response_error_from_reqwest)
     }
 
+    #[allow(dead_code)]
     async fn request_bid_at_market_price(market_id: &str, side: OrderSide, price: f64, ord_type: OrderType, identifier: Option<&str>) -> Result<Response, ResponseError> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDER}")).unwrap();
         let price = format!("{:.8}", price);

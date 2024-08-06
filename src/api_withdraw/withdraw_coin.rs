@@ -48,7 +48,7 @@ impl TransactionInfoDerived {
                     done_at: x.done_at(),
                     amount: x.amount(),
                     fee: x.fee(),
-                    krw_amount: x.krw_amount(),
+                    // krw_amount: x.krw_amount(),
                     transaction_type: x.transaction_type(),
                 }
             })

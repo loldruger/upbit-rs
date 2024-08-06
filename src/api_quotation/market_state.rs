@@ -25,6 +25,7 @@ pub enum MarketEvent {
     },
 }
 
+#[allow(non_snake_case)]
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Caution {
     CONCENTRATION_OF_SMALL_ACCOUNTS: bool,

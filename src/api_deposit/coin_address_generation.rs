@@ -3,6 +3,7 @@ use reqwest::header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE};
 
 use crate::request::RequestWithQuery;
 
+#[allow(unused_imports)]
 use super::{
     super::constant::{URL_DEPOSITS_GENERATE_COIN_ADDRESS, URL_SERVER},
     super::response::{

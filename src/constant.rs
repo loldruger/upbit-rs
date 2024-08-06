@@ -154,6 +154,7 @@ pub enum TwoFactorType {
 impl Display for TwoFactorType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
+            #[allow(deprecated)]
             TwoFactorType::KakaoPay => write!(f, "kakao_pay"),
             TwoFactorType::Naver => write!(f, "naver"),
             TwoFactorType::KaKao => write!(f, "kakao"),
