@@ -1,13 +1,13 @@
 use serde::Deserialize;
 
-use crate::{request::{Request, RequestWithQuery}, constant::{WithdrawType, TransactionType}, api_deposit::DepositState};
+use crate::{request::{Request, RequestWithQuery}, constant::{TransactionType, TransferType}, api_deposit::DepositState};
 
 use super::{AccountsInfoSource, AccountsInfo};
 
 /// Deserialized derived TransactionInfoDerived data
 #[derive(Debug)]
 pub struct TransactionInfoDerived {
-    pub r#type: TransactionType,
+    pub r#type: TransferType,
     pub uuid: String,
     pub currency: String,
     pub net_type: Option<String>,
@@ -18,7 +18,7 @@ pub struct TransactionInfoDerived {
     pub amount: f64,
     pub fee: f64,
     pub krw_amount: f64,
-    pub transaction_type: WithdrawType,
+    pub transaction_type: TransactionType,
 }
 
 /// Raw derived withdraw info from serialized data
@@ -40,7 +40,7 @@ pub struct TransactionInfoDerivedSource {
 
 impl TransactionInfoDerivedSource {
     /// Convert [String] type value into [TransactionType]
-    pub fn r#type(&self) -> TransactionType { self.r#type.as_str().into() }
+    pub fn r#type(&self) -> TransferType { self.r#type.as_str().into() }
     /// Get uuid 
     pub fn uuid(&self) -> String { self.uuid.clone() }
     /// Get currency
@@ -64,13 +64,13 @@ impl TransactionInfoDerivedSource {
     /// Convert [String] krw_amount value into [f64]
     pub fn krw_amount(&self) -> f64 { self.krw_amount.parse().unwrap() }
     /// Convert [String] transaction_type value into [WithdrawType]
-    pub fn transaction_type(&self) -> WithdrawType { self.transaction_type.as_str().into() }
+    pub fn transaction_type(&self) -> TransactionType { self.transaction_type.as_str().into() }
 }
 
 /// Deserialized TransactionInfo data
 #[derive(Debug)]
 pub struct TransactionInfo {
-    pub r#type: TransactionType,
+    pub r#type: TransferType,
     pub uuid: String,
     pub currency: String,
     pub net_type: Option<String>,
@@ -80,7 +80,7 @@ pub struct TransactionInfo {
     pub done_at: Option<chrono::NaiveDateTime>,
     pub amount: f64,
     pub fee: f64,
-    pub transaction_type: WithdrawType,
+    pub transaction_type: TransactionType,
 }
 
 impl RequestWithQuery for TransactionInfo {}
@@ -103,7 +103,7 @@ pub struct TransactionInfoSource {
 
 impl TransactionInfoSource {
     /// Convert [String] type value into [TransactionType]
-    pub fn r#type(&self) -> TransactionType { self.r#type.as_str().into() }
+    pub fn r#type(&self) -> TransferType { self.r#type.as_str().into() }
     /// Get uuid 
     pub fn uuid(&self) -> String { self.uuid.clone() }
     /// Get currency
@@ -125,7 +125,7 @@ impl TransactionInfoSource {
     /// Convert [String] fee value into [f64]
     pub fn fee(&self) -> f64 { self.fee.parse().unwrap() }
     /// Convert [String] transaction_type value into [WithdrawType]
-    pub fn transaction_type(&self) -> WithdrawType { self.transaction_type.as_str().into() }
+    pub fn transaction_type(&self) -> TransactionType { self.transaction_type.as_str().into() }
 }
 
 /// Raw MemberLevel of [WithdrawChanceSource] from serialized data

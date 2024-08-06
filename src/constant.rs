@@ -106,18 +106,18 @@ impl From<&str> for OrderBy {
 
 /// Kind of transaction type
 #[derive(Debug)]
-pub enum WithdrawType {
+pub enum TransactionType {
     /// 일반 입출금(general withdrawal or deposit)
     Default,
     /// 바로 입출금(instant withdrawal or deposit)
     Internal 
 }
 
-impl Display for WithdrawType {
+impl Display for TransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            WithdrawType::Default => write!(f, "default"),
-            WithdrawType::Internal => write!(f, "internal"),
+            TransactionType::Default => write!(f, "default"),
+            TransactionType::Internal => write!(f, "internal"),
         }
     }
 }
@@ -131,7 +131,7 @@ impl Display for WithdrawType {
 //     }
 // }
 
-impl From<&str> for WithdrawType {
+impl From<&str> for TransactionType {
     fn from(value: &str) -> Self {
         match value {
             "default" => Self::Default,
@@ -144,9 +144,11 @@ impl From<&str> for WithdrawType {
 /// Kind of tow factor type
 pub enum TwoFactorType {
     /// 카카오페이 인증
+    #[deprecated(since = "1.7.3", note = "Use Kakao instead")]
     KakaoPay,
     /// 네이버 인증
-    Naver
+    Naver,
+    KaKao
 }
 
 impl Display for TwoFactorType {
@@ -154,6 +156,7 @@ impl Display for TwoFactorType {
         match self {
             TwoFactorType::KakaoPay => write!(f, "kakao_pay"),
             TwoFactorType::Naver => write!(f, "naver"),
+            TwoFactorType::KaKao => write!(f, "kakao"),
         }
     }
 }
@@ -169,18 +172,18 @@ impl Display for TwoFactorType {
 
 /// List of transaction type
 #[derive(Debug)]
-pub enum TransactionType {
+pub enum TransferType {
     /// 출금
     Withdraw,
     /// 입금
     Deposit
 }
 
-impl Display for TransactionType {
+impl Display for TransferType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            TransactionType::Withdraw => write!(f, "withdraw"),
-            TransactionType::Deposit => write!(f, "deposit"),
+            TransferType::Withdraw => write!(f, "withdraw"),
+            TransferType::Deposit => write!(f, "deposit"),
         }
     }
 }
@@ -194,7 +197,7 @@ impl Display for TransactionType {
 //     }
 // }
 
-impl From<&str> for TransactionType {
+impl From<&str> for TransferType {
     fn from(value: &str) -> Self {
         match value {
             "withdraw" => Self::Withdraw,

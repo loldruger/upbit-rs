@@ -7,7 +7,7 @@ mod withdraw_address;
 
 use core::fmt::Display;
 
-use crate::{constant::{OrderBy, WithdrawType, TwoFactorType}, response::{WithdrawChance, WithdrawCoinAddress}};
+use crate::{constant::{OrderBy, TransactionType, TwoFactorType}, response::{WithdrawChance, WithdrawCoinAddress}};
 use super::response::{TransactionInfo, TransactionInfoDerived, ResponseError};
 
 /// List of withdraw state
@@ -289,7 +289,7 @@ pub async fn get_withdraw_chance(currency: &str, net_type: Option<&str>) -> Resu
 /// 
 /// # Example
 /// ```rust
-/// let withdraw_result_more_info = api_withdraw::withdraw_coin("BTC", "BTC", 0.05, "0x40268F1e99F76b658c6D52d89166EE289EfC225d", None, TransactionType::Default).await;
+/// let withdraw_result_more_info = api_withdraw::withdraw_coin("ETH", "ETH", 0.005, "0x40268F1e99F76b658c6D52d89166EE289EfC225d", None, WithdrawType::Default).await;
 /// ```
 /// - parameters
 /// > `currency` ex) KRW, BTC, ETH etc. <br>
@@ -336,7 +336,7 @@ pub async fn withdraw_coin(
     amount: f64,
     address: &str,
     secondary_address: Option<&str>,
-    transaction_type: WithdrawType
+    transaction_type: TransactionType
 ) -> Result<TransactionInfoDerived, ResponseError> {
     TransactionInfoDerived::withdraw_coin(
         currency,
