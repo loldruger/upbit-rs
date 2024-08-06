@@ -156,7 +156,7 @@ pub async fn list_deposit_info(
     page: u32,
     order_by: OrderBy
 ) -> Result<Vec<TransactionInfo>, ResponseError> {
-    TransactionInfo::inquiry_deposit_list(currency, state, uuids, txids, limit, page, order_by).await
+    TransactionInfo::get_deposit_list(currency, state, uuids, txids, limit, page, order_by).await
 }
 
 /// 개별 입금 조회.
@@ -302,11 +302,11 @@ pub async fn get_coin_address_info(currency: &str, net_type: &str) -> Result<Coi
 /// | net_type | 입금 네트워크 | String |
 /// | deposit_address | 입금 주소 | String |
 /// | secondary_address | 2차 입금 주소 | String |
-pub async fn list_coin_address_info() -> Result<Vec<CoinAddressResponse>, ResponseError> {
-    CoinAddressResponse::list_coin_address_info().await
+pub async fn get_coin_address_info_list() -> Result<Vec<CoinAddressResponse>, ResponseError> {
+    CoinAddressResponse::get_coin_address_info_list().await
 }
 
 /// # Currently not working
-pub async fn generate_deposit_address(currency: &str, net_type: Option<&str>) -> Result<CoinAddressGen, ResponseError> {
+pub async fn generate_deposit_address(currency: &str, net_type: &str) -> Result<CoinAddressGen, ResponseError> {
     CoinAddressGen::generate_deposit_address(currency, net_type).await
 }

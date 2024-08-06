@@ -81,6 +81,19 @@ pub struct TransactionInfo {
     pub amount: f64,
     pub fee: f64,
     pub transaction_type: TransactionType,
+
+    pub holder: Option<String>,
+    pub bank: Option<String>,
+    pub fiat_amount: Option<String>,
+    pub memo: Option<String>,
+    pub fiat_currency: Option<String>,
+    pub confirmations: Option<String>,
+    pub krw_amount: Option<String>,
+    pub network_name: Option<String>,
+    pub cancelable: Option<String>,
+    pub blockchain_url: Option<String>,
+    pub state_i18n: Option<String>,
+    pub address: Option<String>,
 }
 
 impl RequestWithQuery for TransactionInfo {}
@@ -98,7 +111,20 @@ pub struct TransactionInfoSource {
     done_at: Option<String>,
     amount: String,
     fee: String,
-    transaction_type: String
+    transaction_type: String,
+
+    holder: String,
+    bank: String,
+    fiat_amount: String,
+    memo: String,
+    fiat_currency: String,
+    confirmations: String,
+    krw_amount: String,
+    network_name: String,
+    cancelable: String,
+    blockchain_url: String,
+    state_i18n: String,
+    address: String,
 }
 
 impl TransactionInfoSource {
@@ -126,6 +152,18 @@ impl TransactionInfoSource {
     pub fn fee(&self) -> f64 { self.fee.parse().unwrap() }
     /// Convert [String] transaction_type value into [WithdrawType]
     pub fn transaction_type(&self) -> TransactionType { self.transaction_type.as_str().into() }
+    pub fn holder(&self) -> String { self.holder.clone() }
+    pub fn bank(&self) -> String { self.bank.clone() }
+    pub fn flat_amount(&self) -> String { self.fiat_amount.clone() }
+    pub fn memo(&self) -> String { self.memo.clone() }
+    pub fn fiat_currency(&self) -> String { self.fiat_currency.clone() }
+    pub fn confirmations(&self) -> String { self.confirmations.clone() }
+    pub fn krw_amount(&self) -> String { self.krw_amount.clone() }
+    pub fn network_name(&self) -> String { self.network_name.clone() }
+    pub fn cancelable(&self) -> String { self.cancelable.clone() }
+    pub fn blockchain_url(&self) -> String { self.blockchain_url.clone() }
+    pub fn state_i18n(&self) -> String { self.state_i18n.clone() }
+    pub fn address(&self) -> String { self.address.clone() }
 }
 
 /// Raw MemberLevel of [WithdrawChanceSource] from serialized data

@@ -36,6 +36,19 @@ impl TransactionInfo {
                     amount: x.amount(),
                     fee: x.fee(),
                     transaction_type: x.transaction_type(),
+                    
+                    holder: None,
+                    bank: None,
+                    fiat_amount: None,
+                    memo: None,
+                    fiat_currency: None,
+                    confirmations: None,
+                    krw_amount: None,
+                    network_name: None,
+                    cancelable: None,
+                    blockchain_url: None,
+                    state_i18n: None,
+                    address: None,
                 }
             })
             .map_err(crate::response::response_error_from_json)

@@ -40,6 +40,18 @@ impl TransactionInfo {
                     amount: x.amount(),
                     fee: x.fee(),
                     transaction_type: x.transaction_type(),
+                    holder: Some(x.holder()),
+                    bank: Some(x.bank()),
+                    fiat_amount: Some(x.flat_amount()),
+                    memo: Some(x.memo()),
+                    fiat_currency: Some(x.fiat_currency()),
+                    confirmations: Some(x.confirmations()),
+                    krw_amount: Some(x.krw_amount()),
+                    network_name: Some(x.network_name()),
+                    cancelable: Some(x.cancelable()),
+                    blockchain_url: Some(x.blockchain_url()),
+                    state_i18n: Some(x.state_i18n()),
+                    address: Some(x.address()),
                 }
             })
             .map_err(crate::response::response_error_from_json)
@@ -78,7 +90,7 @@ mod tests {
         crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
 
-        let res = TransactionInfo::request_withdraw_krw(1000.0, TwoFactorType::Naver).await.unwrap();
+        let res = TransactionInfo::request_withdraw_krw(10000.0, TwoFactorType::Naver).await.unwrap();
         let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest).unwrap();
         
         if res_serialized.contains("error") {
@@ -97,7 +109,20 @@ mod tests {
             "done_at": "",
             "amount": "",
             "fee": "",
-            "transaction_type": ""
+            "transaction_type": "",
+
+            "holder": "",
+            "bank": "",
+            "fiat_amount": "",
+            "memo": "",
+            "fiat_currency": "",
+            "confirmations": "",
+            "krw_amount": "",
+            "network_name": "",
+            "cancelable": "",
+            "blockchain_url": "",
+            "state_i18n": "",
+            "address": "",
         });
 
         let expected_structure = expected_structure
