@@ -62,6 +62,8 @@ pub enum ResponseErrorState {
     WithdrawAddressNotRegisterd, 
     /// "출금 금액이 부족합니다."
     WithdrawInsufficientBalance,
+    /// "최소 0.02 이상의 ETH 출금이 가능합니다."
+    WithdrawAmountTooSmall,
     /// "현재 해당 마켓에서 지원하지 않는 주문입니다. 주문 조건을 다시 확인해주시기 바랍니다."
     NotSupportedOrdType,
     /// "not found market marketId: XXX"
@@ -104,6 +106,7 @@ impl From<&str> for ResponseErrorState {
             "out_of_scope" => Self::OutOfScope,
             "withdraw_address_not_registered" => Self::WithdrawAddressNotRegisterd,
             "withdraw_insufficient_balance" => Self::WithdrawInsufficientBalance,
+            "withdraw_amount_too_small" => Self::WithdrawAmountTooSmall,
             "order_not_found" => Self::OrderNotFound,
             "not_supported_ord_type" => Self::NotSupportedOrdType,
             "notfoundmarket" => Self::NotFoundMarket,

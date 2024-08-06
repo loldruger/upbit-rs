@@ -18,7 +18,7 @@ use super::{
 
 impl RequestWithQuery for WithdrawChance {}
 impl WithdrawChance {
-    pub async fn get_withdraw_chance(currency: &str, net_type: Option<&str>) -> Result<Self, ResponseError> {
+    pub async fn get_withdraw_chance(currency: &str, net_type: &str) -> Result<Self, ResponseError> {
         let res = Self::request(currency, net_type).await?;
         let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest)?;
         
@@ -73,16 +73,15 @@ impl WithdrawChance {
             .map_err(crate::response::response_error_from_json)
     }
 
-    async fn request(currency: &str, net_type: Option<&str>) -> Result<Response, ResponseError> {
-        let mut url = Url::parse(&format!("{URL_SERVER}{URL_WITHDRAWS_CHANCE}?currency={currency}")).unwrap();
+    async fn request(currency: &str, net_type: &str) -> Result<Response, ResponseError> {
+        let mut url = Url::parse(&format!("{URL_SERVER}{URL_WITHDRAWS_CHANCE}")).unwrap();
+        url.query_pairs_mut().append_pair("currency", currency);
+        url.query_pairs_mut().append_pair("net_type", net_type);
+
         let token_string = Self::set_token_with_query(url.as_str())?;
 
-        if let Some(net_type) = net_type {
-            url.query_pairs_mut().append_pair("net_type", net_type);
-        }
-
         reqwest::Client::new()
-            .get(url)
+            .get(url.as_str())
             .header(ACCEPT, "application/json")
             .header(AUTHORIZATION, &token_string)
             .send()
@@ -104,7 +103,7 @@ mod tests {
         crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
     
-        let res = WithdrawChance::request("KRW-ETH", None).await.unwrap();
+        let res = WithdrawChance::request("ETH", "ETH").await.unwrap();
         let res_serialized = res
             .text()
             .await
@@ -116,40 +115,47 @@ mod tests {
         }
         
         let json = serde_json::from_str::<Value>(&res_serialized).unwrap();
-        let expected_structure = serde_json::json!(
-            {
-                "bid_fee": "",
-                "ask_fee": "",
-                "market": {
-                    "id": "",
-                    "name": "",
-                    "order_sides": [],
-                    "order_types": [],
-                    "bid": {
-                        "currency": "",
-                        "min_total": ""
-                    },
-                    "ask": {
-                        "currency": "",
-                        "min_total": ""
-                    },
-                    "max_total": "",
-                    "state": "",
-                    "price_unit": "",
-                    "quantity_unit": "",
-                    "price_precision": "",
-                    "quantity_precision": "",
-                    "min_total": "",
-                    "state_reason": "",
-                    "data": {
-                        "message": "",
-                        "code": ""
-                    },
-                    "maker_bid_fee": "",
-                    "maker_ask_fee": ""
-                }
+        let expected_structure = serde_json::json!({
+            "member_level": {
+                "security_level": "",
+                "fee_level": "",
+                "email_verified": "",
+                "identity_auth_verified": "",
+                "bank_account_verified": "",
+                "two_factor_auth_verified": "",
+                // "kakao_pay_auth_verified": "",
+                "locked": "",
+                "wallet_locked": ""
+            },
+            "currency": {
+                "code": "",
+                "withdraw_fee": "",
+                "is_coin": "",
+                "wallet_state": "",
+                "wallet_support": ""
+            },
+            "account": {
+                "currency": "",
+                "balance": "",
+                "locked": "",
+                "avg_buy_price": "",
+                "avg_buy_price_modified": "",
+                "unit_currency": ""
+            },
+            "withdraw_limit": {
+                "currency": "",
+                "minimum": "",
+                "onetime": "",
+                "daily": "",
+                "remaining_daily": "",
+                "remaining_daily_krw": "",
+                "fixed": "",
+                "can_withdraw": "",
+                "remaining_daily_fiat": "",
+                "fiat_currency": "",
+                "withdraw_delayed_fiat": ""
             }
-        );
+        });
     
         let expected_structure = expected_structure
             .as_object()

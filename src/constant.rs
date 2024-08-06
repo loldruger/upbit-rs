@@ -42,7 +42,7 @@ pub const URL_WITHDRAWS_KRW: &str = "/v1/withdraws/krw";
 /// URL of API withdrawing coin
 pub const URL_WITHDRAWS_COIN: &str = "/v1/withdraws/coin";
 /// URL of API getting coin address
-pub const URL_WITHDRAWS_COIN_ADDRESS: &str = "v1/withdraws/coin_addresses";
+pub const URL_WITHDRAWS_COIN_ADDRESS: &str = "/v1/withdraws/coin_addresses";
 /// URL of API getting withdraw chance
 pub const URL_WITHDRAWS_CHANCE: &str = "/v1/withdraws/chance";
 

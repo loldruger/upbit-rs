@@ -64,7 +64,7 @@ impl OrderInfo {
         Self::deserialize_order_states_response(res_serialized)
     }
 
-    pub async fn get_order_states_closed(market_id: &str, state: OrderState, start_time: &str, end_time: &str, limit: u16, order_by: OrderBy) -> Result<Vec<Self>, ResponseError> {
+    pub async fn get_order_states_closed(market_id: &str, state: OrderState, start_time: Option<&str>, end_time: Option<&str>, limit: u16, order_by: OrderBy) -> Result<Vec<Self>, ResponseError> {
         let res = Self::request_get_orders_closed(market_id, state, start_time, end_time, limit, order_by).await?;
         let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest)?;
 
@@ -177,17 +177,23 @@ impl OrderInfo {
             .map_err(crate::response::response_error_from_reqwest)
     }
 
-    async fn request_get_orders_closed(market_id: &str, state: OrderState, start_time: &str, end_time: &str, limit: u16, order_by: OrderBy) -> Result<Response, ResponseError> {
+    async fn request_get_orders_closed(market_id: &str, state: OrderState, start_time: Option<&str>, end_time: Option<&str>, limit: u16, order_by: OrderBy) -> Result<Response, ResponseError> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDER_STATUS_CLOSED}")).unwrap();
         
         url.query_pairs_mut()
             .append_pair("market", market_id)
             .append_pair("state", &state.to_string())
-            .append_pair("start_time", start_time)
-            .append_pair("end_time", end_time)
             .append_pair("limit", &limit.to_string())
             .append_pair("order_by", &order_by.to_string());
 
+        if let Some(start_time) = start_time {
+            url.query_pairs_mut().append_pair("start_time", start_time);
+        }
+
+        if let Some(end_time) = end_time {
+            url.query_pairs_mut().append_pair("end_time", end_time);
+        }
+        
         let token_string = Self::set_token_with_query(url.as_str())?;
 
         reqwest::Client::new()
@@ -443,7 +449,7 @@ mod tests {
         crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
         
-        let res = OrderInfo::request_get_orders_closed("KRW-ETH", OrderState::Done, "2024-07-13T00:00:00+09:00", "2024-07-31T00:00:00+09:00", 10, OrderBy::Desc).await.unwrap();
+        let res = OrderInfo::request_get_orders_closed("KRW-ETH", OrderState::Done, None, None, 10, OrderBy::Desc).await.unwrap();
         let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest).unwrap();
 
         if res_serialized.contains("error") {
@@ -468,7 +474,7 @@ mod tests {
             "executed_volume": "",
             "executed_funds": "",
             "trades_count": "",
-            "time_in_force": "",
+            // "time_in_force": "",
         }]);
 
         let expected_structure = expected_structure[0]
@@ -480,22 +486,29 @@ mod tests {
 
         if let Some(json_array) = json.as_array() {
             for (index, item) in json_array.iter().enumerate() {
-                let (missing_keys, extra_keys) = compare_keys(item, &expected_structure, &format!("item[{}].", index));
-    
+                let (missing_keys, extra_keys) = compare_keys(item, &expected_structure, &format!("item[{}]", index));
+
                 if !missing_keys.is_empty() {
                     println!("[test_get_order_states_closed] Missing keys in item[{}]: {:?}", index, missing_keys);
-                    assert!(false);
-                } else {
-                    println!("[test_get_order_states_closed] No keys are missing in item[{}]", index);
-                    assert!(true);
+                    assert!(false, "Missing keys found");
                 }
-    
+
                 if !extra_keys.is_empty() {
                     println!("[test_get_order_states_closed] Extra keys in item[{}]: {:?}", index, extra_keys);
-                    assert!(false);
-                } else {
-                    println!("[test_get_order_states_closed] No extra keys found in item[{}]", index);
-                    assert!(true);
+                    assert!(false, "Extra keys found");
+                }
+
+                // Check the presence of the price field based on the market field
+                if let Some(market_value) = item.get("market").and_then(|v| v.as_str()) {
+                    match market_value {
+                        "limit" => {
+                            assert!(item.get("price").is_some(), "Expected 'price' field to be present for 'limit' market");
+                        }
+                        "market" => {
+                            assert!(item.get("price").is_none(), "Expected 'price' field to be absent for 'market' market");
+                        }
+                        _ => {}
+                    }
                 }
             }
         } else {

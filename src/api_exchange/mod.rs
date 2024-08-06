@@ -638,7 +638,7 @@ pub async fn get_order_states_opened(market_id: &str, state: OrderState, states:
     OrderInfo::get_order_states_opened(market_id, state, states, page, limit, order_by).await
 }
 
-pub async fn get_order_states_closed(market_id: &str, state: OrderState, start_time: &str, end_time: &str, limit: u16, order_by: OrderBy) -> Result<Vec<OrderInfo>, ResponseError> {
+pub async fn get_order_states_closed(market_id: &str, state: OrderState, start_time: Option<&str>, end_time: Option<&str>, limit: u16, order_by: OrderBy) -> Result<Vec<OrderInfo>, ResponseError> {
     OrderInfo::get_order_states_closed(market_id, state, start_time, end_time, limit, order_by).await
 }
 

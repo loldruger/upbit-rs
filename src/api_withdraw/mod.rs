@@ -29,12 +29,12 @@ pub enum WithdrawState {
 impl Display for WithdrawState {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            WithdrawState::Waiting => write!(f, "waiting"),
-            WithdrawState::Processing => write!(f, "processing"),
-            WithdrawState::Done => write!(f, "done"),
-            WithdrawState::Failed => write!(f, "failed"),
-            WithdrawState::Canceled => write!(f, "canceled"),
-            WithdrawState::Rejected => write!(f, "rejected"),
+            WithdrawState::Waiting => write!(f, "WAITING"),
+            WithdrawState::Processing => write!(f, "PROCESSING"),
+            WithdrawState::Done => write!(f, "DONE"),
+            WithdrawState::Failed => write!(f, "FAILED"),
+            WithdrawState::Canceled => write!(f, "CANCELED"),
+            WithdrawState::Rejected => write!(f, "REJECTED"),
         }
     }
 }
@@ -150,7 +150,7 @@ pub async fn list_withdraw_info(
     page: u32,
     order_by: OrderBy
 ) -> Result<Vec<TransactionInfo>, ResponseError> {
-    TransactionInfo::inquiry_withdraw_list(currency, state, uuids, txids, limit, page, order_by).await
+    TransactionInfo::get_withdraw_list(currency, state, uuids, txids, limit, page, order_by).await
 }
 
 /// 개별 출금 조회.
@@ -203,7 +203,7 @@ pub async fn get_withdraw_info(currency: Option<&str>, uuid: Option<&str>, txid:
 /// 
 /// # Example
 /// ```rust
-/// let withdraw_chance = api_withdraw::get_withdraw_chance("KRW", None).await;
+/// let withdraw_chance = api_withdraw::get_withdraw_chance("ETH", "ETH").await;
 /// ```
 /// - parameters
 /// > `currency` ex) KRW, BTC, ETH etc. <br>
@@ -280,16 +280,15 @@ pub async fn get_withdraw_info(currency: Option<&str>, uuid: Option<&str>, txid:
 /// | withdraw_limit.remaining_daily_krw | 통합 1일 잔여 출금 한도 | NumberString |
 /// | withdraw_limit.fixed | 출금 금액/수량 소수점 자리 수 | Integer |
 /// | withdraw_limit.can_withdraw | 출금 지원 여부 | Boolean |
-pub async fn get_withdraw_chance(currency: &str, net_type: Option<&str>) -> Result<WithdrawChance, ResponseError> {
+pub async fn get_withdraw_chance(currency: &str, net_type: &str) -> Result<WithdrawChance, ResponseError> {
     WithdrawChance::get_withdraw_chance(currency, net_type).await
 }
-
 
 /// 가상화폐를 출금한다.
 /// 
 /// # Example
 /// ```rust
-/// let withdraw_result_more_info = api_withdraw::withdraw_coin("ETH", "ETH", 0.005, "0x40268F1e99F76b658c6D52d89166EE289EfC225d", None, WithdrawType::Default).await;
+/// let withdraw_result_more_info = api_withdraw::withdraw_coin("ETH", "ETH", 0.005, "0x40268F1e99F76b658c6D52d89166EE289EfC225d", None, TransactionType::Default).await;
 /// ```
 /// - parameters
 /// > `currency` ex) KRW, BTC, ETH etc. <br>
@@ -352,7 +351,8 @@ pub async fn withdraw_coin(
 /// 
 /// # Example
 /// ```rust
-/// let withdraw_result = api_withdraw::withdraw_krw(10000.0, api_withdraw::TwoFactorType::KakaoPay).await;
+/// let withdraw_result_with_kakao_auth = api_withdraw::withdraw_krw(10000.0, api_withdraw::TwoFactorType::Kakao).await;
+/// let withdraw_result_with_naver_auth = api_withdraw::withdraw_krw(10000.0, api_withdraw::TwoFactorType::Naver).await;
 /// ```
 /// - parameters
 /// > `amount` amount of withdraw <br>

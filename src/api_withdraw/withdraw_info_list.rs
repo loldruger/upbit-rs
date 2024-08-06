@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use reqwest::{
     header::{ACCEPT, AUTHORIZATION},
     Response, 
@@ -19,7 +21,7 @@ use super::{
 };
 
 impl TransactionInfo {
-    pub async fn inquiry_withdraw_list(
+    pub async fn get_withdraw_list(
         currency: &str,
         state: WithdrawState,
         uuids: Option<&[&str]>,
@@ -79,31 +81,122 @@ impl TransactionInfo {
             .append_pair("page", &format!("{page}"))
             .append_pair("order_by", &order_by.to_string());
     
-        let url = if let Some(uuids) = uuids {
+        let mut url_modified = if let Some(uuids) = uuids {
             for uuid in uuids {
                 url.query_pairs_mut().append_pair("uuids", uuid);
             }
 
-            url.as_str().replace("uuids", "uuids[]")
-
-        } else if let Some(txids) = txids {
+            Url::from_str(url.as_str().replace("uuids", "uuids[]").as_str()).unwrap()
+        } else {
+            url
+        };
+        
+        let url_modified = if let Some(txids) = txids {
             for txid in txids {
-                url.query_pairs_mut().append_pair("txids", txid);
+                url_modified.query_pairs_mut().append_pair("txids", txid);
             }
 
-            url.as_str().replace("txids", "txids[]") 
+            url_modified.as_str().replace("txids", "txids[]") 
         } else {
-            url.as_str().to_string()
+            url_modified.as_str().to_string()
         };
 
-        let token_string = Self::set_token_with_query(&url)?;
+        let token_string = Self::set_token_with_query(&url_modified)?;
 
         reqwest::Client::new()
-            .get(url)
+            .get(url_modified)
             .header(ACCEPT, "application/json")
             .header(AUTHORIZATION, &token_string)
             .send()
             .await
             .map_err(crate::response::response_error_from_reqwest)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::collections::HashMap;
+
+    use serde_json::{Value, json};
+
+    use crate::{api_withdraw::WithdrawState, constant::OrderBy, response::TransactionInfo};
+
+    #[tokio::test]
+    async fn test_get_withdraw_list() {
+        crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
+        crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
+        
+        let res = TransactionInfo::request("ETH", WithdrawState::Waiting, None, None, 1, 1, OrderBy::Desc).await.unwrap();
+        let res_serialized = res.text().await.map_err(crate::response::response_error_from_reqwest).unwrap();
+
+        if res_serialized.contains("error") {
+            assert!(false, "Error response: {res_serialized}");
+        }
+
+        let json = serde_json::from_str::<Value>(&res_serialized).unwrap();
+        let expected_structure = json!([{
+            "type": "",
+            "uuid": "",
+            "currency": "",
+            "net_type": "",
+            "txid": "",
+            "state": "",
+            "created_at": "",
+            "done_at": "",
+            "amount": "",
+            "fee": "",
+            "transaction_type": ""
+        }]);
+
+        let expected_structure = expected_structure[0]
+            .as_object()
+            .unwrap()
+            .iter()
+            .map(|(k, v)| (k.as_str(), v.clone()))
+            .collect::<HashMap<&str, Value>>();
+
+        if let Some(json_array) = json.as_array() {
+            for (index, item) in json_array.iter().enumerate() {
+                let (missing_keys, extra_keys) = compare_keys(item, &expected_structure, &format!("item[{}].", index));
+    
+                if !missing_keys.is_empty() {
+                    println!("[test_get_withdraw_list] Missing keys in item[{}]: {:?}", index, missing_keys);
+                    assert!(false);
+                } else {
+                    println!("[test_get_withdraw_list] No keys are missing in item[{}]", index);
+                    assert!(true);
+                }
+    
+                if !extra_keys.is_empty() {
+                    println!("[test_get_withdraw_list] Extra keys in item[{}]: {:?}", index, extra_keys);
+                    assert!(false);
+                } else {
+                    println!("[test_get_withdraw_list] No extra keys found in item[{}]", index);
+                    assert!(true);
+                }
+            }
+        } else {
+            assert!(false, "Expected an array of objects in the response");
+        }
+    }
+
+    fn compare_keys(json: &Value, expected: &HashMap<&str, Value>, path: &str) -> (Vec<String>, Vec<String>) {
+        let mut missing_keys = Vec::new();
+        let mut extra_keys = Vec::new();
+    
+        if let Some(actual_map) = json.as_object() {
+            for (key, _) in expected {
+                if !actual_map.contains_key(*key) {
+                    missing_keys.push(format!("{}{}", path, key));
+                }
+            }
+            for (key, _) in actual_map {
+                if !expected.contains_key(key.as_str()) {
+                    extra_keys.push(format!("{}{}", path, key));
+                }
+            }
+        }
+    
+        (missing_keys, extra_keys)
     }
 }

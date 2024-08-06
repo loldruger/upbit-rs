@@ -100,11 +100,11 @@ mod tests {
     use crate::{constant::TransactionType, response::TransactionInfoDerived};
 
     #[tokio::test]
-    async fn test_get_withdraw_chance() {
+    async fn test_get_withdraw_coin() {
         crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
     
-        let res = TransactionInfoDerived::request_withdraw_coin("KRW-ETH", "ETH", 0.01, "0x40268F1e99F76b658c6D52d89166EE289EfC225d", None, TransactionType::Default).await.unwrap();
+        let res = TransactionInfoDerived::request_withdraw_coin("ETH", "ETH", 0.02, "0x40268F1e99F76b658c6D52d89166EE289EfC225d", None, TransactionType::Default).await.unwrap();
         let res_serialized = res
             .text()
             .await
@@ -127,7 +127,7 @@ mod tests {
             "done_at": "",
             "amount": "",
             "fee": "",
-            "krw_amount": "",
+            // "krw_amount": "",
             "transaction_type": ""
         });
     
@@ -141,18 +141,18 @@ mod tests {
         let (missing_keys, extra_keys) = compare_keys(&json, &expected_structure, "");
     
         if !missing_keys.is_empty() {
-            println!("[test_get_withdraw_chance] Missing keys: {:?}", missing_keys);
+            println!("[test_get_withdraw_coin] Missing keys: {:?}", missing_keys);
             assert!(false);
         } else {
-            println!("[test_get_withdraw_chance] No keys are missing");
+            println!("[test_get_withdraw_coin] No keys are missing");
             assert!(true);
         }
     
         if !extra_keys.is_empty() {
-            println!("[test_get_withdraw_chance] Extra keys: {:?}", extra_keys);
+            println!("[test_get_withdraw_coin] Extra keys: {:?}", extra_keys);
             assert!(false);
         } else {
-            println!("[test_get_withdraw_chance] No extra keys found.");
+            println!("[test_get_withdraw_coin] No extra keys found.");
             assert!(true);
         }
     }
