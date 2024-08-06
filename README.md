@@ -58,7 +58,7 @@ let chart_of_month = api_quotation::get_candle_month("KRW-ETH", 10, None).await;
 
 # TroubleShooting
 
-### 1. You must have a static ip address to get issued your own access key and secret key
+### 1. You must have a static ip address to issue your own access key and secret key
 
 ### 2. Failed to run custom build command for `openssl-sys vX.X.XX`
 
