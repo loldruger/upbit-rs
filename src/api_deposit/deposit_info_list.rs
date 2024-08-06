@@ -79,7 +79,8 @@ impl TransactionInfo {
         page: u32,
         order_by: OrderBy,
     ) -> Result<Response, ResponseError> {
-        let mut url = Url::parse(&format!("{URL_SERVER}{URL_DEPOSITS}")).map_err(crate::response::response_error_internal_url_parse_error)?;
+        let mut url = Url::parse(&format!("{URL_SERVER}{URL_DEPOSITS}"))
+            .map_err(crate::response::response_error_internal_url_parse_error)?;
 
         url.query_pairs_mut()
             .append_pair("currency", currency)
@@ -93,7 +94,8 @@ impl TransactionInfo {
                 url.query_pairs_mut().append_pair("uuids", uuid);
             }
 
-            Url::from_str(url.as_str().replace("uuids", "uuids[]").as_str()).map_err(crate::response::response_error_internal_url_parse_error)?
+            Url::from_str(url.as_str().replace("uuids", "uuids[]").as_str())
+                .map_err(crate::response::response_error_internal_url_parse_error)?
         } else {
             url
         };

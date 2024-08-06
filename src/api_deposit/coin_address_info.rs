@@ -37,7 +37,8 @@ impl CoinAddressResponse {
     }
 
     async fn request(currency: &str, net_type: &str) -> Result<Response, ResponseError> {
-        let mut url = Url::parse(&format!("{URL_SERVER}{URL_DEPOSITS_COIN_ADDRESS}")).map_err(crate::response::response_error_internal_url_parse_error)?;
+        let mut url = Url::parse(&format!("{URL_SERVER}{URL_DEPOSITS_COIN_ADDRESS}"))
+            .map_err(crate::response::response_error_internal_url_parse_error)?;
 
         url.query_pairs_mut()
             .append_pair("currency", currency)

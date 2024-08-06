@@ -198,7 +198,9 @@ pub fn response_error_internal_url_parse_error(error: impl std::fmt::Display) ->
     }
 }
 
-pub fn response_error_internal_date_format_parse_error(error: impl std::fmt::Display) -> ResponseError {
+pub fn response_error_internal_date_format_parse_error(
+    error: impl std::fmt::Display,
+) -> ResponseError {
     ResponseError {
         state: ResponseErrorState::InternalDateFormatParseError,
         error: ResponseErrorBody {

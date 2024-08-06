@@ -92,7 +92,8 @@ impl TransactionInfo {
                 url.query_pairs_mut().append_pair("uuids", uuid);
             }
 
-            Url::from_str(url.as_str().replace("uuids", "uuids[]").as_str()).map_err(crate::response::response_error_internal_url_parse_error)?
+            Url::from_str(url.as_str().replace("uuids", "uuids[]").as_str())
+                .map_err(crate::response::response_error_internal_url_parse_error)?
         } else {
             url
         };

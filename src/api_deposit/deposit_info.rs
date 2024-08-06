@@ -63,7 +63,8 @@ impl TransactionInfo {
         uuid: Option<&str>,
         txid: Option<&str>,
     ) -> Result<Response, ResponseError> {
-        let mut url = Url::parse(&format!("{URL_SERVER}{URL_DEPOSIT}")).map_err(crate::response::response_error_internal_url_parse_error)?;
+        let mut url = Url::parse(&format!("{URL_SERVER}{URL_DEPOSIT}"))
+            .map_err(crate::response::response_error_internal_url_parse_error)?;
 
         if let Some(currency) = currency {
             url.query_pairs_mut().append_pair("currency", currency);

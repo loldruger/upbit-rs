@@ -36,9 +36,8 @@ impl CoinAddressGen {
     }
 
     async fn request(currency: &str, net_type: &str) -> Result<Response, ResponseError> {
-        let mut url =
-            Url::parse(&format!("{URL_SERVER}{URL_DEPOSITS_GENERATE_COIN_ADDRESS}"))
-                .map_err(crate::response::response_error_internal_url_parse_error)?;
+        let mut url = Url::parse(&format!("{URL_SERVER}{URL_DEPOSITS_GENERATE_COIN_ADDRESS}"))
+            .map_err(crate::response::response_error_internal_url_parse_error)?;
         let token_string = Self::set_token_with_query(url.as_str())?;
 
         url.query_pairs_mut()

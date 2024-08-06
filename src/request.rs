@@ -36,7 +36,8 @@ pub trait RequestWithQuery {
     fn set_token_with_query(url: &str) -> Result<String, ResponseError> {
         let access_key = envmnt::get_or_panic("ACCESS_KEY");
         let secret_key = envmnt::get_or_panic("SECRET_KEY");
-        let url = Url::parse(url).map_err(crate::response::response_error_internal_url_parse_error)?;
+        let url =
+            Url::parse(url).map_err(crate::response::response_error_internal_url_parse_error)?;
         let url_parsed = url.query().unwrap_or("");
 
         let mut hasher = Sha512::new();
