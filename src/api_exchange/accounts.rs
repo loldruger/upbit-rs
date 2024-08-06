@@ -109,7 +109,6 @@ mod tests {
                     assert!(false);
                 } else {
                     println!("[get_account_info] No unexpected keys found.");
-                    assert!(true);
                 }
 
                 if !missing_keys.is_empty() {
@@ -117,11 +116,12 @@ mod tests {
                     assert!(false);
                 } else {
                     println!("[get_account_info] No keys are missing.");
-                    assert!(true);
                 }
             } else {
                 println!("[get_account_info] The JSON is not an object.");
             }
         }
+
+        assert!(true);
     }
 }

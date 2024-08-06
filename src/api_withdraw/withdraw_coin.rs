@@ -121,6 +121,7 @@ mod tests {
         )
         .await
         .unwrap();
+
         let res_serialized = res
             .text()
             .await
@@ -161,7 +162,6 @@ mod tests {
             assert!(false);
         } else {
             println!("[test_get_withdraw_coin] No keys are missing");
-            assert!(true);
         }
 
         if !extra_keys.is_empty() {
@@ -169,8 +169,9 @@ mod tests {
             assert!(false);
         } else {
             println!("[test_get_withdraw_coin] No extra keys found.");
-            assert!(true);
         }
+
+        assert!(true);
     }
 
     fn compare_keys(

@@ -153,7 +153,6 @@ mod tests {
                         "[test_list_trade_recent] No keys are missing in item[{}]",
                         index
                     );
-                    assert!(true);
                 }
 
                 if !extra_keys.is_empty() {
@@ -167,12 +166,13 @@ mod tests {
                         "[test_list_trade_recent] No extra keys found in item[{}]",
                         index
                     );
-                    assert!(true);
                 }
             }
         } else {
             assert!(false, "Expected an array of objects in the response");
         }
+
+        assert!(true);
     }
 
     fn compare_keys(

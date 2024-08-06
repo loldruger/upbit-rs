@@ -263,7 +263,6 @@ mod tests {
             assert!(false);
         } else {
             println!("[test_order_bid_by_price] No keys are missing");
-            assert!(true);
         }
 
         if !extra_keys.is_empty() {
@@ -271,8 +270,9 @@ mod tests {
             assert!(false);
         } else {
             println!("[test_order_bid_by_price] No extra keys found.");
-            assert!(true);
         }
+
+        assert!(true);
     }
 
     #[tokio::test]
@@ -338,7 +338,6 @@ mod tests {
             assert!(false);
         } else {
             println!("[test_order_ask_by_price] No keys are missing");
-            assert!(true);
         }
 
         if !extra_keys.is_empty() {
@@ -346,8 +345,9 @@ mod tests {
             assert!(false);
         } else {
             println!("[test_order_ask_by_price] No extra keys found.");
-            assert!(true);
         }
+
+        assert!(true);
     }
 
     #[tokio::test]
@@ -414,7 +414,6 @@ mod tests {
             assert!(false);
         } else {
             println!("[test_order_bid_at_market_price] No keys are missing");
-            assert!(true);
         }
 
         if !extra_keys.is_empty() {
@@ -425,8 +424,9 @@ mod tests {
             assert!(false);
         } else {
             println!("[test_order_bid_at_market_price] No extra keys found.");
-            assert!(true);
         }
+
+        assert!(true);
     }
 
     #[tokio::test]
@@ -493,7 +493,6 @@ mod tests {
             assert!(false);
         } else {
             println!("[test_order_ask_at_market_price] No keys are missing");
-            assert!(true);
         }
 
         if !extra_keys.is_empty() {
@@ -504,8 +503,9 @@ mod tests {
             assert!(false);
         } else {
             println!("[test_order_ask_at_market_price] No extra keys found.");
-            assert!(true);
         }
+
+        assert!(true);
     }
 
     // async fn test order_bid_by_price

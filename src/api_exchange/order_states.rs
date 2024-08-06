@@ -193,7 +193,6 @@ mod tests {
             assert!(false);
         } else {
             println!("[test_get_order_status_by_uuid] No keys are missing");
-            assert!(true);
         }
 
         if !extra_keys.is_empty() {
@@ -204,8 +203,9 @@ mod tests {
             assert!(false);
         } else {
             println!("[test_get_order_status_by_uuid] No extra keys found.");
-            assert!(true);
         }
+
+        assert!(true);
     }
 
     #[tokio::test]
@@ -277,7 +277,6 @@ mod tests {
             assert!(false);
         } else {
             println!("[test_get_order_status_by_identifier] No keys are missing");
-            assert!(true);
         }
 
         if !extra_keys.is_empty() {
@@ -288,8 +287,9 @@ mod tests {
             assert!(false);
         } else {
             println!("[test_get_order_status_by_identifier] No extra keys found.");
-            assert!(true);
         }
+
+        assert!(true);
     }
 
     async fn order_to_get_uuid() -> String {
@@ -338,7 +338,6 @@ mod tests {
         if let Ok(_) = res {
             identifier
         } else {
-            println!("{:?}", res);
             panic!("Failed to tag identifier from order_by_price")
         }
     }

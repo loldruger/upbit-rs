@@ -159,6 +159,8 @@ mod tests {
         } else {
             assert!(false, "Expected an array of objects in the response");
         }
+
+        assert!(true);
     }
 
     fn compare_keys(

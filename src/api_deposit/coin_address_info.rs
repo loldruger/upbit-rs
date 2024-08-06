@@ -69,7 +69,7 @@ mod tests {
         crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
 
-        let res = CoinAddressResponse::request("KRW", "KRW").await.unwrap();
+        let res = CoinAddressResponse::request("ETH", "ETH").await.unwrap();
         let res_serialized = res
             .text()
             .await
@@ -105,7 +105,6 @@ mod tests {
             assert!(false);
         } else {
             println!("[test_get_coin_address_info] No keys are missing");
-            assert!(true);
         }
 
         if !extra_keys.is_empty() {
@@ -113,8 +112,9 @@ mod tests {
             assert!(false);
         } else {
             println!("[test_get_coin_address_info] No extra keys found.");
-            assert!(true);
         }
+
+        assert!(true);
     }
 
     fn compare_keys(

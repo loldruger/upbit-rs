@@ -378,7 +378,6 @@ mod tests {
                         "[test_get_order_state_list] No keys are missing in item[{}]",
                         index
                     );
-                    assert!(true);
                 }
 
                 if !extra_keys.is_empty() {
@@ -392,12 +391,13 @@ mod tests {
                         "[test_get_order_state_list] No extra keys found in item[{}]",
                         index
                     );
-                    assert!(true);
                 }
             }
         } else {
             assert!(false, "Expected an array of objects in the response");
         }
+
+        assert!(true);
     }
 
     #[tokio::test]
@@ -465,7 +465,6 @@ mod tests {
                         "[test_get_orders_by_uuids] No keys are missing in item[{}]",
                         index
                     );
-                    assert!(true);
                 }
 
                 if !extra_keys.is_empty() {
@@ -479,12 +478,13 @@ mod tests {
                         "[test_get_orders_by_uuids] No extra keys found in item[{}]",
                         index
                     );
-                    assert!(true);
                 }
             }
         } else {
             assert!(false, "Expected an array of objects in the response");
         }
+
+        assert!(true);
     }
 
     #[tokio::test]
@@ -556,7 +556,6 @@ mod tests {
                         "[test_get_order_states_opened] No keys are missing in item[{}]",
                         index
                     );
-                    assert!(true);
                 }
 
                 if !extra_keys.is_empty() {
@@ -570,12 +569,13 @@ mod tests {
                         "[test_get_order_states_opened] No extra keys found in item[{}]",
                         index
                     );
-                    assert!(true);
                 }
             }
         } else {
             assert!(false, "Expected an array of objects in the response");
         }
+
+        assert!(true);
     }
 
     #[tokio::test]

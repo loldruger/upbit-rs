@@ -101,7 +101,6 @@ mod tests {
             assert!(false);
         } else {
             println!("[test_get_withdraw_address] No keys are missing");
-            assert!(true);
         }
 
         if !extra_keys.is_empty() {
@@ -109,8 +108,9 @@ mod tests {
             assert!(false);
         } else {
             println!("[test_get_withdraw_address] No extra keys found.");
-            assert!(true);
         }
+
+        assert!(true);
     }
 
     fn compare_keys(

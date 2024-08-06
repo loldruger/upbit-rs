@@ -145,7 +145,6 @@ mod tests {
             assert!(false);
         } else {
             println!("[test_get_deposit_info] No keys are missing");
-            assert!(true);
         }
 
         if !extra_keys.is_empty() {
@@ -153,8 +152,9 @@ mod tests {
             assert!(false);
         } else {
             println!("[test_get_deposit_info] No extra keys found.");
-            assert!(true);
         }
+
+        assert!(true);
     }
 
     fn compare_keys(

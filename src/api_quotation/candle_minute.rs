@@ -178,7 +178,6 @@ mod tests {
                         "[test_request_candle_minute] No keys are missing in item[{}]",
                         index
                     );
-                    assert!(true);
                 }
 
                 if !extra_keys.is_empty() {
@@ -192,12 +191,13 @@ mod tests {
                         "[test_request_candle_minute] No extra keys found in item[{}]",
                         index
                     );
-                    assert!(true);
                 }
             }
         } else {
             assert!(false, "Expected an array of objects in the response");
         }
+
+        assert!(true);
     }
 
     fn compare_keys(

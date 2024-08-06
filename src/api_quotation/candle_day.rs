@@ -171,7 +171,6 @@ mod tests {
                         "[test_request_candle_day] No keys are missing in item[{}]",
                         index
                     );
-                    assert!(true);
                 }
 
                 if !extra_keys.is_empty() {
@@ -185,12 +184,13 @@ mod tests {
                         "[test_request_candle_day] No extra keys found in item[{}]",
                         index
                     );
-                    assert!(true);
                 }
             }
         } else {
             assert!(false, "Expected an array of objects in the response");
         }
+
+        assert!(true);
     }
 
     fn compare_keys(
@@ -204,12 +204,12 @@ mod tests {
         if let Some(actual_map) = json.as_object() {
             for (key, _) in expected {
                 if !actual_map.contains_key(*key) {
-                    missing_keys.push(format!("{}{}", path, key));
+                    missing_keys.push(format!("{path}{key}"));
                 }
             }
             for (key, _) in actual_map {
                 if !expected.contains_key(key.as_str()) {
-                    extra_keys.push(format!("{}{}", path, key));
+                    extra_keys.push(format!("{path}{key}"));
                 }
             }
         }
