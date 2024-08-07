@@ -83,9 +83,16 @@ impl TickerSnapshot {
         }
 
         serde_json::from_str(&res_serialized)
-            .map(|mut x: Vec<TickerSnapshotSource>| {
-                let x = x.pop().unwrap();
-                Self {
+            .map(|mut i: Vec<TickerSnapshotSource>| {
+                let x = i.pop().ok_or_else(|| crate::response::ResponseError {
+                    state: crate::response::ResponseErrorState::CustomErrorNoDataPresent,
+                    error: crate::response::ResponseErrorBody {
+                        name: "custom_error_no_data_present".to_owned(),
+                        message: "No data present in the response".to_owned(),
+                    },
+                })?;
+
+                Ok(Self {
                     market: x.market,
                     trade_date: x.trade_date,
                     trade_time: x.trade_time,
@@ -112,9 +119,9 @@ impl TickerSnapshot {
                     lowest_52_week_price: x.lowest_52_week_price,
                     lowest_52_week_date: x.lowest_52_week_date,
                     timestamp: x.timestamp,
-                }
+                })
             })
-            .map_err(crate::response::response_error_from_json)
+            .map_err(crate::response::response_error_from_json)?
     }
 
     async fn request(market: &[&str]) -> Result<reqwest::Response, ResponseError> {

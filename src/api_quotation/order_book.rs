@@ -39,9 +39,16 @@ impl OrderBookInfo {
         }
 
         serde_json::from_str(&res_serialized)
-            .map(|mut x: Vec<Self>| {
-                let x = x.pop().unwrap();
-                Self {
+            .map(|mut i: Vec<Self>| {
+                let x = i.pop().ok_or_else(|| crate::response::ResponseError {
+                    state: crate::response::ResponseErrorState::CustomErrorNoDataPresent,
+                    error: crate::response::ResponseErrorBody {
+                        name: "custom_error_no_data_present".to_owned(),
+                        message: "No data present in the response".to_owned(),
+                    },
+                })?;
+
+                Ok(Self {
                     market: x.market,
                     timestamp: x.timestamp,
                     total_ask_size: x.total_ask_size,
@@ -56,9 +63,9 @@ impl OrderBookInfo {
                             bid_size: unit.bid_size,
                         })
                         .collect(),
-                }
+                })
             })
-            .map_err(crate::response::response_error_from_json)
+            .map_err(crate::response::response_error_from_json)?
     }
 
     async fn request(market: &str) -> Result<Response, ResponseError> {
