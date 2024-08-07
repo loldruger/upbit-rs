@@ -94,32 +94,22 @@ mod tests {
         if let Some(json_array) = json.as_array() {
             for (index, item) in json_array.iter().enumerate() {
                 let (missing_keys, extra_keys) =
-                    compare_keys(item, &expected_structure, &format!("item[{}].", index));
+                    compare_keys(item, &expected_structure, &format!("item[{index}]."));
 
                 if !missing_keys.is_empty() {
                     println!(
-                        "[test_get_deposit_list] Missing keys in item[{}]: {:?}",
-                        index, missing_keys
+                        "[test_get_deposit_list] Missing keys in item[{index}]: {missing_keys:?}"
                     );
                     assert!(false);
                 } else {
-                    println!(
-                        "[test_get_deposit_list] No keys are missing in item[{}]",
-                        index
-                    );
+                    println!("[test_get_deposit_list] No keys are missing in item[{index}]");
                 }
 
                 if !extra_keys.is_empty() {
-                    println!(
-                        "[test_get_deposit_list] Extra keys in item[{}]: {:?}",
-                        index, extra_keys
-                    );
+                    println!("[test_get_deposit_list] Extra keys in item[{index}]: {extra_keys:?}");
                     assert!(false);
                 } else {
-                    println!(
-                        "[test_get_deposit_list] No extra keys found in item[{}]",
-                        index
-                    );
+                    println!("[test_get_deposit_list] No extra keys found in item[{index}]",);
                 }
             }
         } else {
@@ -140,12 +130,12 @@ mod tests {
         if let Some(actual_map) = json.as_object() {
             for (key, _) in expected {
                 if !actual_map.contains_key(*key) {
-                    missing_keys.push(format!("{}{}", path, key));
+                    missing_keys.push(format!("{path}{key}"));
                 }
             }
             for (key, _) in actual_map {
                 if !expected.contains_key(key.as_str()) {
-                    extra_keys.push(format!("{}{}", path, key));
+                    extra_keys.push(format!("{path}{key}"));
                 }
             }
         }

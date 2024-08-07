@@ -15,6 +15,8 @@ mod deposit_krw;
 /// List of kind of Deposit state
 #[derive(Debug)]
 pub enum DepositState {
+    /// ??? 
+    Done,
     /// 입금 진행중
     Processing,
     /// 완료
@@ -34,6 +36,7 @@ pub enum DepositState {
 impl Display for DepositState {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
+            Self::Done => write!(f, "DONE"),
             Self::Processing => write!(f, "PROCESSING"),
             Self::Accepted => write!(f, "ACCEPTED"),
             Self::Canceled => write!(f, "CANCELLED"), // this typo is intentional
@@ -48,14 +51,15 @@ impl Display for DepositState {
 impl From<&str> for DepositState {
     fn from(value: &str) -> Self {
         match value {
-            "processing" => Self::Processing,
-            "accepted" => Self::Accepted,
-            "cancelled" => Self::Canceled,
-            "rejected" => Self::Rejected,
-            "travel_rule_suspected" => Self::TravelRuleSuspected,
-            "refunding" => Self::Refunding,
-            "refunded" => Self::Refunded,
-            _ => panic!(),
+            "DONE" => Self::Done,
+            "PROCESSING" => Self::Processing,
+            "ACCEPTED" => Self::Accepted,
+            "CANCELLED" => Self::Canceled,
+            "REJECTED" => Self::Rejected,
+            "TRAVEL_RULE_SUSPECTED" => Self::TravelRuleSuspected,
+            "REFUNDING" => Self::Refunding,
+            "REFUNDED" => Self::Refunded,
+            a@_ => panic!("Unexpected value: {}", a),
         }
     }
 }
@@ -68,10 +72,10 @@ impl From<&str> for DepositState {
 /// use api_deposit::DepositState;
 ///
 /// // it returns deposit list of currency "KRW", state "accepted" ordered by asc
-/// let list_deposit_info = api_deposit::list_deposit_info("KRW", DepositState::Accepted, None, None, 10, 0, OrderBy::Asc).await;
+/// let get_deposit_info_list = api_deposit::get_deposit_info_list("KRW", DepositState::Accepted, None, None, 10, 0, OrderBy::Asc).await;
 ///
 /// // it returns deposit list of currency "BTC", state "accepted", txid "98c15999..." ordered by desc
-/// let list_deposit_info = api_deposit::list_deposit_info(
+/// let get_deposit_info_list = api_deposit::get_deposit_info_list(
 ///     "BTC",
 ///     "ACCEPTED",
 ///     None,
@@ -136,7 +140,7 @@ impl From<&str> for DepositState {
 /// | amount | 입금 금액/수량 | NumberString
 /// | fee | 입금 수수료 | NumberString
 /// | transaction_type | 입금 유형<br> default : 일반입금<br>internal : 바로입금 | String
-pub async fn list_deposit_info(
+pub async fn get_deposit_info_list(
     currency: &str,
     state: DepositState,
     uuids: Option<&[&str]>,
@@ -281,9 +285,7 @@ pub async fn get_coin_address_info(
 /// ```
 /// let coin_address_info_list = api_deposit::get_coin_address_info().await;
 /// ```
-/// - parameters
-/// > `currency` ex) BTC, ETH etc. <br>
-/// > `net_type` ex) BTC, ETH etc.
+/// # Response
 /// ```json
 /// [
 ///     {

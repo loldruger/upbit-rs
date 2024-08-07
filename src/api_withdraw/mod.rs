@@ -42,19 +42,6 @@ impl Display for WithdrawState {
     }
 }
 
-// impl ToString for WithdrawState {
-//     fn to_string(&self) -> String {
-//         match self {
-//             WithdrawState::Waiting => "waiting".to_owned(),
-//             WithdrawState::Processing => "processing".to_owned(),
-//             WithdrawState::Done => "done".to_owned(),
-//             WithdrawState::Failed => "failed".to_owned(),
-//             WithdrawState::Canceled => "canceled".to_owned(),
-//             WithdrawState::Rejected => "rejected".to_owned(),
-//         }
-//     }
-// }
-
 impl From<&str> for WithdrawState {
     fn from(value: &str) -> Self {
         match value {
@@ -77,16 +64,15 @@ impl From<&str> for WithdrawState {
 /// use api_withdraw::WithdrawState;
 ///
 /// // it returns withdraw list of currency "KRW", state "done" ordered by asc
-/// let list_withdraw_info = api_withdraw::list_withdraw_info("KRW", WithdrawState::Done, None, None, 10, 0, OrderBy::Asc).await;
+/// let get_witrhdraw_info_list = api_withdraw::get_witrhdraw_info_list("KRW", WithdrawState::Done, None, None, 10, 0, OrderBy::Asc).await;
 ///
 /// // it returns withdraw list of currency "BTC", state "done", txid "98c15999..." ordered by desc
-/// let list_withdraw_info = api_withdraw::list_withdraw_info(
+/// let get_witrhdraw_info_list = api_withdraw::get_witrhdraw_info_list(
 ///     "BTC",
-///     "done",
+///     WithdrawState::Done,
 ///     None,
 ///     Some(&[
 ///         "98c15999f0bdc4ae0e8a-ed35868bb0c204fe6ec29e4058a3451e-88636d1040f4baddf943274ce37cf9cc",
-///         ...
 ///     ]),
 ///         10,
 ///         0,
@@ -144,7 +130,7 @@ impl From<&str> for WithdrawState {
 /// | amount | 출금 금액/수량 | NumberString
 /// | fee | 출금 수수료 | NumberString
 /// | transaction_type | 출금 유형<br> default : 일반출금<br>internal : 바로출금 | String
-pub async fn list_withdraw_info(
+pub async fn get_withdraw_info_list(
     currency: &str,
     state: WithdrawState,
     uuids: Option<&[&str]>,
@@ -153,7 +139,7 @@ pub async fn list_withdraw_info(
     page: u32,
     order_by: OrderBy,
 ) -> Result<Vec<TransactionInfo>, ResponseError> {
-    TransactionInfo::get_withdraw_list(currency, state, uuids, txids, limit, page, order_by).await
+    TransactionInfo::get_withdraw_info_list(currency, state, uuids, txids, limit, page, order_by).await
 }
 
 /// 개별 출금 조회.
@@ -409,17 +395,19 @@ pub async fn withdraw_krw(
 ///
 /// # Example
 /// ```rust
-/// let withdraw_address = api_withdraw::withdraw_krw(10000.0, TwoFactorType::KakaoPay).await;
+/// let withdraw_addresses = api_withdraw::get_withdraw_address_list().await;
 /// ```
 /// # Response
 /// ```json
-/// {
-///     "currency": "BTC",
-///     "net_type": "BTC",
-///     "network_name": "Bitcoin",
-///     "withdraw_address": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-///     "secondary_address": null
-/// }
+/// [
+///     {
+///         "currency": "BTC",
+///         "net_type": "BTC",
+///         "network_name": "Bitcoin",
+///         "withdraw_address": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+///         "secondary_address": null
+///     }
+/// ]
 /// ```
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
@@ -428,6 +416,6 @@ pub async fn withdraw_krw(
 /// | network_name | 출금 네트워크 이름 | String |
 /// | withdraw_address | 출금 주소 | String |
 /// | secondary_address | 2차 출금 주소 (필요한 디지털 자산에 한해서) | String |
-pub async fn get_withdraw_address() -> Result<WithdrawCoinAddress, ResponseError> {
-    WithdrawCoinAddress::get_withdraw_address().await
+pub async fn get_withdraw_address_list() -> Result<Vec<WithdrawCoinAddress>, ResponseError> {
+    WithdrawCoinAddress::get_withdraw_address_list().await
 }

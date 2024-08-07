@@ -1,8 +1,6 @@
 use tokio;
 use upbit::{
-    self,
-    api_exchange::{OrderSide, OrderType},
-    api_quotation::CandleMinute,
+    self, api_deposit::DepositState, api_exchange::{OrderSide, OrderType}, api_quotation::CandleMinute, api_withdraw::WithdrawState, constant::{OrderBy, TransactionType}
 };
 
 #[tokio::test]
@@ -144,4 +142,128 @@ async fn test_get_market_state() {
     let state = upbit::api_quotation::get_market_state(true).await;
 
     assert!(state.is_ok())
+}
+
+#[tokio::test]
+async fn test_get_ticker_snapshot() {
+    upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
+    upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
+
+    let list = upbit::api_quotation::get_ticker_snapshot(&["KRW-ETH"]).await;
+
+    assert!(list.is_ok());
+
+    let list_bunch = upbit::api_quotation::get_ticker_snapshot(&["KRW-BTC", "KRW-ETH"]).await;
+
+    assert!(list_bunch.is_ok());
+}
+
+#[tokio::test]
+async fn test_get_trade_recent_list() {
+    upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
+    upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
+
+    let list = upbit::api_quotation::get_trade_recent_list("KRW-ETH", Some("120101"), 1, "0", None).await;
+
+    assert!(list.is_ok());
+}
+
+#[tokio::test]
+async fn test_get_order_book() {
+    upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
+    upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
+
+    let order_book = upbit::api_quotation::get_order_book_info("KRW-ETH").await;
+
+    assert!(order_book.is_ok());
+}
+
+#[tokio::test]
+async fn test_get_withdraw_address() {
+    upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
+    upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
+
+    let address = upbit::api_withdraw::get_withdraw_address_list().await;
+
+    assert!(address.is_ok());
+}
+
+#[tokio::test]
+async fn test_get_withdraw_chance() {
+    upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
+    upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
+
+    let chance = upbit::api_withdraw::get_withdraw_chance("ETH", "ETH").await;
+
+    assert!(chance.is_ok());
+}
+
+#[tokio::test]
+async fn test_withdraw_coin() {
+    upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
+    upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
+
+    let info = upbit::api_withdraw::withdraw_coin("ETH", "ETH", 0.02, "0x40268F1e99F76b658c6D52d89166EE289EfC225d", None, TransactionType::Default).await;
+
+    assert!(info.is_ok());
+}
+
+#[tokio::test]
+async fn test_get_withdraw_info() {
+    upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
+    upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
+
+    let info = upbit::api_withdraw::get_withdraw_info(None, Some("9f432943-54e0-40b7-825f-b6fec8b42b79"), None).await;
+
+    assert!(info.is_ok());
+}
+
+#[tokio::test]
+async fn test_get_withdraw_list() {
+    upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
+    upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
+
+    let info = upbit::api_withdraw::get_withdraw_info_list("KRW", WithdrawState::Done, None, None, 10, 0, OrderBy::Asc).await;
+
+    assert!(info.is_ok());
+}
+
+#[tokio::test]
+async fn test_get_deposit_info() {
+    upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
+    upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
+
+    let info = upbit::api_deposit::get_deposit_info(Some("KRW"), None, None).await;
+
+    assert!(info.is_ok());
+}
+
+#[tokio::test]
+async fn test_get_deposit_list() {
+    upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
+    upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
+
+    let infos = upbit::api_deposit::get_deposit_info_list("KRW", DepositState::Accepted, None, None, 10, 0, OrderBy::Asc).await;
+
+    assert!(infos.is_ok());
+}
+
+#[tokio::test]
+async fn test_get_coin_address_info() {
+    upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
+    upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
+
+    let info = upbit::api_deposit::get_coin_address_info("ETH", "ETH").await;
+
+    assert!(info.is_ok());
+}
+
+#[tokio::test]
+async fn test_get_coin_address_list() {
+    upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
+    upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
+
+    let infos = upbit::api_deposit::get_coin_address_info_list().await;
+
+    assert!(infos.is_ok());
 }

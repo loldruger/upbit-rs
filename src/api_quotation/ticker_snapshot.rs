@@ -7,8 +7,38 @@ use reqwest::header::ACCEPT;
 use reqwest::Url;
 use serde::Deserialize;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct TickerSnapshot {
+    pub market: String,
+    pub trade_date: String,
+    pub trade_time: String,
+    pub trade_date_kst: String,
+    pub trade_time_kst: String,
+    pub trade_timestamp: i64,
+    pub opening_price: f64,
+    pub high_price: f64,
+    pub low_price: f64,
+    pub trade_price: f64,
+    pub prev_closing_price: f64,
+    pub change: SnapshotChangeType, //EVEN, RISE, FALL
+    pub change_price: f64,
+    pub change_rate: f64,
+    pub signed_change_price: f64,
+    pub signed_change_rate: f64,
+    pub trade_volume: f64,
+    pub acc_trade_price: f64,
+    pub acc_trade_price_24h: f64,
+    pub acc_trade_volume: f64,
+    pub acc_trade_volume_24h: f64,
+    pub highest_52_week_price: f64,
+    pub highest_52_week_date: String,
+    pub lowest_52_week_price: f64,
+    pub lowest_52_week_date: String,
+    pub timestamp: i64,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct TickerSnapshotSource {
     market: String,
     trade_date: String,
     trade_time: String,
@@ -20,7 +50,7 @@ pub struct TickerSnapshot {
     low_price: f64,
     trade_price: f64,
     prev_closing_price: f64,
-    change: SnapshotChangeType, //EVEN, RISE, FALL
+    change: String, //EVEN, RISE, FALL
     change_price: f64,
     change_rate: f64,
     signed_change_price: f64,
@@ -53,7 +83,7 @@ impl TickerSnapshot {
         }
 
         serde_json::from_str(&res_serialized)
-            .map(|mut x: Vec<Self>| {
+            .map(|mut x: Vec<TickerSnapshotSource>| {
                 let x = x.pop().unwrap();
                 Self {
                     market: x.market,
@@ -67,7 +97,7 @@ impl TickerSnapshot {
                     low_price: x.low_price,
                     trade_price: x.trade_price,
                     prev_closing_price: x.prev_closing_price,
-                    change: x.change,
+                    change: x.change.as_str().into(),
                     change_price: x.change_price,
                     change_rate: x.change_rate,
                     signed_change_price: x.signed_change_price,

@@ -11,7 +11,7 @@ use super::{
 };
 
 impl WithdrawCoinAddress {
-    pub async fn get_withdraw_address() -> Result<Self, ResponseError> {
+    pub async fn get_withdraw_address_list() -> Result<Vec<Self>, ResponseError> {
         let res = Self::request().await?;
         let res_serialized = res
             .text()
@@ -24,15 +24,21 @@ impl WithdrawCoinAddress {
                 .ok()
                 .unwrap());
         }
-
+        
         serde_json::from_str(&res_serialized)
-            .map(|x: WithdrawCoinAddress| Self {
-                currency: x.currency,
-                net_type: x.net_type,
-                network_name: x.network_name,
-                withdraw_address: x.withdraw_address,
-                secondary_address: x.secondary_address,
-            })
+            .map(|x: Vec<Self>| 
+                x.into_iter()
+                    .map(|x| {
+                        Self {
+                            currency: x.currency,
+                            net_type: x.net_type,
+                            network_name: x.network_name,
+                            withdraw_address: x.withdraw_address,
+                            secondary_address: x.secondary_address,
+                        }
+                    })
+                    .collect::<Vec<Self>>()
+            )
             .map_err(crate::response::response_error_from_json)
     }
 

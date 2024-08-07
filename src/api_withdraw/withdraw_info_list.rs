@@ -13,7 +13,7 @@ use super::{
 };
 
 impl TransactionInfo {
-    pub async fn get_withdraw_list(
+    pub async fn get_withdraw_info_list(
         currency: &str,
         state: WithdrawState,
         uuids: Option<&[&str]>,

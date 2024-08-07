@@ -103,8 +103,7 @@ mod tests {
 
                 if !unexpected_keys.is_empty() {
                     println!(
-                        "[get_account_info] Unexpected keys found: {:?}",
-                        unexpected_keys
+                        "[get_account_info] Unexpected keys found: {unexpected_keys:?}"
                     );
                     assert!(false);
                 } else {
@@ -112,7 +111,7 @@ mod tests {
                 }
 
                 if !missing_keys.is_empty() {
-                    println!("[get_account_info] Missing keys: {:?}", missing_keys);
+                    println!("[get_account_info] Missing keys: {missing_keys:?}");
                     assert!(false);
                 } else {
                     println!("[get_account_info] No keys are missing.");

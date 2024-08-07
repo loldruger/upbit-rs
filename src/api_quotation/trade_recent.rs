@@ -6,7 +6,7 @@ use reqwest::header::ACCEPT;
 use reqwest::{Response, Url};
 use serde::Deserialize;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct TradeRecent {
     market: String,
     trade_date_utc: String,
@@ -15,12 +15,12 @@ pub struct TradeRecent {
     trade_price: f64,
     trade_volume: f64,
     prev_closing_price: f64,
-    chane_price: f64,
+    change_price: f64,
     ask_bid: String,
 }
 
 impl TradeRecent {
-    pub async fn list_trade_recent(
+    pub async fn get_trade_recent_list(
         market: &str,
         hhmmss: Option<&str>,
         count: i32,
@@ -41,10 +41,18 @@ impl TradeRecent {
         }
 
         serde_json::from_str(&res_serialized)
-            .map(|mut x: Vec<Self>| {
-                let x = x.pop().unwrap();
+            .map(|mut i: Vec<Self>| {
+                let x = i.pop().ok_or_else(|| {
+                    crate::response::ResponseError {
+                        state: crate::response::ResponseErrorState::CustomErrorNoDataPresent,
+                        error: crate::response::ResponseErrorBody {
+                            name: "custom_error_no_data_present".to_owned(),
+                            message: "No data present in the response".to_owned(),
+                        },
+                    }
+                })?;
 
-                Self {
+                Ok(Self {
                     market: x.market,
                     trade_date_utc: x.trade_date_utc,
                     trade_time_utc: x.trade_time_utc,
@@ -52,11 +60,11 @@ impl TradeRecent {
                     trade_price: x.trade_price,
                     trade_volume: x.trade_volume,
                     prev_closing_price: x.prev_closing_price,
-                    chane_price: x.chane_price,
+                    change_price: x.change_price,
                     ask_bid: x.ask_bid,
-                }
+                })
             })
-            .map_err(crate::response::response_error_from_json)
+            .map_err(crate::response::response_error_from_json)?
     }
 
     async fn request(
@@ -100,11 +108,11 @@ mod tests {
     use crate::api_quotation::TradeRecent;
 
     #[tokio::test]
-    async fn test_list_trade_recent() {
+    async fn test_get_trade_recent_list() {
         crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
 
-        let res = TradeRecent::request("KRW-ETH", Some("120101"), 1, "1", None)
+        let res = TradeRecent::request("KRW-ETH", Some("120101"), 1, "0", None)
             .await
             .unwrap();
         let res_serialized = res
@@ -144,26 +152,26 @@ mod tests {
 
                 if !missing_keys.is_empty() {
                     println!(
-                        "[test_list_trade_recent] Missing keys in item[{}]: {:?}",
+                        "[test_get_trade_recent_list] Missing keys in item[{}]: {:?}",
                         index, missing_keys
                     );
                     assert!(false);
                 } else {
                     println!(
-                        "[test_list_trade_recent] No keys are missing in item[{}]",
+                        "[test_get_trade_recent_list] No keys are missing in item[{}]",
                         index
                     );
                 }
 
                 if !extra_keys.is_empty() {
                     println!(
-                        "[test_list_trade_recent] Extra keys in item[{}]: {:?}",
+                        "[test_get_trade_recent_list] Extra keys in item[{}]: {:?}",
                         index, extra_keys
                     );
                     assert!(false);
                 } else {
                     println!(
-                        "[test_list_trade_recent] No extra keys found in item[{}]",
+                        "[test_get_trade_recent_list] No extra keys found in item[{}]",
                         index
                     );
                 }

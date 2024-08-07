@@ -13,6 +13,7 @@ use super::{
 
 impl RequestWithQuery for WithdrawChance {}
 impl WithdrawChance {
+    #[allow(deprecated)]
     pub async fn get_withdraw_chance(
         currency: &str,
         net_type: &str,
@@ -29,7 +30,7 @@ impl WithdrawChance {
                 .ok()
                 .unwrap());
         }
-
+        
         serde_json::from_str(&res_serialized)
             .map(|x: WithdrawChanceSource| {
                 Self {
@@ -66,6 +67,7 @@ impl WithdrawChance {
                         daily: x.withdraw_limit.daily(),
                         remaining_daily: x.withdraw_limit.remaining_daily(),
                         remaining_daily_krw: x.withdraw_limit.remaining_daily_krw(),
+                        remaining_daily_fiat: x.withdraw_limit.remaining_daily_fiat(),
                         fixed: x.withdraw_limit.fixed(),
                         can_withdraw: x.withdraw_limit.can_withdraw(),
                     },

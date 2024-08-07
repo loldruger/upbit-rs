@@ -98,17 +98,14 @@ mod tests {
         let (missing_keys, extra_keys) = compare_keys(&json, &expected_structure, "");
 
         if !missing_keys.is_empty() {
-            println!(
-                "[test_get_coin_address_info] Missing keys: {:?}",
-                missing_keys
-            );
+            println!("[test_get_coin_address_info] Missing keys: {missing_keys:?}");
             assert!(false);
         } else {
             println!("[test_get_coin_address_info] No keys are missing");
         }
 
         if !extra_keys.is_empty() {
-            println!("[test_get_coin_address_info] Extra keys: {:?}", extra_keys);
+            println!("[test_get_coin_address_info] Extra keys: {extra_keys:?}");
             assert!(false);
         } else {
             println!("[test_get_coin_address_info] No extra keys found.");
@@ -130,16 +127,16 @@ mod tests {
             let expected_keys: HashSet<&str> = expected.keys().cloned().collect();
 
             for key in expected_keys.difference(&json_keys) {
-                missing_keys.push(format!("{}{}", path, key));
+                missing_keys.push(format!("{path}{key}"));
             }
 
             for key in json_keys.difference(&expected_keys) {
-                extra_keys.push(format!("{}{}", path, key));
+                extra_keys.push(format!("{path}{key}"));
             }
 
             for key in expected_keys.intersection(&json_keys) {
                 if let Some(expected_value) = expected.get(*key) {
-                    let new_path = format!("{}{}.", path, key);
+                    let new_path = format!("{path}{key}.");
                     if let Value::Object(_) = expected_value {
                         let expected_map = expected_value
                             .as_object()

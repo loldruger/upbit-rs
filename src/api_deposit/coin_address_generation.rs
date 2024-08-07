@@ -93,20 +93,14 @@ mod tests {
         let (missing_keys, extra_keys) = compare_keys(&json, &expected_structure, "");
 
         if !missing_keys.is_empty() {
-            println!(
-                "[test_generate_deposit_address] Missing keys: {:?}",
-                missing_keys
-            );
+            println!("[test_generate_deposit_address] Missing keys: {missing_keys:?}");
             assert!(false);
         } else {
             println!("[test_generate_deposit_address] No keys are missing");
         }
 
         if !extra_keys.is_empty() {
-            println!(
-                "[test_generate_deposit_address] Extra keys: {:?}",
-                extra_keys
-            );
+            println!("[test_generate_deposit_address] Extra keys: {extra_keys:?}");
             assert!(false);
         } else {
             println!("[test_generate_deposit_address] No extra keys found.");

@@ -31,14 +31,14 @@ let order_info = api_exchange::cancel_order("cdd92199-2897-4e14-9448-f923320408a
 // api_withdraw
 let withdraw_result = api_withdraw::withdraw_krw(10000.0, api_withdraw::TwoFactorType::KakaoPay).await;
 let withdraw_info = api_withdraw::get_withdraw_info(None, Some("cdd92199-2897-4e14-9448-f923320408ad"), None).await;
-let withdraw_info_list = api_withdraw::list_withdraw_info("KRW", WithdrawState::Done, None, None, 10, 0, OrderBy::Asc).await;
+let withdraw_info_list = api_withdraw::get_witrhdraw_info_list("KRW", WithdrawState::Done, None, None, 10, 0, OrderBy::Asc).await;
 let withdraw_chance = api_withdraw::get_withdraw_chance("KRW", None).await;
 let withdraw_result_more_info = api_withdraw::withdraw_coin("ETH", "ETH", 0.05, "0x40268F1e99F76b658c6D52d89166EE289EfC225d", None, TransactionType::Default).await;
 
 // api_deposit
 let deposit_result = api_deposit::deposit_krw(10000.0, api_withdraw::TwoFactorType::KakaoPay).await
 let deposit_result = api_deposit::get_deposit_info(Some("KRW"), None, None).await;
-let deposit_result = api_deposit::list_deposit_info("KRW", DepositState::Rejected, None, None, 10, 0, OrderBy::Asc).await;
+let deposit_result = api_deposit::get_deposit_info_list("KRW", DepositState::Rejected, None, None, 10, 0, OrderBy::Asc).await;
 
 let coin_address_info = api_deposit::get_coin_address_info("ETH", "ETH").await:
 let coin_address_info_list = api_deposit::list_coin_address_info().await;
@@ -46,7 +46,7 @@ let coin_address_info_list = api_deposit::list_coin_address_info().await;
 // api_quotation
 let order_book_info = api_quotation::get_orderbook_info("KRW-ETH").await;
 let ticker_snapshot = api_quotation::get_ticker_snapshot("KRW-ETH").await;
-let recent_trade_list = api_quotation::list_trade_recent("KRW-ETH", None, 3, "0".to_string(), None).await;
+let recent_trade_list = api_quotation::get_trade_recent_list("KRW-ETH", None, 3, "0".to_string(), None).await;
 let market_state = api_quotation::get_market_state(true).await;
 
 let chart_of_minute = api_quotation::get_candle_minute("KRW-ETH", None, 50, CandleMinute::Min10).await;

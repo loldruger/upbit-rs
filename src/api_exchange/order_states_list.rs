@@ -698,7 +698,6 @@ mod tests {
         if let Ok(res) = res {
             res.uuid
         } else {
-            println!("{:?}", res);
             panic!("Failed to get uuid from order_by_price")
         }
     }

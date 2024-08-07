@@ -23,7 +23,7 @@ use crate::constant::{URL_CANDLE_DAY, URL_CANDLE_MINUTE, URL_CANDLE_MONTH, URL_C
 use crate::response::ResponseError;
 
 /// Kind of change of ticker snapshot
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub enum SnapshotChangeType {
     /// 보합
     Even,
@@ -38,7 +38,7 @@ impl From<&str> for SnapshotChangeType {
         match value {
             "EVEN" => Self::Even,
             "FALL" => Self::Fall,
-            "Rise" => Self::Rise,
+            "RISE" => Self::Rise,
             _ => panic!(),
         }
     }
@@ -221,7 +221,7 @@ pub async fn get_order_book_info(market: &str) -> Result<OrderBookInfo, Response
 ///
 /// # Example
 /// ```rust
-/// let ticker_snapshot = api_quotation::get_ticker_snapshot("KRW-ETH").await;
+/// let ticker_snapshot = api_quotation::get_ticker_snapshot(&["KRW-ETH"]).await;
 /// ```
 /// - parameters
 /// > `market` ex) KRW-ETH<br>
@@ -296,7 +296,7 @@ pub async fn get_ticker_snapshot(market: &[&str]) -> Result<TickerSnapshot, Resp
 ///
 /// # Example
 /// ```rust
-/// let recent_trade_list = api_quotation::list_trade_recent("KRW-ETH").await;
+/// let recent_trade_list = api_quotation::get_trade_recent_list("KRW-ETH").await;
 /// ```
 /// - parameters
 /// > `market` ex) KRW-ETH<br>
@@ -334,14 +334,14 @@ pub async fn get_ticker_snapshot(market: &[&str]) -> Result<TickerSnapshot, Resp
 /// | sequential_id | 체결 번호(Unique) | Long |
 ///
 /// * sequential_id 필드는 체결의 유일성 판단을 위한 근거로 쓰일 수 있습니다. 하지만 체결의 순서를 보장하지는 못합니다.
-pub async fn list_trade_recent(
+pub async fn get_trade_recent_list(
     market: &str,
     hhmmss: Option<&str>,
     count: i32,
     cursor: &str,
     days_ago: Option<i32>,
 ) -> Result<TradeRecent, ResponseError> {
-    TradeRecent::list_trade_recent(market, hhmmss, count, cursor, days_ago).await
+    TradeRecent::get_trade_recent_list(market, hhmmss, count, cursor, days_ago).await
 }
 
 /// 업비트에서 거래 가능한 마켓 목록 (List of markets available on Upbit)

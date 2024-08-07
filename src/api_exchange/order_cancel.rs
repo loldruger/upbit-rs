@@ -162,8 +162,7 @@ mod tests {
 
         if !missing_keys.is_empty() {
             println!(
-                "[test_order_cancel_by_uuid] Missing keys: {:?}",
-                missing_keys
+                "[test_order_cancel_by_uuid] Missing keys: {missing_keys:?}",
             );
             assert!(false);
         } else {
@@ -171,7 +170,7 @@ mod tests {
         }
 
         if !extra_keys.is_empty() {
-            println!("[test_order_cancel_by_uuid] Extra keys: {:?}", extra_keys);
+            println!("[test_order_cancel_by_uuid] Extra keys: {extra_keys:?}");
             assert!(false);
         } else {
             println!("[test_order_cancel_by_uuid] No extra keys found.");
@@ -200,7 +199,6 @@ mod tests {
         if let Ok(res) = res {
             res.uuid
         } else {
-            println!("{:?}", res);
             panic!("Failed to get uuid from order_by_price")
         }
     }
@@ -218,16 +216,16 @@ mod tests {
             let expected_keys: HashSet<&str> = expected.keys().cloned().collect();
 
             for key in expected_keys.difference(&json_keys) {
-                missing_keys.push(format!("{}{}", path, key));
+                missing_keys.push(format!("{path}{key}"));
             }
 
             for key in json_keys.difference(&expected_keys) {
-                extra_keys.push(format!("{}{}", path, key));
+                extra_keys.push(format!("{path}{key}"));
             }
 
             for key in expected_keys.intersection(&json_keys) {
                 if let Some(expected_value) = expected.get(*key) {
-                    let new_path = format!("{}{}.", path, key);
+                    let new_path = format!("{path}{key}.");
                     if let Value::Object(_) = expected_value {
                         let expected_map = expected_value
                             .as_object()
@@ -235,8 +233,10 @@ mod tests {
                             .iter()
                             .map(|(k, v)| (k.as_str(), v.clone()))
                             .collect::<HashMap<&str, Value>>();
+
                         let (mut missing, mut extra) =
                             compare_keys(&map[*key], &expected_map, &new_path);
+                            
                         missing_keys.append(&mut missing);
                         extra_keys.append(&mut extra);
                     }

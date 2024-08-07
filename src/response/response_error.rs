@@ -16,6 +16,8 @@ pub enum ResponseErrorState {
     InternalUrlParseError,
     /// "internal_date_format_parse_error"
     InternalDateFormatParseError,
+    /// "custom_error_no_data_present"
+    CustomErrorNoDataPresent,
     /// "JWT 헤더의 페이로드가 올바르지 않습니다."
     ///
     /// "서명에 사용한 페이로드 값을 확인해주세요."
@@ -58,6 +60,8 @@ pub enum ResponseErrorState {
     NoAuthorizationIp,
     /// "허용되지 않은 기능입니다."
     OutOfScope,
+    /// "출금 정보를 찾지 못했습니다."
+    WithdrawNotFound,
     /// "등록된 출금 주소가 아닙니다."
     WithdrawAddressNotRegisterd,
     /// "출금 금액이 부족합니다."
@@ -87,6 +91,7 @@ impl From<&str> for ResponseErrorState {
             "internal_json_parse_error" => Self::InternalJsonParseError,
             "internal_url_parse_error" => Self::InternalUrlParseError,
             "internal_date_format_parse_error" => Self::InternalDateFormatParseError,
+            "custom_error_no_data_present" => Self::CustomErrorNoDataPresent,
             "jwt_verification" => Self::JwtVerificationError,
             "expired_access_key" => Self::ExpiredAccessKey,
             "invalid_query_payload" => Self::InvalidQueryPayload,
@@ -105,6 +110,7 @@ impl From<&str> for ResponseErrorState {
             "nonce_used" => Self::NonceUsed,
             "no_authorization_i_p" => Self::NoAuthorizationIp,
             "out_of_scope" => Self::OutOfScope,
+            "withdraw_not_found" => Self::WithdrawNotFound,
             "withdraw_address_not_registered" => Self::WithdrawAddressNotRegisterd,
             "withdraw_insufficient_balance" => Self::WithdrawInsufficientBalance,
             "withdraw_amount_too_small" => Self::WithdrawAmountTooSmall,

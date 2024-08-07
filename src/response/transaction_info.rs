@@ -141,18 +141,18 @@ pub struct TransactionInfoSource {
     fee: String,
     transaction_type: String,
 
-    holder: String,
-    bank: String,
-    fiat_amount: String,
-    memo: String,
-    fiat_currency: String,
-    confirmations: String,
-    krw_amount: String,
-    network_name: String,
-    cancelable: String,
-    blockchain_url: String,
-    state_i18n: String,
-    address: String,
+    holder: Option<String>,
+    bank: Option<String>,
+    fiat_amount: Option<String>,
+    memo: Option<String>,
+    fiat_currency: Option<String>,
+    confirmations: Option<String>,
+    krw_amount: Option<String>,
+    network_name: Option<String>,
+    cancelable: Option<String>,
+    blockchain_url: Option<String>,
+    state_i18n: Option<String>,
+    address: Option<String>,
 }
 
 impl TransactionInfoSource {
@@ -204,40 +204,40 @@ impl TransactionInfoSource {
     pub fn transaction_type(&self) -> TransactionType {
         self.transaction_type.as_str().into()
     }
-    pub fn holder(&self) -> String {
+    pub fn holder(&self) -> Option<String> {
         self.holder.clone()
     }
-    pub fn bank(&self) -> String {
+    pub fn bank(&self) -> Option<String> {
         self.bank.clone()
     }
-    pub fn flat_amount(&self) -> String {
+    pub fn fiat_amount(&self) -> Option<String> {
         self.fiat_amount.clone()
     }
-    pub fn memo(&self) -> String {
+    pub fn memo(&self) -> Option<String> {
         self.memo.clone()
     }
-    pub fn fiat_currency(&self) -> String {
+    pub fn fiat_currency(&self) -> Option<String> {
         self.fiat_currency.clone()
     }
-    pub fn confirmations(&self) -> String {
+    pub fn confirmations(&self) -> Option<String> {
         self.confirmations.clone()
     }
-    pub fn krw_amount(&self) -> String {
+    pub fn krw_amount(&self) -> Option<String> {
         self.krw_amount.clone()
     }
-    pub fn network_name(&self) -> String {
+    pub fn network_name(&self) -> Option<String> {
         self.network_name.clone()
     }
-    pub fn cancelable(&self) -> String {
+    pub fn cancelable(&self) -> Option<String> {
         self.cancelable.clone()
     }
-    pub fn blockchain_url(&self) -> String {
+    pub fn blockchain_url(&self) -> Option<String> {
         self.blockchain_url.clone()
     }
-    pub fn state_i18n(&self) -> String {
+    pub fn state_i18n(&self) -> Option<String> {
         self.state_i18n.clone()
     }
-    pub fn address(&self) -> String {
+    pub fn address(&self) -> Option<String> {
         self.address.clone()
     }
 }
@@ -299,10 +299,15 @@ impl WithdrawCurrencySource {
 pub struct WithdrawLimit {
     pub currency: String,
     pub minimum: Option<f64>,
+    #[deprecated(since = "1.7.3", note = "Use remaining_daily_fiat instead")]
     pub onetime: Option<f64>,
-    pub daily: f64,
+    #[deprecated(since = "1.7.3", note = "Use remaining_daily_fiat instead")]
+    pub daily: Option<f64>,
+    #[deprecated(since = "1.7.3", note = "Use remaining_daily_fiat instead")]
     pub remaining_daily: f64,
+    #[deprecated(since = "1.7.3", note = "Use remaining_daily_fiat instead")]
     pub remaining_daily_krw: f64,
+    pub remaining_daily_fiat: f64,
     pub fixed: Option<i32>,
     pub can_withdraw: bool,
 }
@@ -312,10 +317,15 @@ pub struct WithdrawLimit {
 pub struct WithdrawLimitSource {
     currency: String,
     minimum: Option<String>,
+    #[deprecated(since = "1.7.3", note = "Use remaining_daily_fiat instead")]
     onetime: Option<String>,
-    daily: String,
+    #[deprecated(since = "1.7.3", note = "Use remaining_daily_fiat instead")]
+    daily: Option<String>,
+    #[deprecated(since = "1.7.3", note = "Use remaining_daily_fiat instead")]
     remaining_daily: String,
+    #[deprecated(since = "1.7.3", note = "Use remaining_daily_fiat instead")]
     remaining_daily_krw: String,
+    remaining_daily_fiat: String,
     fixed: Option<i32>,
     can_withdraw: bool,
 }
@@ -327,17 +337,28 @@ impl WithdrawLimitSource {
     pub fn minimum(&self) -> Option<f64> {
         self.minimum.clone().map(|x| x.parse::<f64>().unwrap())
     }
+    #[allow(deprecated)]
+    #[deprecated(since = "1.7.3", note = "Use remaining_daily_fiat instead")]
     pub fn onetime(&self) -> Option<f64> {
         self.onetime.clone().map(|x| x.parse::<f64>().unwrap())
     }
-    pub fn daily(&self) -> f64 {
-        self.daily.parse().unwrap()
+    #[allow(deprecated)]
+    #[deprecated(since = "1.7.3", note = "Use remaining_daily_fiat instead")]
+    pub fn daily(&self) -> Option<f64> {
+        self.daily.as_ref().and_then(|x| x.parse::<f64>().ok())
     }
+    #[allow(deprecated)]
+    #[deprecated(since = "1.7.3", note = "Use remaining_daily_fiat instead")]
     pub fn remaining_daily(&self) -> f64 {
         self.remaining_daily.parse().unwrap()
     }
+    #[allow(deprecated)]
+    #[deprecated(since = "1.7.3", note = "Use remaining_daily_fiat instead")]
     pub fn remaining_daily_krw(&self) -> f64 {
         self.remaining_daily_krw.parse().unwrap()
+    }
+    pub fn remaining_daily_fiat(&self) -> f64 {
+        self.remaining_daily_fiat.parse().unwrap()
     }
     pub fn fixed(&self) -> Option<i32> {
         self.fixed
