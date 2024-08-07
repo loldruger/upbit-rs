@@ -213,7 +213,19 @@ async fn test_get_withdraw_info() {
     upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
     upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
 
-    let info = upbit::api_withdraw::get_withdraw_info(None, Some("9f432943-54e0-40b7-825f-b6fec8b42b79"), None).await;
+    let info = upbit::api_withdraw::get_withdraw_info(Some("KRW"), None, None).await;
+
+    assert!(info.is_ok());
+
+    let uuid = info.unwrap().uuid;
+
+    let info = upbit::api_withdraw::get_withdraw_info(None, Some(&uuid), None).await;
+
+    assert!(info.is_ok());
+
+    let txid = info.unwrap().txid;
+
+    let info = upbit::api_withdraw::get_withdraw_info(None, None, Some(&txid)).await;
 
     assert!(info.is_ok());
 }
@@ -223,9 +235,9 @@ async fn test_get_withdraw_list() {
     upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
     upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
 
-    let info = upbit::api_withdraw::get_withdraw_info_list("KRW", WithdrawState::Done, None, None, 10, 0, OrderBy::Asc).await;
+    let infos = upbit::api_withdraw::get_withdraw_info_list("KRW", WithdrawState::Done, None, None, 10, 0, OrderBy::Asc).await;
 
-    assert!(info.is_ok());
+    assert!(infos.is_ok());
 }
 
 #[tokio::test]

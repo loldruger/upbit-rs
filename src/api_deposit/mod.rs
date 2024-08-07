@@ -31,6 +31,8 @@ pub enum DepositState {
     Refunding,
     /// 반환됨
     Refunded,
+    /// ???
+    Failed,
 }
 
 impl Display for DepositState {
@@ -44,6 +46,7 @@ impl Display for DepositState {
             Self::TravelRuleSuspected => write!(f, "TRAVEL_RULE_SUSPECTED"),
             Self::Refunding => write!(f, "REFUNDING"),
             Self::Refunded => write!(f, "REFUNDED"),
+            Self::Failed => write!(f, "FAILED"),
         }
     }
 }
@@ -59,6 +62,7 @@ impl From<&str> for DepositState {
             "TRAVEL_RULE_SUSPECTED" => Self::TravelRuleSuspected,
             "REFUNDING" => Self::Refunding,
             "REFUNDED" => Self::Refunded,
+            "FAILED" => Self::Failed,
             a@_ => panic!("Unexpected value: {}", a),
         }
     }
