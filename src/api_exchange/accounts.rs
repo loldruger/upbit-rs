@@ -102,9 +102,7 @@ mod tests {
                 let missing_keys = expected_keys.difference(&json_keys).collect::<HashSet<_>>();
 
                 if !unexpected_keys.is_empty() {
-                    println!(
-                        "[get_account_info] Unexpected keys found: {unexpected_keys:?}"
-                    );
+                    println!("[get_account_info] Unexpected keys found: {unexpected_keys:?}");
                     assert!(false);
                 } else {
                     println!("[get_account_info] No unexpected keys found.");

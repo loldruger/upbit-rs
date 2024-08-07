@@ -24,7 +24,7 @@ impl CoinAddressResponse {
         }
 
         serde_json::from_str(&res_serialized)
-            .map(|x: Vec<CoinAddressResponse>| {
+            .map(|x: Vec<Self>| {
                 x.into_iter()
                     .map(|x| Self {
                         currency: x.currency,

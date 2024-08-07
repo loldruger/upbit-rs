@@ -161,9 +161,7 @@ mod tests {
         let (missing_keys, extra_keys) = compare_keys(&json, &expected_structure, "");
 
         if !missing_keys.is_empty() {
-            println!(
-                "[test_order_cancel_by_uuid] Missing keys: {missing_keys:?}",
-            );
+            println!("[test_order_cancel_by_uuid] Missing keys: {missing_keys:?}",);
             assert!(false);
         } else {
             println!("[test_order_cancel_by_uuid] No keys are missing");
@@ -236,7 +234,7 @@ mod tests {
 
                         let (mut missing, mut extra) =
                             compare_keys(&map[*key], &expected_map, &new_path);
-                            
+
                         missing_keys.append(&mut missing);
                         extra_keys.append(&mut extra);
                     }

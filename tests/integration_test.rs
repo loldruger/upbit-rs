@@ -1,6 +1,11 @@
 use tokio;
 use upbit::{
-    self, api_deposit::DepositState, api_exchange::{OrderSide, OrderType}, api_quotation::CandleMinute, api_withdraw::WithdrawState, constant::{OrderBy, TransactionType}
+    self,
+    api_deposit::DepositState,
+    api_exchange::{OrderSide, OrderType},
+    api_quotation::CandleMinute,
+    api_withdraw::WithdrawState,
+    constant::{OrderBy, TransactionType},
 };
 
 #[tokio::test]
@@ -163,7 +168,8 @@ async fn test_get_trade_recent_list() {
     upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
     upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
 
-    let list = upbit::api_quotation::get_trade_recent_list("KRW-ETH", Some("120101"), 1, "0", None).await;
+    let list =
+        upbit::api_quotation::get_trade_recent_list("KRW-ETH", Some("120101"), 1, "0", None).await;
 
     assert!(list.is_ok());
 }
@@ -203,7 +209,15 @@ async fn test_withdraw_coin() {
     upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
     upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
 
-    let info = upbit::api_withdraw::withdraw_coin("ETH", "ETH", 0.02, "0x40268F1e99F76b658c6D52d89166EE289EfC225d", None, TransactionType::Default).await;
+    let info = upbit::api_withdraw::withdraw_coin(
+        "ETH",
+        "ETH",
+        0.02,
+        "0x40268F1e99F76b658c6D52d89166EE289EfC225d",
+        None,
+        TransactionType::Default,
+    )
+    .await;
 
     assert!(info.is_ok());
 }
@@ -235,7 +249,16 @@ async fn test_get_withdraw_list() {
     upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
     upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
 
-    let infos = upbit::api_withdraw::get_withdraw_info_list("KRW", WithdrawState::Done, None, None, 10, 0, OrderBy::Asc).await;
+    let infos = upbit::api_withdraw::get_withdraw_info_list(
+        "KRW",
+        WithdrawState::Done,
+        None,
+        None,
+        10,
+        0,
+        OrderBy::Asc,
+    )
+    .await;
 
     assert!(infos.is_ok());
 }
@@ -255,7 +278,16 @@ async fn test_get_deposit_list() {
     upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
     upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
 
-    let infos = upbit::api_deposit::get_deposit_info_list("KRW", DepositState::Accepted, None, None, 10, 0, OrderBy::Asc).await;
+    let infos = upbit::api_deposit::get_deposit_info_list(
+        "KRW",
+        DepositState::Accepted,
+        None,
+        None,
+        10,
+        0,
+        OrderBy::Asc,
+    )
+    .await;
 
     assert!(infos.is_ok());
 }

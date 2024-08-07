@@ -17,6 +17,7 @@ pub struct TradeRecent {
     prev_closing_price: f64,
     change_price: f64,
     ask_bid: String,
+    sequential_id: i64,
 }
 
 impl TradeRecent {
@@ -42,14 +43,12 @@ impl TradeRecent {
 
         serde_json::from_str(&res_serialized)
             .map(|mut i: Vec<Self>| {
-                let x = i.pop().ok_or_else(|| {
-                    crate::response::ResponseError {
-                        state: crate::response::ResponseErrorState::CustomErrorNoDataPresent,
-                        error: crate::response::ResponseErrorBody {
-                            name: "custom_error_no_data_present".to_owned(),
-                            message: "No data present in the response".to_owned(),
-                        },
-                    }
+                let x = i.pop().ok_or_else(|| crate::response::ResponseError {
+                    state: crate::response::ResponseErrorState::CustomErrorNoDataPresent,
+                    error: crate::response::ResponseErrorBody {
+                        name: "custom_error_no_data_present".to_owned(),
+                        message: "No data present in the response".to_owned(),
+                    },
                 })?;
 
                 Ok(Self {
@@ -62,6 +61,7 @@ impl TradeRecent {
                     prev_closing_price: x.prev_closing_price,
                     change_price: x.change_price,
                     ask_bid: x.ask_bid,
+                    sequential_id: x.sequential_id,
                 })
             })
             .map_err(crate::response::response_error_from_json)?
@@ -135,7 +135,8 @@ mod tests {
             "trade_volume": "",
             "prev_closing_price": "",
             "change_price": "",
-            "ask_bid": ""
+            "ask_bid": "",
+            "sequential_id": ""
         }]);
 
         let expected_structure = expected_structure[0]

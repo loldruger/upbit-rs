@@ -15,7 +15,7 @@ mod deposit_krw;
 /// List of kind of Deposit state
 #[derive(Debug)]
 pub enum DepositState {
-    /// ??? 
+    /// ???
     Done,
     /// 입금 진행중
     Processing,
@@ -63,7 +63,7 @@ impl From<&str> for DepositState {
             "REFUNDING" => Self::Refunding,
             "REFUNDED" => Self::Refunded,
             "FAILED" => Self::Failed,
-            a@_ => panic!("Unexpected value: {}", a),
+            a @ _ => panic!("Unexpected value: {}", a),
         }
     }
 }

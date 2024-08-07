@@ -30,7 +30,7 @@ impl WithdrawChance {
                 .ok()
                 .unwrap());
         }
-        
+
         serde_json::from_str(&res_serialized)
             .map(|x: WithdrawChanceSource| {
                 Self {

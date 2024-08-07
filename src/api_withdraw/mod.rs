@@ -139,7 +139,8 @@ pub async fn get_withdraw_info_list(
     page: u32,
     order_by: OrderBy,
 ) -> Result<Vec<TransactionInfo>, ResponseError> {
-    TransactionInfo::get_withdraw_info_list(currency, state, uuids, txids, limit, page, order_by).await
+    TransactionInfo::get_withdraw_info_list(currency, state, uuids, txids, limit, page, order_by)
+        .await
 }
 
 /// 개별 출금 조회.
