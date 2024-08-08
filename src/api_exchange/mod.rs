@@ -19,6 +19,7 @@ use sqlx::Type;
 /// Side of order
 #[derive(Serialize, Deserialize, Debug, Copy, Clone, PartialEq, Eq)]
 #[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
+#[cfg_attr(feature = "sqlx-type", sqlx(type_name = "order_side"), sqlx(rename_all = "snake_case"))]
 pub enum OrderSide {
     /// 매수
     Bid,
@@ -48,6 +49,7 @@ impl From<&str> for OrderSide {
 /// Type of order
 #[derive(Serialize, Deserialize, Debug, Copy, Clone, PartialEq, Eq)]
 #[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
+#[cfg_attr(feature = "sqlx-type", sqlx(type_name = "order_type"), sqlx(rename_all = "snake_case"))]
 pub enum OrderType {
     /// 지정가 주문
     Limit,
@@ -85,6 +87,7 @@ impl From<&str> for OrderType {
 /// New Order type
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Copy, Clone)]
 #[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
+#[cfg_attr(feature = "sqlx-type", sqlx(type_name = "order_condition"), sqlx(rename_all = "snake_case"))]
 pub enum OrderCondition {
     /// Immediate or Cancel
     IOK,
@@ -114,6 +117,7 @@ impl From<&str> for OrderCondition {
 /// List of order state
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Copy, Clone)]
 #[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
+#[cfg_attr(feature = "sqlx-type", sqlx(type_name = "order_state"), sqlx(rename_all = "snake_case"))]
 pub enum OrderState {
     /// 체결 대기 (default)
     Wait,

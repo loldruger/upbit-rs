@@ -19,6 +19,7 @@ use sqlx::Type;
 /// List of withdraw state
 #[derive(Debug, Copy, Clone)]
 #[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
+#[cfg_attr(feature = "sqlx-type", sqlx(type_name = "withdraw_state"), sqlx(rename_all = "snake_case"))]
 pub enum WithdrawState {
     /// 대기중
     Waiting,

@@ -28,6 +28,7 @@ use sqlx::Type;
 /// Kind of change of ticker snapshot
 #[derive(Deserialize, Debug, Copy, Clone)]
 #[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
+#[cfg_attr(feature = "sqlx-type", sqlx(type_name = "snapshot_change_type"), sqlx(rename_all = "snake_case"))]
 pub enum SnapshotChangeType {
     /// 보합
     Even,
