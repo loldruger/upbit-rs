@@ -99,7 +99,7 @@ impl From<&str> for OrderBy {
 }
 
 /// Kind of transaction type
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 #[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
 pub enum TransactionType {
     /// 일반 입출금(general withdrawal or deposit)
@@ -151,7 +151,7 @@ impl Display for TwoFactorType {
 
 /// List of transaction type
 #[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub enum TransferType {
     /// 출금
     Withdraw,
@@ -178,7 +178,7 @@ impl From<&str> for TransferType {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Copy, Clone)]
 #[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
 pub enum AskType {
     BestFOK,
@@ -202,7 +202,7 @@ impl Display for AskType {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Copy, Clone)]
 #[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
 pub enum BidType {
     BestFOK,

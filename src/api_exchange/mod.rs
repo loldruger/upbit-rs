@@ -83,7 +83,7 @@ impl From<&str> for OrderType {
 }
 
 /// New Order type
-#[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Copy, Clone)]
 #[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
 pub enum OrderCondition {
     /// Immediate or Cancel
@@ -112,7 +112,7 @@ impl From<&str> for OrderCondition {
 }
 
 /// List of order state
-#[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Copy, Clone)]
 #[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
 pub enum OrderState {
     /// 체결 대기 (default)

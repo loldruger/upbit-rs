@@ -17,6 +17,7 @@ use crate::{
 use sqlx::Type;
 
 /// List of withdraw state
+#[derive(Debug, Copy, Clone)]
 #[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
 pub enum WithdrawState {
     /// 대기중

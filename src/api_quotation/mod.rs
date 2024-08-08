@@ -26,7 +26,7 @@ use crate::response::ResponseError;
 use sqlx::Type;
 
 /// Kind of change of ticker snapshot
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Copy, Clone)]
 #[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
 pub enum SnapshotChangeType {
     /// 보합
