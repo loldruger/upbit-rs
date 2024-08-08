@@ -22,8 +22,12 @@ pub use trade_recent::TradeRecent;
 use crate::constant::{URL_CANDLE_DAY, URL_CANDLE_MINUTE, URL_CANDLE_MONTH, URL_CANDLE_WEEK};
 use crate::response::ResponseError;
 
+#[cfg(feature = "sqlx-type")]
+use sqlx::Type;
+
 /// Kind of change of ticker snapshot
 #[derive(Deserialize, Debug)]
+#[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
 pub enum SnapshotChangeType {
     /// 보합
     Even,
@@ -39,7 +43,7 @@ impl From<&str> for SnapshotChangeType {
             "EVEN" => Self::Even,
             "FALL" => Self::Fall,
             "RISE" => Self::Rise,
-            _ => panic!(),
+            a @ _ => panic!("Unexpected value: {}", a),
         }
     }
 }
@@ -106,17 +110,6 @@ impl Display for UrlAssociates {
         }
     }
 }
-// impl ToString for UrlAssociates {
-//     fn to_string(&self) -> String {
-//         match self {
-//             UrlAssociates::UrlCandleMinute(minute) =>
-//                 format!("{URL_CANDLE_MINUTE}{}", Into::<u8>::into(*minute)),
-//             UrlAssociates::UrlCandleDay => {URL_CANDLE_DAY.to_string()},
-//             UrlAssociates::UrlCandleWeek => {URL_CANDLE_WEEK.to_string()},
-//             UrlAssociates::UrlCandleMonth => {URL_CANDLE_MONTH.to_string()},
-//         }
-//     }
-// }
 
 /// 호가 정보를 조회한다. (Inquiry bid price and offered price.)
 ///

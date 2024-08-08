@@ -13,7 +13,11 @@ use crate::{
     response::{WithdrawChance, WithdrawCoinAddress},
 };
 
+#[cfg(feature = "sqlx-type")]
+use sqlx::Type;
+
 /// List of withdraw state
+#[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
 pub enum WithdrawState {
     /// 대기중
     Waiting,
@@ -51,7 +55,7 @@ impl From<&str> for WithdrawState {
             "failed" => WithdrawState::Failed,
             "canceled" => WithdrawState::Canceled,
             "rejected" => WithdrawState::Rejected,
-            _ => panic!(),
+            a @ _ => panic!("Unexpected value: {}", a),
         }
     }
 }

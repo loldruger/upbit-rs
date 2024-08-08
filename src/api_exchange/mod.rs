@@ -13,8 +13,12 @@ use crate::constant::OrderBy;
 
 use super::response::{AccountsInfo, OrderChance, OrderInfo, OrderStatus, ResponseError};
 
+#[cfg(feature = "sqlx-type")]
+use sqlx::Type;
+
 /// Side of order
 #[derive(Serialize, Deserialize, Debug, Copy, Clone, PartialEq, Eq)]
+#[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
 pub enum OrderSide {
     /// 매수
     Bid,
@@ -31,27 +35,19 @@ impl Display for OrderSide {
     }
 }
 
-// impl ToString for OrderSide {
-//     fn to_string(&self) -> String {
-//         match self {
-//             OrderSide::Bid => "bid".to_owned(),
-//             OrderSide::Ask => "ask".to_owned(),
-//         }
-//     }
-// }
-
 impl From<&str> for OrderSide {
     fn from(value: &str) -> Self {
         match value {
             "bid" => OrderSide::Bid,
             "ask" => OrderSide::Ask,
-            _ => panic!("value must be either \"bid\" or \"ask!\""),
+            a @ _ => panic!("Unexpected value: {}", a),
         }
     }
 }
 
 /// Type of order
 #[derive(Serialize, Deserialize, Debug, Copy, Clone, PartialEq, Eq)]
+#[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
 pub enum OrderType {
     /// 지정가 주문
     Limit,
@@ -74,17 +70,6 @@ impl Display for OrderType {
     }
 }
 
-// impl ToString for OrderType {
-//     fn to_string(&self) -> String {
-//         match self {
-//             OrderType::Limit => "limit".to_owned(),
-//             OrderType::Price => "price".to_owned(),
-//             OrderType::Market => "market".to_owned(),
-//             OrderType::Best => "best".to_owned(),
-//         }
-//     }
-// }
-
 impl From<&str> for OrderType {
     fn from(value: &str) -> Self {
         match value {
@@ -92,13 +77,14 @@ impl From<&str> for OrderType {
             "price" => OrderType::Price,
             "market" => OrderType::Market,
             "best" => OrderType::Best,
-            _ => panic!("value must be one of \"limit\", \"price!\", \"market\" or \"best\"."),
+            a @ _ => panic!("Unexpected value: {}", a),
         }
     }
 }
 
 /// New Order type
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
+#[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
 pub enum OrderCondition {
     /// Immediate or Cancel
     IOK,
@@ -115,27 +101,19 @@ impl Display for OrderCondition {
     }
 }
 
-// impl ToString for OrderCondition {
-//     fn to_string(&self) -> String {
-//         match self {
-//             OrderCondition::IOK => "iok".to_owned(),
-//             OrderCondition::FOK => "fok".to_owned()
-//         }
-//     }
-// }
-
 impl From<&str> for OrderCondition {
     fn from(value: &str) -> Self {
         match value {
             "iok" => OrderCondition::IOK,
             "fok" => OrderCondition::FOK,
-            _ => panic!("value must be one of \"iok\" or \"fok\"."),
+            a @ _ => panic!("Unexpected value: {}", a),
         }
     }
 }
 
 /// List of order state
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
+#[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
 pub enum OrderState {
     /// 체결 대기 (default)
     Wait,
@@ -158,17 +136,6 @@ impl Display for OrderState {
     }
 }
 
-// impl ToString for OrderState {
-//     fn to_string(&self) -> String {
-//         match self {
-//             OrderState::Wait => "wait".to_owned(),
-//             OrderState::Watch => "watch".to_owned(),
-//             OrderState::Done => "done".to_owned(),
-//             OrderState::Cancel => "cancel".to_owned(),
-//         }
-//     }
-// }
-
 impl From<&str> for OrderState {
     fn from(value: &str) -> Self {
         match value {
@@ -176,7 +143,7 @@ impl From<&str> for OrderState {
             "watch" => OrderState::Watch,
             "done" => OrderState::Done,
             "cancel" => OrderState::Cancel,
-            _ => panic!("value must be one of \"wait\", \"watch!\", \"done!\" or \"cancel\""),
+            a @ _ => panic!("Unexpected value: {}", a),
         }
     }
 }

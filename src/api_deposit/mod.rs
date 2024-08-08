@@ -5,6 +5,9 @@ use crate::{
     response::{CoinAddressGen, CoinAddressResponse, ResponseError, TransactionInfo},
 };
 
+#[cfg(feature = "sqlx-type")]
+use sqlx::Type;
+
 mod coin_address_generation;
 mod coin_address_info;
 mod coin_address_info_list;

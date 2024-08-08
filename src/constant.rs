@@ -2,6 +2,9 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
+#[cfg(feature = "sqlx-type")]
+use sqlx::Type;
+
 /// Server domain address
 pub const URL_SERVER: &str = "https://api.upbit.com";
 
@@ -90,13 +93,14 @@ impl From<&str> for OrderBy {
         match value {
             "asc" => Self::Asc,
             "desc" => Self::Desc,
-            _ => panic!(),
+            a @ _ => panic!("Unexpected value: {}", a),
         }
     }
 }
 
 /// Kind of transaction type
 #[derive(Debug)]
+#[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
 pub enum TransactionType {
     /// 일반 입출금(general withdrawal or deposit)
     Default,
@@ -118,12 +122,13 @@ impl From<&str> for TransactionType {
         match value {
             "default" => Self::Default,
             "internal" => Self::Internal,
-            _ => panic!(""),
+            a @ _ => panic!("Unexpected value: {}", a),
         }
     }
 }
 
 /// Kind of tow factor type
+///
 pub enum TwoFactorType {
     /// 카카오페이 인증
     #[deprecated(since = "1.7.3", note = "Use Kakao instead")]
@@ -145,6 +150,7 @@ impl Display for TwoFactorType {
 }
 
 /// List of transaction type
+#[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
 #[derive(Debug)]
 pub enum TransferType {
     /// 출금
@@ -167,12 +173,13 @@ impl From<&str> for TransferType {
         match value {
             "withdraw" => Self::Withdraw,
             "deposit" => Self::Deposit,
-            _ => panic!(""),
+            a @ _ => panic!("Unexpected value: {}", a),
         }
     }
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+#[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
 pub enum AskType {
     BestFOK,
     BestIOC,
@@ -196,6 +203,7 @@ impl Display for AskType {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+#[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
 pub enum BidType {
     BestFOK,
     BestIOC,
@@ -227,7 +235,7 @@ impl From<&str> for AskType {
             "limit_fok" => Self::LimitFOK,
             "limit_ioc" => Self::LimitIOC,
             "market" => Self::Market,
-            _ => panic!(""),
+            a @ _ => panic!("Unexpected value: {}", a),
         }
     }
 }
@@ -241,7 +249,7 @@ impl From<&str> for BidType {
             "limit_fok" => Self::LimitFOK,
             "limit_ioc" => Self::LimitIOC,
             "price" => Self::Price,
-            _ => panic!(""),
+            a @ _ => panic!("Unexpected value: {}", a),
         }
     }
 }
