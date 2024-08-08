@@ -558,7 +558,7 @@ pub async fn get_order_status_by_identifier(
 ///
 /// # Example
 /// ```
-/// let order_status = api_exchange::list_order_states().await;
+/// let order_status = api_exchange::get_order_states_list().await;
 /// ```
 /// ```json
 /// [

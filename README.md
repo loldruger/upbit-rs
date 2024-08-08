@@ -22,7 +22,7 @@ let account_info = api_exchange::get_account_info().await;
 
 let order_chance = api_exchange::get_order_chance("KRW-ETH").await;
 let order_status = api_exchange::get_order_status(Some("9ca023a5-851b-4fec-9f0a-48cd83c2eaae"), None).await;
-let order_status_list = api_exchange::list_order_status().await;
+let order_status_list = api_exchange::get_order_status_list().await;
 
 let order_info = api_exchange::order_by_price("KRW-ETH", OrderSide::Bid, 5000.0, 1_435_085.0, OrderType::Limit, None).await;
 let order_info = api_exchange::sell_by_market_price("KRW-ETH", 1.0, "cdd92199-2897-4e14-9448-f923320408ad").await;
@@ -41,7 +41,7 @@ let deposit_result = api_deposit::get_deposit_info(Some("KRW"), None, None).awai
 let deposit_result = api_deposit::get_deposit_info_list("KRW", DepositState::Rejected, None, None, 10, 0, OrderBy::Asc).await;
 
 let coin_address_info = api_deposit::get_coin_address_info("ETH", "ETH").await:
-let coin_address_info_list = api_deposit::list_coin_address_info().await;
+let coin_address_info_list = api_deposit::get_coin_address_info_list().await;
 
 // api_quotation
 let order_book_info = api_quotation::get_orderbook_info("KRW-ETH").await;
