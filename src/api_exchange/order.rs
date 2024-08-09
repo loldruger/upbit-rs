@@ -35,7 +35,7 @@ impl OrderInfo {
                 .unwrap());
         }
 
-        Self::deserialize_order_response(res_serialized)
+        Self::deserialize_order_response(&res_serialized)
     }
 
     pub async fn order_ask_at_market_price(
@@ -59,7 +59,7 @@ impl OrderInfo {
                 .unwrap());
         }
 
-        Self::deserialize_order_response(res_serialized)
+        Self::deserialize_order_response(&res_serialized)
     }
 
     async fn request_order_by_price(
@@ -165,8 +165,8 @@ impl OrderInfo {
             .map_err(crate::response::response_error_from_reqwest)
     }
 
-    fn deserialize_order_response(res: String) -> Result<Self, ResponseError> {
-        serde_json::from_str(&res)
+    fn deserialize_order_response(res_serialized: &str) -> Result<Self, ResponseError> {
+        serde_json::from_str(res_serialized)
             .map(|x: OrderInfoSource| Self {
                 uuid: x.uuid(),
                 side: x.side(),

@@ -40,7 +40,7 @@ impl OrderInfo {
                 .unwrap());
         }
 
-        Self::deserialize_order_status_response(res_serialized)
+        Self::deserialize_order_status_response(&res_serialized)
     }
 
     pub async fn get_order_status_by_identifiers(
@@ -61,7 +61,7 @@ impl OrderInfo {
                 .unwrap());
         }
 
-        Self::deserialize_order_status_response(res_serialized)
+        Self::deserialize_order_status_response(&res_serialized)
     }
 
     pub async fn get_order_status_opened(
@@ -113,7 +113,7 @@ impl OrderInfo {
                 .unwrap());
         }
 
-        Self::deserialize_order_status_response(res_serialized)
+        Self::deserialize_order_status_response(&res_serialized)
     }
 
     pub async fn get_order_status_closed(
@@ -140,7 +140,7 @@ impl OrderInfo {
                 .unwrap());
         }
 
-        Self::deserialize_order_status_response(res_serialized)
+        Self::deserialize_order_status_response(&res_serialized)
     }
 
     #[deprecated(since = "1.6.0")]
@@ -159,7 +159,7 @@ impl OrderInfo {
                 .unwrap());
         }
 
-        Self::deserialize_order_status_response(res_serialized)
+        Self::deserialize_order_status_response(&res_serialized)
     }
 
     #[deprecated(since = "1.6.0")]
@@ -309,8 +309,8 @@ impl OrderInfo {
             .map_err(crate::response::response_error_from_reqwest)
     }
 
-    fn deserialize_order_status_response(res: String) -> Result<Vec<Self>, ResponseError> {
-        serde_json::from_str(&res)
+    fn deserialize_order_status_response(res_serialized: &str) -> Result<Vec<Self>, ResponseError> {
+        serde_json::from_str(res_serialized)
             .map(|i: Vec<OrderInfoSource>| {
                 i.into_iter()
                     .map(|x| Self {

@@ -10,12 +10,10 @@ use super::{
 };
 
 impl TransactionInfo {
-    pub async fn get_deposit_info(
-        currency: Option<&str>,
-        uuid: Option<&str>,
-        txid: Option<&str>,
+    pub async fn get_deposit_info_by_currency(
+        currency: &str,
     ) -> Result<Self, ResponseError> {
-        let res = Self::request_deposit(currency, uuid, txid).await?;
+        let res = Self::request_deposit_by_currency(currency).await?;
         let res_serialized = res
             .text()
             .await
@@ -28,7 +26,107 @@ impl TransactionInfo {
                 .unwrap());
         }
 
-        serde_json::from_str(&res_serialized)
+        Self::deserialize_order_status_response(&res_serialized)
+    }
+
+    pub async fn get_deposit_info_by_uuid(
+        uuid: &str,
+    ) -> Result<Self, ResponseError> {
+        let res = Self::request_deposit_by_uuid(uuid).await?;
+        let res_serialized = res
+            .text()
+            .await
+            .map_err(crate::response::response_error_from_reqwest)?;
+
+        if res_serialized.contains("error") {
+            return Err(serde_json::from_str(&res_serialized)
+                .map(crate::response::response_error)
+                .ok()
+                .unwrap());
+        }
+
+        Self::deserialize_order_status_response(&res_serialized)
+    }
+
+    pub async fn get_deposit_info_by_txid(
+        txid: &str,
+    ) -> Result<Self, ResponseError> {
+        let res = Self::request_deposit_by_txid(txid).await?;
+        let res_serialized = res
+            .text()
+            .await
+            .map_err(crate::response::response_error_from_reqwest)?;
+
+        if res_serialized.contains("error") {
+            return Err(serde_json::from_str(&res_serialized)
+                .map(crate::response::response_error)
+                .ok()
+                .unwrap());
+        }
+
+        Self::deserialize_order_status_response(&res_serialized)
+    }
+
+    async fn request_deposit_by_currency(
+        currency: &str
+    ) -> Result<Response, ResponseError> {
+        let mut url = Url::parse(&format!("{URL_SERVER}{URL_DEPOSIT}"))
+            .map_err(crate::response::response_error_internal_url_parse_error)?;
+
+        url.query_pairs_mut().append_pair("currency", currency);
+
+        let token_string = Self::set_token_with_query(url.as_str())?;
+
+        reqwest::Client::new()
+            .get(url.as_str())
+            .header(ACCEPT, "application/json")
+            .header(AUTHORIZATION, &token_string)
+            .send()
+            .await
+            .map_err(crate::response::response_error_from_reqwest)
+    }
+
+    async fn request_deposit_by_uuid(
+        uuid: &str,
+    ) -> Result<Response, ResponseError> {
+        let mut url = Url::parse(&format!("{URL_SERVER}{URL_DEPOSIT}"))
+            .map_err(crate::response::response_error_internal_url_parse_error)?;
+
+        url.query_pairs_mut().append_pair("uuid", uuid);
+
+        let token_string = Self::set_token_with_query(url.as_str())?;
+
+        reqwest::Client::new()
+            .get(url.as_str())
+            .header(ACCEPT, "application/json")
+            .header(AUTHORIZATION, &token_string)
+            .send()
+            .await
+            .map_err(crate::response::response_error_from_reqwest)
+
+    }
+
+    async fn request_deposit_by_txid(
+        txid: &str,
+    ) -> Result<Response, ResponseError> {
+        let mut url = Url::parse(&format!("{URL_SERVER}{URL_DEPOSIT}"))
+            .map_err(crate::response::response_error_internal_url_parse_error)?;
+
+        url.query_pairs_mut().append_pair("txid", txid);
+
+        let token_string = Self::set_token_with_query(url.as_str())?;
+
+        reqwest::Client::new()
+            .get(url.as_str())
+            .header(ACCEPT, "application/json")
+            .header(AUTHORIZATION, &token_string)
+            .send()
+            .await
+            .map_err(crate::response::response_error_from_reqwest)
+    }
+
+    fn deserialize_order_status_response(res_serialized: &str) -> Result<Self, ResponseError> {
+        serde_json::from_str(res_serialized)
             .map(|x: TransactionInfoSource| Self {
                 r#type: x.r#type(),
                 uuid: x.uuid(),
@@ -57,37 +155,6 @@ impl TransactionInfo {
             })
             .map_err(crate::response::response_error_from_json)
     }
-
-    async fn request_deposit(
-        currency: Option<&str>,
-        uuid: Option<&str>,
-        txid: Option<&str>,
-    ) -> Result<Response, ResponseError> {
-        let mut url = Url::parse(&format!("{URL_SERVER}{URL_DEPOSIT}"))
-            .map_err(crate::response::response_error_internal_url_parse_error)?;
-
-        if let Some(currency) = currency {
-            url.query_pairs_mut().append_pair("currency", currency);
-        }
-
-        if let Some(uuid) = uuid {
-            url.query_pairs_mut().append_pair("uuid", uuid);
-        }
-
-        if let Some(txid) = txid {
-            url.query_pairs_mut().append_pair("txid", txid);
-        }
-
-        let token_string = Self::set_token_with_query(url.as_str())?;
-
-        reqwest::Client::new()
-            .get(url.as_str())
-            .header(ACCEPT, "application/json")
-            .header(AUTHORIZATION, &token_string)
-            .send()
-            .await
-            .map_err(crate::response::response_error_from_reqwest)
-    }
 }
 
 #[cfg(test)]
@@ -103,7 +170,7 @@ mod tests {
         crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
 
-        let res = TransactionInfo::request_deposit(Some("KRW"), None, None)
+        let res = TransactionInfo::request_deposit_by_currency("KRW-ETH")
             .await
             .unwrap();
         let res_serialized = res

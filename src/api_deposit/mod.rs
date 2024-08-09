@@ -79,7 +79,15 @@ impl From<&str> for DepositState {
 /// use api_deposit::DepositState;
 ///
 /// // it returns deposit list of currency "KRW", state "accepted" ordered by asc
-/// let deposit_info_list = api_deposit::get_deposit_info_list("KRW", DepositState::Accepted, None, None, 10, 0, OrderBy::Asc).await;
+/// let deposit_info_list = api_deposit::get_deposit_info_list(
+///     "KRW",
+///     DepositState::Accepted,
+///     None,
+///     None,
+///     10,
+///     0,
+///     OrderBy::Asc
+/// ).await;
 ///
 /// // it returns deposit list of currency "BTC", state "accepted", txid "98c15999..." ordered by desc
 /// let deposit_info_list = api_deposit::get_deposit_info_list(
@@ -208,19 +216,29 @@ pub async fn get_deposit_info_list(
 /// | amount | 입금 금액/수량 | NumberString
 /// | fee | 입금 수수료 | NumberString
 /// | transaction_type | 입금 유형<br> default : 일반입금<br>internal : 바로입금 | String
-pub async fn get_deposit_info(
-    currency: Option<&str>,
-    uuid: Option<&str>,
-    txid: Option<&str>,
+pub async fn get_deposit_info_by_currency(
+    currency: &str,
 ) -> Result<TransactionInfo, ResponseError> {
-    TransactionInfo::get_deposit_info(currency, uuid, txid).await
+    TransactionInfo::get_deposit_info_by_currency(currency).await
+}
+
+pub async fn get_deposit_info_by_uuid(
+    uuid: &str,
+) -> Result<TransactionInfo, ResponseError> {
+    TransactionInfo::get_deposit_info_by_uuid(uuid).await
+}
+
+pub async fn get_deposit_info_by_txid(
+    txid: &str,
+) -> Result<TransactionInfo, ResponseError> {
+    TransactionInfo::get_deposit_info_by_txid(txid).await
 }
 
 /// 원화를 입금한다.
 ///
 /// # Example
 /// ```rust
-/// let deposit_result = api_deposit::deposit_krw(10000.0, api_deposit::TwoFactorType::Kakao).await;
+/// let deposit_result = api_deposit::deposit_krw(10000.0, TwoFactorType::Kakao).await;
 /// ```
 /// - parameters
 /// > `amount` amount of deposit <br>

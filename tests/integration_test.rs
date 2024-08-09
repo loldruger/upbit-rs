@@ -329,7 +329,7 @@ async fn test_get_deposit_info() {
     upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
     upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
 
-    let info = upbit::api_deposit::get_deposit_info(Some("KRW"), None, None).await;
+    let info = upbit::api_deposit::get_deposit_info_by_currency("KRW").await;
 
     assert!(info.is_ok());
 }

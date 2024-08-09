@@ -124,7 +124,7 @@ impl Display for UrlAssociates {
 /// let order_book_info = api_quotation::get_order_book_info(&["KRW-ETH"]).await;
 /// ```
 /// - parameters
-/// > `market_id` ex) KRW-ETH<br>
+/// > `markets_id` ex) KRW-ETH<br>
 /// # Response
 ///  * orderbook_unit 리스트에는 15호가 정보가 들어가며 차례대로 1호가, 2호가 ... 15호가의 정보를 담고 있습니다.
 ///  * orderbook_unit list contains information of 15 quotes of bid/ask price, in order, 1st, 2nd .. 15th quote
@@ -289,8 +289,8 @@ pub async fn get_order_book_info(markets_id: &[&str]) -> Result<OrderBookInfo, R
 /// | lowest_52_week_price | 52주 신저가 | Double |
 /// | lowest_52_week_date | 52주 신저가 달성일 <br> 포맷: yyyy-MM-dd | String |
 /// | timestamp | 타임스탬프 | Long |
-pub async fn get_ticker_snapshot(market: &[&str]) -> Result<TickerSnapshot, ResponseError> {
-    TickerSnapshot::get_ticker_snapshot(market).await
+pub async fn get_ticker_snapshot(markets_id: &[&str]) -> Result<TickerSnapshot, ResponseError> {
+    TickerSnapshot::get_ticker_snapshot(markets_id).await
 }
 
 /// 호가 정보를 조회한다. (Inquiry bid price and offered price.)
@@ -337,13 +337,13 @@ pub async fn get_ticker_snapshot(market: &[&str]) -> Result<TickerSnapshot, Resp
 ///
 /// * sequential_id 필드는 체결의 유일성 판단을 위한 근거로 쓰일 수 있습니다. 하지만 체결의 순서를 보장하지는 못합니다.
 pub async fn get_trade_recent_list(
-    market: &str,
+    market_id: &str,
     hhmmss: Option<&str>,
     count: i32,
     cursor: &str,
     days_ago: Option<i32>,
 ) -> Result<TradeRecent, ResponseError> {
-    TradeRecent::get_trade_recent_list(market, hhmmss, count, cursor, days_ago).await
+    TradeRecent::get_trade_recent_list(market_id, hhmmss, count, cursor, days_ago).await
 }
 
 /// 업비트에서 거래 가능한 마켓 목록 (List of markets available on Upbit)
@@ -431,12 +431,12 @@ pub async fn get_market_state(is_detailed: bool) -> Result<Vec<MarketState>, Res
 /// | candle_acc_trade_volume | 누적 거래량 | Double |
 /// | unit | 분 단위(유닛) | Integer |
 pub async fn get_candle_minute(
-    market: &str,
+    market_id: &str,
     to: Option<String>,
     count: i32,
     candle_minute: CandleMinute,
 ) -> Result<Vec<CandleChartMinute>, ResponseError> {
-    CandleChartMinute::request_candle(market, to, count, candle_minute).await
+    CandleChartMinute::request_candle(market_id, to, count, candle_minute).await
 }
 
 /// 일봉 캔들 데이터를 요청한다. (inquire day-unit candle data.)
@@ -491,12 +491,12 @@ pub async fn get_candle_minute(
 /// | change_rate | 전일 종가 대비 변화량 | Double |
 /// | converted_trade_price | 종가 환산 화폐 단위로 환산된 가격(요청에 convertingPriceUnit 파라미터 없을 시 해당 필드 포함되지 않음.) | Double |
 pub async fn get_candle_day(
-    market: &str,
+    market_id: &str,
     count: i32,
     last_candle_time: Option<String>,
     price_unit: Option<String>,
 ) -> Result<Vec<CandleChartDay>, ResponseError> {
-    CandleChartDay::request_candle(market, count, last_candle_time, price_unit).await
+    CandleChartDay::request_candle(market_id, count, last_candle_time, price_unit).await
 }
 
 /// 주봉 캔들 데이터를 요청한다. (inquire week-unit candle data.)
@@ -545,11 +545,11 @@ pub async fn get_candle_day(
 /// | candle_acc_trade_volume | 누적 거래량 | Double |
 /// | first_day_of_period | 캔들 기간의 가장 첫 날 | String |
 pub async fn get_candle_week(
-    market: &str,
+    market_id: &str,
     count: i32,
     last_candle_time: Option<String>,
 ) -> Result<Vec<CandleChartWeek>, ResponseError> {
-    CandleChartWeek::request_candle(market, count, last_candle_time).await
+    CandleChartWeek::request_candle(market_id, count, last_candle_time).await
 }
 
 /// 월봉 캔들 데이터를 요청한다. (inquire month-unit candle data.)
@@ -598,9 +598,9 @@ pub async fn get_candle_week(
 /// | candle_acc_trade_volume | 누적 거래량 | Double |
 /// | first_day_of_period | 캔들 기간의 가장 첫 날 | String |
 pub async fn get_candle_month(
-    market: &str,
+    market_id: &str,
     count: i32,
     last_candle_time: Option<String>,
 ) -> Result<Vec<CandleChartMonth>, ResponseError> {
-    CandleChartMonth::request_candle(market, count, last_candle_time).await
+    CandleChartMonth::request_candle(market_id, count, last_candle_time).await
 }
