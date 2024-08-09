@@ -79,22 +79,28 @@ impl From<&str> for DepositState {
 /// use api_deposit::DepositState;
 ///
 /// // it returns deposit list of currency "KRW", state "accepted" ordered by asc
-/// let get_deposit_info_list = api_deposit::get_deposit_info_list("KRW", DepositState::Accepted, None, None, 10, 0, OrderBy::Asc).await;
+/// let deposit_info_list = api_deposit::get_deposit_info_list("KRW", DepositState::Accepted, None, None, 10, 0, OrderBy::Asc).await;
 ///
 /// // it returns deposit list of currency "BTC", state "accepted", txid "98c15999..." ordered by desc
-/// let get_deposit_info_list = api_deposit::get_deposit_info_list(
+/// let deposit_info_list = api_deposit::get_deposit_info_list(
 ///     "BTC",
 ///     "ACCEPTED",
 ///     None,
-///     Some(&[
-///         "98c15999f0bdc4ae0e8a-ed35868bb0c204fe6ec29e4058a3451e-88636d1040f4baddf943274ce37cf9cc",
-///         ...
-///     ]),
-///         10,
-///         0,
-///         OrderBy::Desc
-///     ).await;
+///     Some(&["BKD-2023-08-10-a85bae122af08bdf2ed424f233",]),
+///     10,
+///     0,
+///     OrderBy::Desc
+/// ).await;
 ///
+/// let deposit_info_list = api::get_deposit_info_list(
+///     "KRW",
+///     DepositState::Accepted,
+///     Some(&["2e3d372e-7a84-4969-aef5-1ef13ee36351"]),
+///     None,
+///     10,
+///     1,
+///     OrderBy::Desc,
+/// ).await;
 /// ```
 /// - parameters
 /// > `currency` ex) KRW, BTC, ETH etc. <br>
