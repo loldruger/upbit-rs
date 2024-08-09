@@ -1,4 +1,4 @@
-upbit-api on rust, with upbit api v1.3.4
+upbit-api on rust, with upbit api v1.5.0
 
 
 this crate is dependant on `tokio`

@@ -3,7 +3,7 @@ use reqwest::{
     Response, Url,
 };
 
-use crate::request::RequestWithQuery;
+use crate::{request::RequestWithQuery, response::{ResponseErrorBody, ResponseErrorState}};
 use crate::{constant::OrderBy, request::Request};
 
 #[allow(deprecated)]
@@ -63,13 +63,37 @@ impl OrderInfo {
 
     pub async fn get_order_status_opened(
         market_id: &str,
-        state: OrderState,
         states: &[OrderState],
         page: u8,
         limit: u8,
         order_by: OrderBy,
     ) -> Result<Vec<Self>, ResponseError> {
-        let res = Self::request_get_orders_opened(market_id, state, states, page, limit, order_by)
+        for state in states {
+            match state {
+                OrderState::Wait => {},
+                OrderState::Watch => {},
+                _ => return Err(ResponseError {
+                    state: ResponseErrorState::InvalidParameter,
+                    error: ResponseErrorBody {
+                        name: "invalid_parameter".to_string(),
+                        message: "state argument must be either OrderState::Wait op OrderState::Watch".to_string(),
+                    },
+                }),
+            }
+        }
+
+        match limit {
+            1..=100 => {},
+            _ => return Err(ResponseError {
+                state: ResponseErrorState::InvalidParameter,
+                error: ResponseErrorBody {
+                    name: "invalid_parameter".to_string(),
+                    message: "limit argument must be between 1 and 100".to_string(),
+                },
+            }),
+        }
+        
+        let res = Self::request_get_orders_opened(market_id, states, page, limit, order_by)
             .await?;
         let res_serialized = res
             .text()
@@ -88,14 +112,14 @@ impl OrderInfo {
 
     pub async fn get_order_status_closed(
         market_id: &str,
-        state: OrderState,
+        states: &[OrderState],
         start_time: Option<&str>,
         end_time: Option<&str>,
         limit: u16,
         order_by: OrderBy,
     ) -> Result<Vec<Self>, ResponseError> {
         let res = Self::request_get_orders_closed(
-            market_id, state, start_time, end_time, limit, order_by,
+            market_id, states, start_time, end_time, limit, order_by,
         )
         .await?;
         let res_serialized = res
@@ -162,7 +186,7 @@ impl OrderInfo {
             url.query_pairs_mut().append_pair("uuids", uuid);
         }
 
-        let url = url.as_str().replace("uuids", "uuids[]");
+        let url = url.as_str().replace("&uuids", "&uuids[]");
         let token_string = Self::set_token_with_query(&url)?;
 
         reqwest::Client::new()
@@ -204,7 +228,6 @@ impl OrderInfo {
 
     async fn request_get_orders_opened(
         market_id: &str,
-        state: OrderState,
         states: &[OrderState],
         page: u8,
         limit: u8,
@@ -238,7 +261,7 @@ impl OrderInfo {
 
     async fn request_get_orders_closed(
         market_id: &str,
-        state: OrderState,
+        states: &[OrderState],
         start_time: Option<&str>,
         end_time: Option<&str>,
         limit: u16,
@@ -249,7 +272,7 @@ impl OrderInfo {
 
         url.query_pairs_mut()
             .append_pair("market", market_id)
-            .append_pair("state", &state.to_string())
+            // .append_pair("state", &state.to_string())
             .append_pair("limit", &limit.to_string())
             .append_pair("order_by", &order_by.to_string());
 
@@ -260,6 +283,12 @@ impl OrderInfo {
         if let Some(end_time) = end_time {
             url.query_pairs_mut().append_pair("end_time", end_time);
         }
+
+        for state in states {
+            url.query_pairs_mut().append_pair("states", &state.to_string());
+        }
+
+        let url = url.as_str().replace("states", "states[]");
 
         let token_string = Self::set_token_with_query(url.as_str())?;
 
@@ -436,7 +465,7 @@ mod tests {
             "executed_volume": "",
             "executed_funds": "",
             "trades_count": "",
-            "time_in_force": "",
+            // "time_in_force": "",
         }]);
 
         let expected_structure = expected_structure[0]
@@ -491,7 +520,6 @@ mod tests {
 
         let res = OrderInfo::request_get_orders_opened(
             "KRW-ETH",
-            OrderState::Wait,
             &[OrderState::Wait],
             1,
             10,
@@ -582,7 +610,7 @@ mod tests {
 
         let res = OrderInfo::request_get_orders_closed(
             "KRW-ETH",
-            OrderState::Done,
+            &[OrderState::Done],
             None,
             None,
             10,

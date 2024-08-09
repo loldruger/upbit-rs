@@ -9,7 +9,7 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use crate::{constant::OrderBy, response::{ResponseErrorBody, ResponseErrorState}};
+use crate::constant::OrderBy;
 
 use super::response::{AccountsInfo, OrderChance, OrderInfo, OrderStatus, ResponseError};
 
@@ -635,17 +635,21 @@ pub async fn list_order_status() -> Result<Vec<OrderInfo>, ResponseError> {
 ///
 /// # Example
 /// ```
-/// let order_status = api_exchange::get_order_status_by_uuids().await;
+/// let order_status_list = api_exchange::get_order_status_by_uuids(
+///     "KRW-ETH",
+///     &["d60dfc8a-db0a-4087-9974-fed6433eb8f1"],
+///     OrderBy::Desc
+/// ).await;
 /// ```
 /// ```json
 /// [
 ///   {
-///     "uuid": "9ca023a5-851b-4fec-9f0a-48cd83c2eaae",
+///     "uuid": "d60dfc8a-db0a-4087-9974-fed6433eb8f1",
 ///     "side": "ask",
 ///     "ord_type": "limit",
 ///     "price": "4280000.0",
 ///     "state": "done",
-///     "market": "KRW-BTC",
+///     "market": "KRW-ETH",
 ///     "created_at": "2019-01-04T13:48:09+09:00",
 ///     "volume": "1.0",
 ///     "remaining_volume": "0.0",
@@ -692,38 +696,77 @@ pub async fn get_order_status_by_identifiers(
     OrderInfo::get_order_status_by_identifiers(market_id, identifiers, order_by).await
 }
 
+/// 주문 리스트를 조회한다. (inquire every order status.)
+///
+/// # Example
+/// ```
+/// let order_status_list = OrderInfo::request_get_orders_opened(
+///     "KRW-ETH",
+///     &[OrderState::Wait], // Only OrderState::Wait or OrderState::Watch have to be input
+///     1,
+///     10,
+///     OrderBy::Desc,
+/// ).await;
+/// ```
+/// ```json
+/// [
+///   {
+///     "uuid": "d60dfc8a-db0a-4087-9974-fed6433eb8f1",
+///     "side": "ask",
+///     "ord_type": "limit",
+///     "price": "4280000.0",
+///     "state": "done",
+///     "market": "KRW-ETH",
+///     "created_at": "2019-01-04T13:48:09+09:00",
+///     "volume": "1.0",
+///     "remaining_volume": "0.0",
+///     "reserved_fee": "0.0",
+///     "remaining_fee": "0.0",
+///     "paid_fee": "2140.0",
+///     "locked": "0.0",
+///     "executed_volume": "1.0",
+///     "executed_funds": null,
+///     "trades_count": 1,
+///   }
+/// ]
+/// ```
+/// # Response Description
+/// | field                  | description                   | type         |
+/// |:-----------------------|:------------------------------|:-------------|
+/// | uuid | 주문의 고유 아이디 | String |
+/// | side | 주문 종류 | String |
+/// | ord_type | 주문 방식 | String |
+/// | price | 주문 당시 화폐 가격 | NumberString |
+/// | state | 주문 상태 | String |
+/// | market | 마켓의 유일키 | String |
+/// | created_at | 주문 생성 시간 | DateString |
+/// | volume | 사용자가 입력한 주문 양 | NumberString |
+/// | remaining_volume | 체결 후 남은 주문 양 | NumberString |
+/// | reserved_fee | 수수료로 예약된 비용 | NumberString |
+/// | remaining_fee | 남은 수수료 | NumberString |
+/// | paid_fee | 사용된 수수료 | NumberString |
+/// | locked | 거래에 사용중인 비용 | NumberString |
+/// | executed_volume | 체결된 양 | NumberString |
+/// | trades_count | 해당 주문에 걸린 체결 수 | Integer |
 pub async fn get_order_status_opened(
     market_id: &str,
-    state: OrderState,
     states: &[OrderState],
     page: u8,
     limit: u8,
     order_by: OrderBy,
 ) -> Result<Vec<OrderInfo>, ResponseError> {
-    match state {
-        OrderState::Wait => {},
-        OrderState::Watch => {},
-        _ => return Err(ResponseError {
-            state: ResponseErrorState::InvalidParameter,
-            error: ResponseErrorBody {
-                name: "invalid_parameter".to_string(),
-                message: "state argument must be either OrderState::Wait op OrderState::Watch".to_string(),
-            },
-        }),
-    }
-
-    OrderInfo::get_order_status_opened(market_id, state, states, page, limit, order_by).await
+    OrderInfo::get_order_status_opened(market_id, states, page, limit, order_by).await
 }
 
 pub async fn get_order_status_closed(
     market_id: &str,
-    state: OrderState,
+    states: &[OrderState],
     start_time: Option<&str>,
     end_time: Option<&str>,
     limit: u16,
     order_by: OrderBy,
 ) -> Result<Vec<OrderInfo>, ResponseError> {
-    OrderInfo::get_order_status_closed(market_id, state, start_time, end_time, limit, order_by)
+    OrderInfo::get_order_status_closed(market_id, states, start_time, end_time, limit, order_by)
         .await
 }
 

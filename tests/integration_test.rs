@@ -69,12 +69,12 @@ async fn test_get_order_status_by_uuid()  {
     upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
     upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
 
-    let order_ask = upbit::api_exchange::get_order_status_by_uuid(
-        "KRW-ETH"
+    let order_status = upbit::api_exchange::get_order_status_by_uuid(
+        "d60dfc8a-db0a-4087-9974-fed6433eb8f1"
     )
     .await;
 
-    assert!(order_ask.is_ok())
+    assert!(order_status.is_ok())
 }
 
 #[tokio::test]
@@ -82,14 +82,14 @@ async fn test_get_order_status_by_uuids() {
     upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
     upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
 
-    let order_ask = upbit::api_exchange::get_order_status_by_uuids(
+    let order_status = upbit::api_exchange::get_order_status_by_uuids(
         "KRW-ETH",
-        &["007496aa-88ce-4fa2-a709-140c8175e41a"],
+        &["d60dfc8a-db0a-4087-9974-fed6433eb8f1"],
         OrderBy::Desc
     )
     .await;
 
-    assert!(order_ask.is_ok())
+    assert!(order_status.is_ok())
 }
 
 #[tokio::test]
@@ -99,15 +99,12 @@ async fn test_get_order_status_opened() {
 
     let order_info = upbit::api_exchange::get_order_status_opened(
         "KRW-ETH",
-        OrderState::Wait,
-        &[OrderState::Wait, OrderState::Watch],
+        &[OrderState::Wait],
         1,
         10,
         OrderBy::Desc
     )
     .await;
-
-    println!("{:?}", order_info);
 
     assert!(order_info.is_ok())
 }
@@ -119,7 +116,7 @@ async fn test_get_order_status_closed() {
 
     let order_closed = upbit::api_exchange::get_order_status_closed(
         "KRW-ETH",
-        OrderState::Done,
+        &[OrderState::Done],
         None,
         None,
         10,
@@ -127,8 +124,6 @@ async fn test_get_order_status_closed() {
     )
     .await;
 
-    println!("{:?}", order_closed);
-    
     assert!(order_closed.is_ok())
 }
 
