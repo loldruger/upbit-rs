@@ -19,7 +19,7 @@ use super::{
 };
 
 impl OrderInfo {
-    pub async fn get_order_states_by_uuids(
+    pub async fn get_order_status_by_uuids(
         market_id: &str,
         uuids: &[&str],
         order_by: OrderBy,
@@ -37,10 +37,10 @@ impl OrderInfo {
                 .unwrap());
         }
 
-        Self::deserialize_order_states_response(res_serialized)
+        Self::deserialize_order_status_response(res_serialized)
     }
 
-    pub async fn get_order_states_by_identifiers(
+    pub async fn get_order_status_by_identifiers(
         market_id: &str,
         identifiers: &[&str],
         order_by: OrderBy,
@@ -58,10 +58,10 @@ impl OrderInfo {
                 .unwrap());
         }
 
-        Self::deserialize_order_states_response(res_serialized)
+        Self::deserialize_order_status_response(res_serialized)
     }
 
-    pub async fn get_order_states_opened(
+    pub async fn get_order_status_opened(
         market_id: &str,
         state: OrderState,
         states: &[OrderState],
@@ -83,10 +83,10 @@ impl OrderInfo {
                 .unwrap());
         }
 
-        Self::deserialize_order_states_response(res_serialized)
+        Self::deserialize_order_status_response(res_serialized)
     }
 
-    pub async fn get_order_states_closed(
+    pub async fn get_order_status_closed(
         market_id: &str,
         state: OrderState,
         start_time: Option<&str>,
@@ -110,7 +110,7 @@ impl OrderInfo {
                 .unwrap());
         }
 
-        Self::deserialize_order_states_response(res_serialized)
+        Self::deserialize_order_status_response(res_serialized)
     }
 
     #[deprecated(since = "1.6.0")]
@@ -129,7 +129,7 @@ impl OrderInfo {
                 .unwrap());
         }
 
-        Self::deserialize_order_states_response(res_serialized)
+        Self::deserialize_order_status_response(res_serialized)
     }
 
     #[deprecated(since = "1.6.0")]
@@ -215,19 +215,16 @@ impl OrderInfo {
 
         url.query_pairs_mut()
             .append_pair("market", market_id)
-            .append_pair("state", &state.to_string())
-            .append_pair(
-                "states",
-                &states
-                    .iter()
-                    .map(|x| x.to_string())
-                    .collect::<Vec<String>>()
-                    .join(","),
-            )
+            // .append_pair("state", &state.to_string())
             .append_pair("page", &page.to_string())
             .append_pair("limit", &limit.to_string())
             .append_pair("order_by", &order_by.to_string());
 
+        for state in states {
+            url.query_pairs_mut().append_pair("states", &state.to_string());
+        }
+
+        let url = url.as_str().replace("states", "states[]");
         let token_string = Self::set_token_with_query(url.as_str())?;
 
         reqwest::Client::new()
@@ -275,7 +272,7 @@ impl OrderInfo {
             .map_err(crate::response::response_error_from_reqwest)
     }
 
-    fn deserialize_order_states_response(res: String) -> Result<Vec<Self>, ResponseError> {
+    fn deserialize_order_status_response(res: String) -> Result<Vec<Self>, ResponseError> {
         serde_json::from_str(&res)
             .map(|i: Vec<OrderInfoSource>| {
                 i.into_iter()
@@ -488,7 +485,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn test_get_order_states_opened() {
+    async fn test_get_order_status_opened() {
         crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
 
@@ -547,26 +544,26 @@ mod tests {
 
                 if !missing_keys.is_empty() {
                     println!(
-                        "[test_get_order_states_opened] Missing keys in item[{}]: {:?}",
+                        "[test_get_order_status_opened] Missing keys in item[{}]: {:?}",
                         index, missing_keys
                     );
                     assert!(false);
                 } else {
                     println!(
-                        "[test_get_order_states_opened] No keys are missing in item[{}]",
+                        "[test_get_order_status_opened] No keys are missing in item[{}]",
                         index
                     );
                 }
 
                 if !extra_keys.is_empty() {
                     println!(
-                        "[test_get_order_states_opened] Extra keys in item[{}]: {:?}",
+                        "[test_get_order_status_opened] Extra keys in item[{}]: {:?}",
                         index, extra_keys
                     );
                     assert!(false);
                 } else {
                     println!(
-                        "[test_get_order_states_opened] No extra keys found in item[{}]",
+                        "[test_get_order_status_opened] No extra keys found in item[{}]",
                         index
                     );
                 }
@@ -579,7 +576,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn test_get_order_states_closed() {
+    async fn test_get_order_status_closed() {
         crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
 
@@ -659,7 +656,7 @@ mod tests {
 
                     // Check the presence of the price field based on the ord_type field
                     println!(
-                        "[test_get_order_states_closed] Missing keys in item[{}]: {:?}",
+                        "[test_get_order_status_closed] Missing keys in item[{}]: {:?}",
                         index, missing_keys
                     );
                     assert!(false, "Missing keys found");
@@ -667,7 +664,7 @@ mod tests {
 
                 if !extra_keys.is_empty() {
                     println!(
-                        "[test_get_order_states_closed] Extra keys in item[{}]: {:?}",
+                        "[test_get_order_status_closed] Extra keys in item[{}]: {:?}",
                         index, extra_keys
                     );
                     assert!(false, "Extra keys found");

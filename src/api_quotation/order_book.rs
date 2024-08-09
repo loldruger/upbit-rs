@@ -137,26 +137,26 @@ mod tests {
 
                 if !missing_keys.is_empty() {
                     println!(
-                        "[test_get_order_states_closed] Missing keys in item[{}]: {:?}",
+                        "[test_get_order_status_closed] Missing keys in item[{}]: {:?}",
                         index, missing_keys
                     );
                     assert!(false);
                 } else {
                     println!(
-                        "[test_get_order_states_closed] No keys are missing in item[{}]",
+                        "[test_get_order_status_closed] No keys are missing in item[{}]",
                         index
                     );
                 }
 
                 if !extra_keys.is_empty() {
                     println!(
-                        "[test_get_order_states_closed] Extra keys in item[{}]: {:?}",
+                        "[test_get_order_status_closed] Extra keys in item[{}]: {:?}",
                         index, extra_keys
                     );
                     assert!(false);
                 } else {
                     println!(
-                        "[test_get_order_states_closed] No extra keys found in item[{}]",
+                        "[test_get_order_status_closed] No extra keys found in item[{}]",
                         index
                     );
                 }

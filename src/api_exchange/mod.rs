@@ -2,14 +2,14 @@ pub mod accounts;
 pub mod order;
 pub mod order_cancel;
 pub mod order_chance;
-pub mod order_states;
-pub mod order_states_list;
+pub mod order_status;
+pub mod order_status_list;
 
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use crate::constant::OrderBy;
+use crate::{constant::OrderBy, response::{ResponseErrorBody, ResponseErrorState}};
 
 use super::response::{AccountsInfo, OrderChance, OrderInfo, OrderStatus, ResponseError};
 
@@ -119,7 +119,7 @@ impl From<&str> for OrderCondition {
 #[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
 #[cfg_attr(feature = "sqlx-type", sqlx(type_name = "order_state"), sqlx(rename_all = "snake_case"))]
 pub enum OrderState {
-    /// 체결 대기 (default)
+    /// 체결 대기
     Wait,
     /// 예약주문 대기
     Watch,
@@ -156,7 +156,8 @@ impl From<&str> for OrderState {
 ///
 /// # Example
 /// ```
-/// let order_info = api_exchange::order_by_price("KRW-ETH", OrderSide::Bid, 5000.0, 1_435_085.0, OrderType::Limit, None).await;
+/// let order_bid = api_exchange::order_by_price("KRW-ETH", OrderSide::Bid, 5000.0, 1_435_085.0, OrderType::Limit, None).await;
+/// let order_ask = api_exchange::order_by_price("KRW-ETH", OrderSide::Ask, 5000.0, 10_435_085.0, OrderType::Limit, None).await;
 /// ```
 /// - parameters
 /// > `market` ex) "KRW-ETH" <br>
@@ -233,8 +234,8 @@ pub async fn order_by_price(
 ///
 /// # Example
 /// ```
-/// let order_info = api_exchange::sell_by_market_price("KRW-ETH", 1.0, None).await;
-/// let order_info = api_exchange::sell_by_market_price("KRW-ETH", 1.0, Some("some identifier")).await;
+/// let order_info = api_exchange::sell_at_market_price("KRW-ETH", 1.0, None).await;
+/// let order_info = api_exchange::sell_at_market_price("KRW-ETH", 1.0, Some("test_identifier")).await;
 /// ```
 /// - parameters
 /// > `market` ex) "KRW-ETH" <br>
@@ -395,13 +396,15 @@ pub async fn get_account_info() -> Result<Vec<AccountsInfo>, ResponseError> {
 /// let order_chance = api_exchange::get_order_chance("KRW-ETH").await;
 /// ```
 /// - parameters
-/// > `market` ex) KRW-ETH<br>
+/// > `market_id` ex) KRW-ETH<br>
 ///
 /// # Response
 /// ```json
 /// {
-///   "bid_fee": "0.0015",
-///   "ask_fee": "0.0015",
+///   "bid_fee": "0.0005",
+///   "ask_fee": "0.0005",
+///   "maker_bid_fee": "0.0005",
+///   "maker_ask_fee": "0.0005",
 ///   "market": {
 ///     "id": "KRW-BTC",
 ///     "name": "BTC/KRW",
@@ -412,41 +415,58 @@ pub async fn get_account_info() -> Result<Vec<AccountsInfo>, ResponseError> {
 ///       "ask",
 ///       "bid"
 ///     ],
+///     "bid_types": [
+///       "best_fok",
+///       "best_ioc",
+///       "limit",
+///       "limit_fok",
+///       "limit_ioc",
+///       "price"
+///     ],
+///     "ask_types": [
+///       "best_fok",
+///       "best_ioc",
+///       "limit",
+///       "limit_fok",
+///       "limit_ioc",
+///       "market"
+///     ],
 ///     "bid": {
 ///       "currency": "KRW",
-///       "price_unit": null,
-///       "min_total": 1000
+///       "min_total": "5000"
 ///     },
 ///     "ask": {
 ///       "currency": "BTC",
-///       "price_unit": null,
-///       "min_total": 1000
+///       "min_total": "5000"
 ///     },
-///     "max_total": "100000000.0",
-///     "state": "active",
+///     "max_total": "1000000000",
+///     "state": "active"
 ///   },
 ///   "bid_account": {
 ///     "currency": "KRW",
-///     "balance": "0.0",
-///     "locked": "0.0",
+///     "balance": "0.61934932",
+///     "locked": "0",
 ///     "avg_buy_price": "0",
-///     "avg_buy_price_modified": false,
-///     "unit_currency": "KRW",
+///     "avg_buy_price_modified": true,
+///     "unit_currency": "KRW"
 ///   },
 ///   "ask_account": {
 ///     "currency": "BTC",
-///     "balance": "10.0",
-///     "locked": "0.0",
-///     "avg_buy_price": "8042000",
+///     "balance": "0.00001194",
+///     "locked": "0",
+///     "avg_buy_price": "88029000",
 ///     "avg_buy_price_modified": false,
-///     "unit_currency": "KRW",
+///     "unit_currency": "KRW"
 ///   }
 /// }
 /// ```
+/// # Response Description
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
 /// | bid_fee |매수 수수료 비율 | NumberString |
 /// | ask_fee| 매도 수수료 비율 | NumberString |
+/// | maker_bid_fee| 매수 수수료 비율 | NumberString |
+/// | maker_ask_fee| 매도 수수료 비율 | NumberString |
 /// | market| 마켓에 대한 정보 | Object |
 /// | market.id| 마켓의 유일 키 | String |
 /// | market.name| 마켓 이름 | String |
@@ -523,6 +543,7 @@ pub async fn get_order_chance(market_id: &str) -> Result<OrderChance, ResponseEr
 ///   ]
 /// }
 /// ```
+/// # Response Description
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
 /// | uuid | 주문의 고유 아이디 | String |
@@ -562,7 +583,59 @@ pub async fn get_order_status_by_identifier(
 ///
 /// # Example
 /// ```
-/// let order_status = api_exchange::get_order_states_list().await;
+/// let order_status = api_exchange::list_order_status().await;
+/// ```
+/// # Response
+/// ```json
+/// [
+///   {
+///     "uuid": "9ca023a5-851b-4fec-9f0a-48cd83c2eaae",
+///     "side": "ask",
+///     "ord_type": "limit",
+///     "price": "4280000.0",
+///     "state": "done",
+///     "market": "KRW-BTC",
+///     "created_at": "2019-01-04T13:48:09+09:00",
+///     "volume": "1.0",
+///     "remaining_volume": "0.0",
+///     "reserved_fee": "0.0",
+///     "remaining_fee": "0.0",
+///     "paid_fee": "2140.0",
+///     "locked": "0.0",
+///     "executed_volume": "1.0",
+///     "trades_count": 1,
+///   }
+/// ]
+/// ```
+/// # Response Description
+/// | field                  | description                   | type         |
+/// |:-----------------------|:------------------------------|:-------------|
+/// | uuid | 주문의 고유 아이디 | String |
+/// | side | 주문 종류 | String |
+/// | ord_type | 주문 방식 | String |
+/// | price | 주문 당시 화폐 가격 | NumberString |
+/// | state | 주문 상태 | String |
+/// | market | 마켓의 유일키 | String |
+/// | created_at | 주문 생성 시간 | DateString |
+/// | volume | 사용자가 입력한 주문 양 | NumberString |
+/// | remaining_volume | 체결 후 남은 주문 양 | NumberString |
+/// | reserved_fee | 수수료로 예약된 비용 | NumberString |
+/// | remaining_fee | 남은 수수료 | NumberString |
+/// | paid_fee | 사용된 수수료 | NumberString |
+/// | locked | 거래에 사용중인 비용 | NumberString |
+/// | executed_volume | 체결된 양 | NumberString |
+/// | trades_count | 해당 주문에 걸린 체결 수 | Integer |
+#[allow(deprecated)]
+#[deprecated(since = "1.6.0", note = "use get_order_status_*() instead")]
+pub async fn list_order_status() -> Result<Vec<OrderInfo>, ResponseError> {
+    OrderInfo::get_order_state_list().await
+}
+
+/// 주문 리스트를 조회한다. (inquire every order status.)
+///
+/// # Example
+/// ```
+/// let order_status = api_exchange::get_order_status_by_uuids().await;
 /// ```
 /// ```json
 /// [
@@ -583,10 +656,9 @@ pub async fn get_order_status_by_identifier(
 ///     "executed_volume": "1.0",
 ///     "trades_count": 1,
 ///   }
-///   # ....
 /// ]
 /// ```
-/// # Response
+/// # Response Description
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
 /// | uuid | 주문의 고유 아이디 | String |
@@ -604,29 +676,23 @@ pub async fn get_order_status_by_identifier(
 /// | locked | 거래에 사용중인 비용 | NumberString |
 /// | executed_volume | 체결된 양 | NumberString |
 /// | trades_count | 해당 주문에 걸린 체결 수 | Integer |
-#[allow(deprecated)]
-#[deprecated(since = "1.6.0", note = "use get_order_states_*() instead")]
-pub async fn list_order_status() -> Result<Vec<OrderInfo>, ResponseError> {
-    OrderInfo::get_order_state_list().await
-}
-
-pub async fn get_order_states_by_uuids(
+pub async fn get_order_status_by_uuids(
     market_id: &str,
     uuids: &[&str],
     order_by: OrderBy,
 ) -> Result<Vec<OrderInfo>, ResponseError> {
-    OrderInfo::get_order_states_by_uuids(market_id, uuids, order_by).await
+    OrderInfo::get_order_status_by_uuids(market_id, uuids, order_by).await
 }
 
-pub async fn get_order_states_by_identifiers(
+pub async fn get_order_status_by_identifiers(
     market_id: &str,
     identifiers: &[&str],
     order_by: OrderBy,
 ) -> Result<Vec<OrderInfo>, ResponseError> {
-    OrderInfo::get_order_states_by_identifiers(market_id, identifiers, order_by).await
+    OrderInfo::get_order_status_by_identifiers(market_id, identifiers, order_by).await
 }
 
-pub async fn get_order_states_opened(
+pub async fn get_order_status_opened(
     market_id: &str,
     state: OrderState,
     states: &[OrderState],
@@ -634,10 +700,22 @@ pub async fn get_order_states_opened(
     limit: u8,
     order_by: OrderBy,
 ) -> Result<Vec<OrderInfo>, ResponseError> {
-    OrderInfo::get_order_states_opened(market_id, state, states, page, limit, order_by).await
+    match state {
+        OrderState::Wait => {},
+        OrderState::Watch => {},
+        _ => return Err(ResponseError {
+            state: ResponseErrorState::InvalidParameter,
+            error: ResponseErrorBody {
+                name: "invalid_parameter".to_string(),
+                message: "state argument must be either OrderState::Wait op OrderState::Watch".to_string(),
+            },
+        }),
+    }
+
+    OrderInfo::get_order_status_opened(market_id, state, states, page, limit, order_by).await
 }
 
-pub async fn get_order_states_closed(
+pub async fn get_order_status_closed(
     market_id: &str,
     state: OrderState,
     start_time: Option<&str>,
@@ -645,7 +723,7 @@ pub async fn get_order_states_closed(
     limit: u16,
     order_by: OrderBy,
 ) -> Result<Vec<OrderInfo>, ResponseError> {
-    OrderInfo::get_order_states_closed(market_id, state, start_time, end_time, limit, order_by)
+    OrderInfo::get_order_status_closed(market_id, state, start_time, end_time, limit, order_by)
         .await
 }
 

@@ -2,7 +2,7 @@ use tokio;
 use upbit::{
     self,
     api_deposit::DepositState,
-    api_exchange::{OrderSide, OrderType},
+    api_exchange::{OrderSide, OrderState, OrderType},
     api_quotation::CandleMinute,
     api_withdraw::WithdrawState,
     constant::{OrderBy, TransactionType},
@@ -62,6 +62,74 @@ async fn test_order_ask_by_price() {
     .await;
 
     assert!(order_ask.is_ok())
+}
+
+#[tokio::test]
+async fn test_get_order_status_by_uuid()  {
+    upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
+    upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
+
+    let order_ask = upbit::api_exchange::get_order_status_by_uuid(
+        "KRW-ETH"
+    )
+    .await;
+
+    assert!(order_ask.is_ok())
+}
+
+#[tokio::test]
+async fn test_get_order_status_by_uuids() {
+    upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
+    upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
+
+    let order_ask = upbit::api_exchange::get_order_status_by_uuids(
+        "KRW-ETH",
+        &["007496aa-88ce-4fa2-a709-140c8175e41a"],
+        OrderBy::Desc
+    )
+    .await;
+
+    assert!(order_ask.is_ok())
+}
+
+#[tokio::test]
+async fn test_get_order_status_opened() {
+    upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
+    upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
+
+    let order_info = upbit::api_exchange::get_order_status_opened(
+        "KRW-ETH",
+        OrderState::Wait,
+        &[OrderState::Wait, OrderState::Watch],
+        1,
+        10,
+        OrderBy::Desc
+    )
+    .await;
+
+    println!("{:?}", order_info);
+
+    assert!(order_info.is_ok())
+}
+
+#[tokio::test]
+async fn test_get_order_status_closed() {
+    upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
+    upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
+
+    let order_closed = upbit::api_exchange::get_order_status_closed(
+        "KRW-ETH",
+        OrderState::Done,
+        None,
+        None,
+        10,
+        OrderBy::Desc
+    )
+    .await;
+
+    println!("{:?}", order_closed);
+    
+    assert!(order_closed.is_ok())
 }
 
 #[tokio::test]
