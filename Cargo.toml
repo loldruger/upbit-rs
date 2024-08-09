@@ -1,9 +1,9 @@
 [package]
 name = "upbit"
-version = "1.8.3"
+version = "1.9.0"
 edition = "2021"
 authors = ["sy september <loldruger@gmail.com>"]
-description = "rust_upbit_api for upbit api version v1.4.8"
+description = "rust_upbit_api for upbit api version v1.5.0"
 repository = "https://github.com/loldruger/rust-upbit-api.git"
 documentation = "https://docs.rs/upbit/latest/upbit/index.html"
 license = "MIT"

@@ -116,10 +116,10 @@ impl Display for UrlAssociates {
 ///
 /// # Example
 /// ```rust
-/// let order_book_info = api_quotation::get_order_book_info("KRW-ETH").await;
+/// let order_book_info = api_quotation::get_order_book_info(&["KRW-ETH"]).await;
 /// ```
 /// - parameters
-/// > `market` ex) KRW-ETH<br>
+/// > `market_id` ex) KRW-ETH<br>
 /// # Response
 ///  * orderbook_unit 리스트에는 15호가 정보가 들어가며 차례대로 1호가, 2호가 ... 15호가의 정보를 담고 있습니다.
 ///  * orderbook_unit list contains information of 15 quotes of bid/ask price, in order, 1st, 2nd .. 15th quote
@@ -196,6 +196,7 @@ impl Display for UrlAssociates {
 ///  }
 /// ]
 /// ```
+/// # Response Description
 /// | field             | description                   | type         |
 /// |:------------------|:------------------------------|:-------------|
 /// | market | 마켓 코드 | String |
@@ -207,8 +208,8 @@ impl Display for UrlAssociates {
 /// | bid_price | 매수호가 | Double |
 /// | ask_size | 매도 잔량 | Double |
 /// | bid_size | 매수 잔량 | Double |
-pub async fn get_order_book_info(market: &str) -> Result<OrderBookInfo, ResponseError> {
-    OrderBookInfo::get_orderbook_info(market).await
+pub async fn get_order_book_info(markets_id: &[&str]) -> Result<OrderBookInfo, ResponseError> {
+    OrderBookInfo::get_orderbook_info(markets_id).await
 }
 
 /// 요청 당시 종목의 스냅샷을 반환한다. (Return the snapshot of the ticker at the moment of query.)
@@ -218,7 +219,7 @@ pub async fn get_order_book_info(market: &str) -> Result<OrderBookInfo, Response
 /// let ticker_snapshot = api_quotation::get_ticker_snapshot(&["KRW-ETH"]).await;
 /// ```
 /// - parameters
-/// > `market` ex) KRW-ETH<br>
+/// > `market_id` ex) KRW-ETH<br>
 /// # Response
 /// * 아래 응답의 `change`, `change_price`, `change_rate`, `signed_change_price`, `signed_change_rate` 필드들은 전일종가 대비 값입니다.
 /// * The fields `change`, `change_price`, `change_rate`, `signed_change_price`, and `signed_change_rate` in the response below are values compared to the previous day’s closing price.
@@ -254,6 +255,7 @@ pub async fn get_order_book_info(market: &str) -> Result<OrderBookInfo, Response
 ///   }
 /// ]
 /// ```
+/// # Response Description
 /// | field             | description                   | type         |
 /// |:------------------|:------------------------------|:-------------|
 /// | market | 종목 구분 코드 | String |
@@ -293,7 +295,7 @@ pub async fn get_ticker_snapshot(market: &[&str]) -> Result<TickerSnapshot, Resp
 /// let recent_trade_list = api_quotation::get_trade_recent_list("KRW-ETH").await;
 /// ```
 /// - parameters
-/// > `market` ex) KRW-ETH<br>
+/// > `market_id` ex) KRW-ETH<br>
 /// > `hhmmss` format is "HHmmss" or "HH:mm:ss". if empty, latest data will be retrieved<br>
 /// > `count` count of trade<br>
 /// > `cursor` pagenation cursor. (sequential id)<br>
@@ -314,6 +316,7 @@ pub async fn get_ticker_snapshot(market: &[&str]) -> Result<TickerSnapshot, Resp
 ///   }
 /// ]
 /// ```
+/// # Response Description
 /// | field             | description                   | type         |
 /// |:------------------|:------------------------------|:-------------|
 /// | market | 마켓 구분 코드 | String |
@@ -357,6 +360,7 @@ pub async fn get_trade_recent_list(
 ///     ...
 /// ]
 /// ```
+/// # Response Description
 /// | field             | description                   | type         |
 /// |:------------------|:------------------------------|:-------------|
 /// | market | 업비트에서 제공중인 시장 정보 | String |
@@ -374,7 +378,7 @@ pub async fn get_market_state(is_detailed: bool) -> Result<Vec<MarketState>, Res
 /// let candle_of_minute = api_quotation::get_candle_minute("KRW-ETH", None, 10, CandleMinute::Min30).await;
 /// ```
 /// - parameters
-/// > `market` ex) KRW-ETH<br>
+/// > `market_id` ex) KRW-ETH<br>
 /// > `to` the time moment of the last candle (exclusive). if empty, latest candle will be retrived. <br>
 ///  >> *  ISO8061 format (yyyy-MM-dd'T'HH:mm:ss'Z' or yyyy-MM-dd HH:mm:ss). <br>
 ///  >> *  though it is commonly UTC time criteria, you can request KST time using like 2023-01-01T00:00:00+09:00 format. <br>
@@ -407,6 +411,7 @@ pub async fn get_market_state(is_detailed: bool) -> Result<Vec<MarketState>, Res
 ///   }
 /// ]
 /// ```
+/// # Response Description
 /// | field             | description                   | type         |
 /// |:------------------|:------------------------------|:-------------|
 /// | market | 마켓명 | String |
@@ -436,7 +441,7 @@ pub async fn get_candle_minute(
 /// let candle_of_day = api_quotation::get_candle_day("KRW-ETH", 10, None, None).await;
 /// ```
 /// - parameters
-/// > `market` ex) KRW-ETH<br>
+/// > `market_id` ex) KRW-ETH<br>
 /// > `count` the number of candle to request. maximum value: `200`<br>
 /// > `last_candle_time` (optional) the time moment of the last candle (exclusive). if empty, latest candle will be retrived. <br>
 /// >> * ISO8061 format (yyyy-MM-dd'T'HH:mm:ss'Z' or yyyy-MM-dd HH:mm:ss). <br>
@@ -463,6 +468,7 @@ pub async fn get_candle_minute(
 ///   }
 /// ]
 /// ```
+/// # Response Description
 /// | field             | description                   | type         |
 /// |:------------------|:------------------------------|:-------------|
 /// | market | 마켓명 | String |
@@ -495,7 +501,7 @@ pub async fn get_candle_day(
 /// let candle_of_week = api_quotation::get_candle_week("KRW-ETH", 10, None).await;
 /// ```
 /// - parameters
-/// > `market` ex) KRW-ETH<br>
+/// > `market_id` ex) KRW-ETH<br>
 /// > `count` the number of candle to request. maximum value: `200`<br>
 /// > `last_candle_time` (optional) the time moment of the last candle (exclusive). if empty, latest candle will be retrived. <br>
 /// >> *  `ISO8061` format (`yyyy-MM-dd'T'HH:mm:ss'Z'` or `yyyy-MM-dd HH:mm:ss`). <br>
@@ -519,6 +525,7 @@ pub async fn get_candle_day(
 ///   }
 /// ]
 /// ```
+/// # Response Description
 /// | field             | description                   | type         |
 /// |:------------------|:------------------------------|:-------------|
 /// | market | 마켓명 | String |
@@ -547,7 +554,7 @@ pub async fn get_candle_week(
 /// let candle_of_month = api_quotation::get_candle_month("KRW-ETH", 10, None).await;
 /// ```
 /// - parameters
-/// > `market` ex) KRW-ETH<br>
+/// > `market_id` ex) KRW-ETH<br>
 /// > `count` the number of candle to request. maximum value: `200`<br>
 /// > `last_candle_time` (optional) the time moment of the last candle (exclusive). if empty, latest candle will be retrived. <br>
 ///  >> *  ISO8061 format (yyyy-MM-dd'T'HH:mm:ss'Z' or yyyy-MM-dd HH:mm:ss). <br>
@@ -571,6 +578,7 @@ pub async fn get_candle_week(
 ///   }
 /// ]
 /// ```
+/// # Response Description
 /// | field             | description                   | type         |
 /// |:------------------|:------------------------------|:-------------|
 /// | market | 마켓명 | String |

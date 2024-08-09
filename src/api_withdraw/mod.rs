@@ -122,7 +122,7 @@ impl From<&str> for WithdrawState {
 ///   # ....
 /// ]
 /// ```
-///
+/// # Response Description
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
 /// | type | 입출금 종류 | String
@@ -177,7 +177,7 @@ pub async fn get_withdraw_info_list(
 ///   # ....
 /// ]
 /// ```
-///
+/// # Response Description
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
 /// | type | 입출금 종류 | String
@@ -251,6 +251,7 @@ pub async fn get_withdraw_info(
 ///     }
 ///   }
 /// ```
+/// # Response Description
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
 /// | member_level.security_level | 사용자의 보안등급 | Integer |
@@ -318,6 +319,7 @@ pub async fn get_withdraw_chance(
 ///     "transaction_type": "default"
 /// }
 /// ```
+/// # Response Description
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
 /// | type| 입출금 종류 | String |
@@ -378,6 +380,7 @@ pub async fn withdraw_coin(
 ///     "transaction_type": "default"
 /// }
 /// ```
+/// # Response Description
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
 /// | type| 입출금 종류 | String |
@@ -416,6 +419,7 @@ pub async fn withdraw_krw(
 ///     }
 /// ]
 /// ```
+/// # Response Description
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
 /// | currency | 출금 화폐 | String |

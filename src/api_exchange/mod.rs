@@ -160,7 +160,7 @@ impl From<&str> for OrderState {
 /// let order_ask = api_exchange::order_by_price("KRW-ETH", OrderSide::Ask, 5000.0, 10_435_085.0, OrderType::Limit, None).await;
 /// ```
 /// - parameters
-/// > `market` ex) "KRW-ETH" <br>
+/// > `market_id` ex) "KRW-ETH" <br>
 /// > `side`
 /// >> *  `OrderSide::BID` 매수<br>
 /// >> *  `OrderSide::ASK` 매도<br>
@@ -193,6 +193,7 @@ impl From<&str> for OrderState {
 ///    "trades_count": 0
 ///  }
 /// ```
+/// # Response Description
 /// | field             | description                   | type         |
 /// |:------------------|:------------------------------|:-------------|
 /// | uuid              | 주문의 고유 아이디             | String |
@@ -210,7 +211,6 @@ impl From<&str> for OrderState {
 /// | locked            | 거래에 사용중인 비용          | NumberString |
 /// | executed_volume   | 체결된 양                    | NumberString |
 /// | trades_count      | 해당 주문에 걸린 체결 수      | Integer |
-
 pub async fn order_by_price(
     market_id: &str,
     side: OrderSide,
@@ -230,79 +230,14 @@ pub async fn order_by_price(
     .await
 }
 
-/// 즉시 시장가 판매를 한다. (Sell specific amount of volume immediately at market price.)
-///
-/// # Example
-/// ```
-/// let order_info = api_exchange::sell_at_market_price("KRW-ETH", 1.0, None).await;
-/// let order_info = api_exchange::sell_at_market_price("KRW-ETH", 1.0, Some("test_identifier")).await;
-/// ```
-/// - parameters
-/// > `market` ex) "KRW-ETH" <br>
-/// > `volume` volume you want to sell<br>
-/// > `identifier` (optional) arbitrary identifier that you want to tag<br>
-/// # Response
-/// ```json
-/// {
-///    "uuid": "cdd92199-2897-4e14-9448-f923320408ad",
-///    "side": "bid",
-///    "ord_type": "limit",
-///    "price": "100.0",
-///    "state": "wait",
-///    "market": "KRW-BTC",
-///    "created_at": "2018-04-10T15:42:23+09:00",
-///    "volume": "0.01",
-///    "remaining_volume": "0.01",
-///    "reserved_fee": "0.0015",
-///    "remaining_fee": "0.0015",
-///    "paid_fee": "0.0",
-///    "locked": "1.0015",
-///    "executed_volume": "0.0",
-///    "trades_count": 0
-///  }
-/// ```
-/// | field             | description                   | type         |
-/// |:------------------|:------------------------------|:-------------|
-/// | uuid              | 주문의 고유 아이디             | String |
-/// | side              | 주문 종류                     | String |
-/// | ord_type          | 주문 방식                     | String |
-/// | price             | 주문 당시 화폐 가격           | NumberString |
-/// | state             | 주문 상태                     | String |
-/// | market            | 마켓의 유일키                 | String |
-/// | created_at        | 주문 생성 시간                | String |
-/// | volume            | 사용자가 입력한 주문 양       | NumberString |
-/// | remaining_volume  | 체결 후 남은 주문 양          | NumberString |
-/// | reserved_fee      | 수수료로 예약된 비용          | NumberString |
-/// | remaining_fee     | 남은 수수료                   | NumberString |
-/// | paid_fee          | 사용된 수수료                | NumberString |
-/// | locked            | 거래에 사용중인 비용          | NumberString |
-/// | executed_volume   | 체결된 양                    | NumberString |
-/// | trades_count      | 해당 주문에 걸린 체결 수      | Integer |
-
-pub async fn sell_at_market_price(
-    market_id: &str,
-    volume: f64,
-    identifier: Option<&str>,
-) -> Result<OrderInfo, ResponseError> {
-    OrderInfo::order_ask_at_market_price(
-        market_id,
-        OrderSide::Ask,
-        volume,
-        OrderType::Market,
-        identifier,
-    )
-    .await
-}
-
 /// 주문을 취소한다. (Cancel an order.)
 ///
 /// # Example
 /// ```
-/// let order_info = api_exchange::cancel_order_by_uuid("cdd92199-2897-4e14-9448-f923320408ad", None).await;
+/// let order_info = api_exchange::cancel_order_by_uuid("cdd92199-2897-4e14-9448-f923320408ad").await;
 /// ```
 /// - parameters
-/// > `uuid` (optional) uuid of order to cancel <br>
-/// > `identifier` (optional) specific identifier you have tagged<br>
+/// > `uuid` uuid of order to cancel <br>
 ///
 /// * One of the two parameter must be input. Error when both parameter are entered or neither parameter are entered.
 /// # Response
@@ -325,6 +260,7 @@ pub async fn sell_at_market_price(
 ///    "trades_count": 0
 ///  }
 /// ```
+/// # Response Description
 /// | field             | description                   | type         |
 /// |:------------------|:------------------------------|:-------------|
 /// | uuid              | 주문의 고유 아이디             | String |
@@ -346,6 +282,54 @@ pub async fn cancel_order_by_uuid(uuid: &str) -> Result<OrderInfo, ResponseError
     OrderInfo::cancel_order_by_uuid(uuid).await
 }
 
+/// 주문을 취소한다. (Cancel an order.)
+///
+/// # Example
+/// ```
+/// let order_info = api_exchange::cancel_order_by_identfiier("test_identfier").await;
+/// ```
+/// - parameters
+/// > `identifier` specific identifier you have tagged<br>
+///
+/// * One of the two parameter must be input. Error when both parameter are entered or neither parameter are entered.
+/// # Response
+/// ```json
+/// {
+///    "uuid": "cdd92199-2897-4e14-9448-f923320408ad",
+///    "side": "bid",
+///    "ord_type": "limit",
+///    "price": "100.0",
+///    "state": "wait",
+///    "market": "KRW-BTC",
+///    "created_at": "2018-04-10T15:42:23+09:00",
+///    "volume": "0.01",
+///    "remaining_volume": "0.01",
+///    "reserved_fee": "0.0015",
+///    "remaining_fee": "0.0015",
+///    "paid_fee": "0.0",
+///    "locked": "1.0015",
+///    "executed_volume": "0.0",
+///    "trades_count": 0
+///  }
+/// ```
+/// # Response Description
+/// | field             | description                   | type         |
+/// |:------------------|:------------------------------|:-------------|
+/// | uuid              | 주문의 고유 아이디             | String |
+/// | side              | 주문 종류                     | String |
+/// | ord_type          | 주문 방식                     | String |
+/// | price             | 주문 당시 화폐 가격           | NumberString |
+/// | state             | 주문 상태                     | String |
+/// | market            | 마켓의 유일키                 | String |
+/// | created_at        | 주문 생성 시간                | String |
+/// | volume            | 사용자가 입력한 주문 양       | NumberString |
+/// | remaining_volume  | 체결 후 남은 주문 양          | NumberString |
+/// | reserved_fee      | 수수료로 예약된 비용          | NumberString |
+/// | remaining_fee     | 남은 수수료                   | NumberString |
+/// | paid_fee          | 사용된 수수료                | NumberString |
+/// | locked            | 거래에 사용중인 비용          | NumberString |
+/// | executed_volume   | 체결된 양                    | NumberString |
+/// | trades_count      | 해당 주문에 걸린 체결 수      | Integer |
 pub async fn cancel_order_by_identifier(identifier: &str) -> Result<OrderInfo, ResponseError> {
     OrderInfo::cancel_order_by_identifier(identifier).await
 }
@@ -377,6 +361,7 @@ pub async fn cancel_order_by_identifier(identifier: &str) -> Result<OrderInfo, R
 ///   }
 /// ]
 /// ```
+/// # Response Description
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
 /// | currency               | 화폐를 의미하는 영문 대문자 코드 | String       |
@@ -506,7 +491,7 @@ pub async fn get_order_chance(market_id: &str) -> Result<OrderChance, ResponseEr
 ///
 /// # Example
 /// ```
-/// let order_status = api_exchange::get_order_status_by_uuid("9ca023a5-851b-4fec-9f0a-48cd83c2eaae", None).await;
+/// let order_status = api_exchange::get_order_status_by_uuid("9ca023a5-851b-4fec-9f0a-48cd83c2eaae").await;
 /// ```
 /// - parameters
 /// > `uuid` (optional) uuid of order to cancel <br>
@@ -573,6 +558,73 @@ pub async fn get_order_status_by_uuid(uuid: &str) -> Result<OrderStatus, Respons
     OrderStatus::get_order_status_by_uuid(uuid).await
 }
 
+/// 주문 UUID 를 통해 개별 주문건을 조회한다. (inquire each order status via order UUID.)
+///
+/// # Example
+/// ```
+/// let order_status = api_exchange::get_order_status_by_identifier("test_identfier").await;
+/// ```
+/// - parameters
+/// > `uuid` (optional) uuid of order to cancel <br>
+/// > `identifier` (optional) specific identifier you have tagged<br>
+///
+/// * One of the two parameter must be input. Error when both parameter are entered or neither parameter are entered.
+/// # Response
+/// ```json
+/// {
+///   "uuid": "9ca023a5-851b-4fec-9f0a-48cd83c2eaae",
+///   "side": "ask",
+///   "ord_type": "limit",
+///   "price": "4280000.0",
+///   "state": "done",
+///   "market": "KRW-BTC",
+///   "created_at": "2019-01-04T13:48:09+09:00",
+///   "volume": "1.0",
+///   "remaining_volume": "0.0",
+///   "reserved_fee": "0.0",
+///   "remaining_fee": "0.0",
+///   "paid_fee": "2140.0",
+///   "locked": "0.0",
+///   "executed_volume": "1.0",
+///   "trades_count": 1,
+///   "trades": [
+///     {
+///       "market": "KRW-BTC",
+///       "uuid": "9e8f8eba-7050-4837-8969-cfc272cbe083",
+///       "price": "4280000.0",
+///       "volume": "1.0",
+///       "funds": "4280000.0",
+///       "side": "ask"
+///     }
+///   ]
+/// }
+/// ```
+/// # Response Description
+/// | field                  | description                   | type         |
+/// |:-----------------------|:------------------------------|:-------------|
+/// | uuid | 주문의 고유 아이디 | String |
+/// | side | 주문 종류 | String |
+/// | ord_type | 주문 방식 | String |
+/// | price | 주문 당시 화폐 가격 | NumberString |
+/// | state | 주문 상태 | String |
+/// | market | 마켓의 유일키 | String |
+/// | created_at | 주문 생성 시간 | DateString |
+/// | volume | 사용자가 입력한 주문 양 | NumberString |
+/// | remaining_volume |체결 후 남은 주문 양 | NumberString |
+/// | reserved_fee | 수수료로 예약된 비용 | NumberString |
+/// | remaining_fee | 남은 수수료 | NumberString |
+/// | paid_fee | 사용된 수수료 | NumberString |
+/// | locked | 거래에 사용중인 비용 | NumberString |
+/// | executed_volume | 체결된 양 | NumberString |
+/// | trades_count |해당 주문에 걸린 체결 수 | Integer |
+/// | trades | 체결 |Array[[Object]] |
+/// | trades.market |마켓의 유일 키 | String |
+/// | trades.uuid | 체결의 고유 아이디 | String |
+/// | trades.price | 체결 가격 | NumberString |
+/// | trades.volume | 체결 양 | NumberString |
+/// | trades.funds | 체결된 총 가격 | NumberString |
+/// | trades.side | 체결 종류 | String |
+/// | trades.created_at | 체결 시각 | DateString |
 pub async fn get_order_status_by_identifier(
     identifier: &str,
 ) -> Result<OrderStatus, ResponseError> {
@@ -641,6 +693,7 @@ pub async fn list_order_status() -> Result<Vec<OrderInfo>, ResponseError> {
 ///     OrderBy::Desc
 /// ).await;
 /// ```
+/// # Response
 /// ```json
 /// [
 ///   {
@@ -688,6 +741,56 @@ pub async fn get_order_status_by_uuids(
     OrderInfo::get_order_status_by_uuids(market_id, uuids, order_by).await
 }
 
+/// 주문 리스트를 조회한다. (inquire every order status.)
+///
+/// # Example
+/// ```
+/// let order_status_list = api_exchange::get_order_status_by_identifiers(
+///     "KRW-ETH",
+///     &["test_identifier"],
+///     OrderBy::Desc
+/// ).await;
+/// ```
+/// # Response
+/// ```json
+/// [
+///   {
+///     "uuid": "d60dfc8a-db0a-4087-9974-fed6433eb8f1",
+///     "side": "ask",
+///     "ord_type": "limit",
+///     "price": "4280000.0",
+///     "state": "done",
+///     "market": "KRW-ETH",
+///     "created_at": "2019-01-04T13:48:09+09:00",
+///     "volume": "1.0",
+///     "remaining_volume": "0.0",
+///     "reserved_fee": "0.0",
+///     "remaining_fee": "0.0",
+///     "paid_fee": "2140.0",
+///     "locked": "0.0",
+///     "executed_volume": "1.0",
+///     "trades_count": 1,
+///   }
+/// ]
+/// ```
+/// # Response Description
+/// | field                  | description                   | type         |
+/// |:-----------------------|:------------------------------|:-------------|
+/// | uuid | 주문의 고유 아이디 | String |
+/// | side | 주문 종류 | String |
+/// | ord_type | 주문 방식 | String |
+/// | price | 주문 당시 화폐 가격 | NumberString |
+/// | state | 주문 상태 | String |
+/// | market | 마켓의 유일키 | String |
+/// | created_at | 주문 생성 시간 | DateString |
+/// | volume | 사용자가 입력한 주문 양 | NumberString |
+/// | remaining_volume | 체결 후 남은 주문 양 | NumberString |
+/// | reserved_fee | 수수료로 예약된 비용 | NumberString |
+/// | remaining_fee | 남은 수수료 | NumberString |
+/// | paid_fee | 사용된 수수료 | NumberString |
+/// | locked | 거래에 사용중인 비용 | NumberString |
+/// | executed_volume | 체결된 양 | NumberString |
+/// | trades_count | 해당 주문에 걸린 체결 수 | Integer |
 pub async fn get_order_status_by_identifiers(
     market_id: &str,
     identifiers: &[&str],
@@ -708,6 +811,7 @@ pub async fn get_order_status_by_identifiers(
 ///     OrderBy::Desc,
 /// ).await;
 /// ```
+/// # Response
 /// ```json
 /// [
 ///   {

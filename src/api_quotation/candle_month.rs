@@ -24,11 +24,11 @@ pub struct CandleChartMonth {
 
 impl CandleChartMonth {
     pub async fn request_candle(
-        market: &str,
+        market_id: &str,
         count: i32,
         last_candle_time: Option<String>,
     ) -> Result<Vec<Self>, ResponseError> {
-        let res = Self::request(market, count, last_candle_time).await?;
+        let res = Self::request(market_id, count, last_candle_time).await?;
         let res_serialized = res
             .text()
             .await
@@ -63,7 +63,7 @@ impl CandleChartMonth {
     }
 
     async fn request(
-        market: &str,
+        market_id: &str,
         count: i32,
         last_candle_time: Option<String>,
     ) -> Result<Response, ResponseError> {
@@ -71,7 +71,7 @@ impl CandleChartMonth {
         let mut url = Url::parse(&format!("{URL_SERVER}{url_candle}"))
             .map_err(crate::response::response_error_internal_url_parse_error)?;
         url.query_pairs_mut()
-            .append_pair("market", market)
+            .append_pair("market", market_id)
             .append_pair("count", count.to_string().as_str());
 
         if let Some(last_candle_time) = last_candle_time {

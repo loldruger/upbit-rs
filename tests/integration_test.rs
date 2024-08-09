@@ -97,7 +97,7 @@ async fn test_get_order_status_opened() {
     upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
     upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
 
-    let order_info = upbit::api_exchange::get_order_status_opened(
+    let order_open = upbit::api_exchange::get_order_status_opened(
         "KRW-ETH",
         &[OrderState::Wait],
         1,
@@ -106,7 +106,7 @@ async fn test_get_order_status_opened() {
     )
     .await;
 
-    assert!(order_info.is_ok())
+    assert!(order_open.is_ok())
 }
 
 #[tokio::test]
@@ -242,7 +242,7 @@ async fn test_get_order_book() {
     upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
     upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
 
-    let order_book = upbit::api_quotation::get_order_book_info("KRW-ETH").await;
+    let order_book = upbit::api_quotation::get_order_book_info(&["KRW-ETH"]).await;
 
     assert!(order_book.is_ok());
 }

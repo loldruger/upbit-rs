@@ -24,8 +24,8 @@ pub struct OrderBookUnit {
 }
 
 impl OrderBookInfo {
-    pub async fn get_orderbook_info(market: &str) -> Result<Self, ResponseError> {
-        let res = Self::request(market).await?;
+    pub async fn get_orderbook_info(markets_id: &[&str]) -> Result<Self, ResponseError> {
+        let res = Self::request(markets_id).await?;
         let res_serialized = res
             .text()
             .await
@@ -68,10 +68,10 @@ impl OrderBookInfo {
             .map_err(crate::response::response_error_from_json)?
     }
 
-    async fn request(market: &str) -> Result<Response, ResponseError> {
+    async fn request(markets_id: &[&str]) -> Result<Response, ResponseError> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDERBOOK}"))
             .map_err(crate::response::response_error_internal_url_parse_error)?;
-        url.query_pairs_mut().append_pair("markets", market);
+        url.query_pairs_mut().append_pair("markets", &markets_id.join(","));
 
         reqwest::Client::new()
             .get(url.as_str())
@@ -95,7 +95,7 @@ mod tests {
         crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
 
-        let res = OrderBookInfo::request("KRW-ETH").await.unwrap();
+        let res = OrderBookInfo::request(&["KRW-ETH"]).await.unwrap();
         let res_serialized = res
             .text()
             .await

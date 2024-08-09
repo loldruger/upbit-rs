@@ -22,13 +22,13 @@ pub struct TradeRecent {
 
 impl TradeRecent {
     pub async fn get_trade_recent_list(
-        market: &str,
+        market_id: &str,
         hhmmss: Option<&str>,
         count: i32,
         cursor: &str,
         days_ago: Option<i32>,
     ) -> Result<Self, ResponseError> {
-        let res = Self::request(market, hhmmss, count, cursor, days_ago).await?;
+        let res = Self::request(market_id, hhmmss, count, cursor, days_ago).await?;
         let res_serialized = res
             .text()
             .await
@@ -68,7 +68,7 @@ impl TradeRecent {
     }
 
     async fn request(
-        market: &str,
+        market_id: &str,
         hhmmss: Option<&str>,
         count: i32,
         cursor: &str,
@@ -77,7 +77,7 @@ impl TradeRecent {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_TRADES_TICKS}"))
             .map_err(crate::response::response_error_internal_url_parse_error)?;
         url.query_pairs_mut()
-            .append_pair("market", market)
+            .append_pair("market", market_id)
             .append_pair("count", count.to_string().as_str())
             .append_pair("cursor", cursor);
 

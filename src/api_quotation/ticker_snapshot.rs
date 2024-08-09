@@ -68,8 +68,8 @@ pub struct TickerSnapshotSource {
 }
 
 impl TickerSnapshot {
-    pub async fn get_ticker_snapshot(market: &[&str]) -> Result<Self, ResponseError> {
-        let res = Self::request(market).await?;
+    pub async fn get_ticker_snapshot(markets_id: &[&str]) -> Result<Self, ResponseError> {
+        let res = Self::request(markets_id).await?;
         let res_serialized = res
             .text()
             .await
@@ -124,11 +124,11 @@ impl TickerSnapshot {
             .map_err(crate::response::response_error_from_json)?
     }
 
-    async fn request(market: &[&str]) -> Result<reqwest::Response, ResponseError> {
+    async fn request(markets_id: &[&str]) -> Result<reqwest::Response, ResponseError> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_TICKER}"))
             .map_err(crate::response::response_error_internal_url_parse_error)?;
         url.query_pairs_mut()
-            .append_pair("markets", &market.join(","));
+            .append_pair("markets", &markets_id.join(","));
 
         reqwest::Client::new()
             .get(url.as_str())

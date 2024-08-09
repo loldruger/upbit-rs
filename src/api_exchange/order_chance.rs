@@ -1,5 +1,5 @@
 use reqwest::header::{ACCEPT, AUTHORIZATION};
-use reqwest::Response;
+use reqwest::{Response, Url};
 
 use super::{
     super::constant::{URL_ORDER_CHANCE, URL_SERVER},
@@ -85,8 +85,11 @@ impl OrderChance {
     }
 
     async fn request(market_id: &str) -> Result<Response, ResponseError> {
-        let url = format!("{URL_SERVER}{URL_ORDER_CHANCE}/?market={market_id}");
-        let token_string = Self::set_token_with_query(&url)?;
+        let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDER_CHANCE}"))
+            .map_err(crate::response::response_error_internal_url_parse_error)?;
+        let token_string = Self::set_token_with_query(url.as_str())?;
+        
+        url.query_pairs_mut().append_pair("market", market_id);
 
         reqwest::Client::new()
             .get(url)

@@ -44,7 +44,7 @@ impl Display for DepositState {
             Self::Done => write!(f, "DONE"),
             Self::Processing => write!(f, "PROCESSING"),
             Self::Accepted => write!(f, "ACCEPTED"),
-            Self::Canceled => write!(f, "CANCELLED"), // this typo is intentional
+            Self::Canceled => write!(f, "CANCELLED"),
             Self::Rejected => write!(f, "REJECTED"),
             Self::TravelRuleSuspected => write!(f, "TRAVEL_RULE_SUSPECTED"),
             Self::Refunding => write!(f, "REFUNDING"),
@@ -133,7 +133,7 @@ impl From<&str> for DepositState {
 ///   #....
 /// ]
 /// ```
-///
+/// # Response Description
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
 /// | type | 입출금 종류 | String
@@ -188,7 +188,7 @@ pub async fn get_deposit_info_list(
 ///   #....
 /// ]
 /// ```
-///
+/// # Response Description
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
 /// | type | 입출금 종류 | String
@@ -214,12 +214,12 @@ pub async fn get_deposit_info(
 ///
 /// # Example
 /// ```rust
-/// let deposit_result = api_deposit::deposit_krw(10000.0, api_deposit::TwoFactorType::KakaoPay).await;
+/// let deposit_result = api_deposit::deposit_krw(10000.0, api_deposit::TwoFactorType::Kakao).await;
 /// ```
 /// - parameters
 /// > `amount` amount of deposit <br>
 /// > `two_factor_type`
-/// >> * `TwoFactorType::KakaoPay` Two factor identification via kakao <br>
+/// >> * `TwoFactorType::Kakao` Two factor identification via kakao <br>
 /// >> * `TwoFactorType::Naver` Two factor identification via naver <br>
 /// # Response
 /// ```json
@@ -236,6 +236,7 @@ pub async fn get_deposit_info(
 ///     "transaction_type": "default"
 /// }
 /// ```
+/// # Response Description
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
 /// | type | 입출금 종류 | String |
@@ -265,6 +266,7 @@ pub async fn deposit_krw(
 /// - parameters
 /// > `currency` ex) BTC, ETH etc. <br>
 /// > `net_type` ex) BTC, ETH etc.
+/// # Response
 /// ```json
 /// {
 ///    "currency": "ETH",
@@ -273,6 +275,7 @@ pub async fn deposit_krw(
 ///    "secondary_address": null
 /// }
 /// ```
+/// # Response Description
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
 /// | currency | 화폐를 의미하는 영문 대문자 코드 | String |
@@ -304,6 +307,7 @@ pub async fn get_coin_address_info(
 ///     ...
 /// ]
 /// ```
+/// # Response Description
 /// | field                  | description                   | type         |
 /// |:-----------------------|:------------------------------|:-------------|
 /// | currency | 화폐를 의미하는 영문 대문자 코드 | String |
