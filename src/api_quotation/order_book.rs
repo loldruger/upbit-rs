@@ -71,7 +71,8 @@ impl OrderBookInfo {
     async fn request(markets_id: &[&str]) -> Result<Response, ResponseError> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDERBOOK}"))
             .map_err(crate::response::response_error_internal_url_parse_error)?;
-        url.query_pairs_mut().append_pair("markets", &markets_id.join(","));
+        url.query_pairs_mut()
+            .append_pair("markets", &markets_id.join(","));
 
         reqwest::Client::new()
             .get(url.as_str())

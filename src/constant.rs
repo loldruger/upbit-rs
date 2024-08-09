@@ -100,8 +100,12 @@ impl From<&str> for OrderBy {
 
 /// Kind of transaction type
 #[derive(Debug, Copy, Clone)]
-#[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
-#[cfg_attr(feature = "sqlx-type", sqlx(type_name = "transaction_type"), sqlx(rename_all = "snake_case"))]
+#[cfg_attr(
+    feature = "sqlx-type",
+    derive(sqlx::Type),
+    sqlx(type_name = "transaction_type"),
+    sqlx(rename_all = "snake_case")
+)]
 pub enum TransactionType {
     /// 일반 입출금(general withdrawal or deposit)
     Default,
@@ -152,7 +156,11 @@ impl Display for TwoFactorType {
 
 /// List of transaction type
 #[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
-#[cfg_attr(feature = "sqlx-type", sqlx(type_name = "transfer_type"), sqlx(rename_all = "snake_case"))]
+#[cfg_attr(
+    feature = "sqlx-type",
+    sqlx(type_name = "transfer_type"),
+    sqlx(rename_all = "snake_case")
+)]
 #[derive(Debug, Copy, Clone)]
 pub enum TransferType {
     /// 출금
@@ -182,7 +190,11 @@ impl From<&str> for TransferType {
 
 #[derive(Serialize, Deserialize, Debug, Copy, Clone)]
 #[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
-#[cfg_attr(feature = "sqlx-type", sqlx(type_name = "ask_type"), sqlx(rename_all = "snake_case"))]
+#[cfg_attr(
+    feature = "sqlx-type",
+    sqlx(type_name = "ask_type"),
+    sqlx(rename_all = "snake_case")
+)]
 pub enum AskType {
     BestFOK,
     BestIOC,
@@ -207,7 +219,11 @@ impl Display for AskType {
 
 #[derive(Serialize, Deserialize, Debug, Copy, Clone)]
 #[cfg_attr(feature = "sqlx-type", derive(sqlx::Type))]
-#[cfg_attr(feature = "sqlx-type", sqlx(type_name = "bid_type"), sqlx(rename_all = "snake_case"))]
+#[cfg_attr(
+    feature = "sqlx-type",
+    sqlx(type_name = "bid_type"),
+    sqlx(rename_all = "snake_case")
+)]
 pub enum BidType {
     BestFOK,
     BestIOC,

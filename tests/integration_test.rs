@@ -65,14 +65,12 @@ async fn test_order_ask_by_price() {
 }
 
 #[tokio::test]
-async fn test_get_order_status_by_uuid()  {
+async fn test_get_order_status_by_uuid() {
     upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
     upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
 
-    let order_status = upbit::api_exchange::get_order_status_by_uuid(
-        "d60dfc8a-db0a-4087-9974-fed6433eb8f1"
-    )
-    .await;
+    let order_status =
+        upbit::api_exchange::get_order_status_by_uuid("d60dfc8a-db0a-4087-9974-fed6433eb8f1").await;
 
     assert!(order_status.is_ok())
 }
@@ -85,7 +83,7 @@ async fn test_get_order_status_by_uuids() {
     let order_status = upbit::api_exchange::get_order_status_by_uuids(
         "KRW-ETH",
         &["d60dfc8a-db0a-4087-9974-fed6433eb8f1"],
-        OrderBy::Desc
+        OrderBy::Desc,
     )
     .await;
 
@@ -102,7 +100,7 @@ async fn test_get_order_status_opened() {
         &[OrderState::Wait],
         1,
         10,
-        OrderBy::Desc
+        OrderBy::Desc,
     )
     .await;
 
@@ -120,7 +118,7 @@ async fn test_get_order_status_closed() {
         None,
         None,
         10,
-        OrderBy::Desc
+        OrderBy::Desc,
     )
     .await;
 

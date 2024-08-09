@@ -3,8 +3,11 @@ use reqwest::{
     Response, Url,
 };
 
-use crate::{request::RequestWithQuery, response::{ResponseErrorBody, ResponseErrorState}};
 use crate::{constant::OrderBy, request::Request};
+use crate::{
+    request::RequestWithQuery,
+    response::{ResponseErrorBody, ResponseErrorState},
+};
 
 #[allow(deprecated)]
 use super::{
@@ -70,31 +73,34 @@ impl OrderInfo {
     ) -> Result<Vec<Self>, ResponseError> {
         for state in states {
             match state {
-                OrderState::Wait => {},
-                OrderState::Watch => {},
+                OrderState::Wait => {}
+                OrderState::Watch => {}
                 _ => return Err(ResponseError {
                     state: ResponseErrorState::InvalidParameter,
                     error: ResponseErrorBody {
                         name: "invalid_parameter".to_string(),
-                        message: "state argument must be either OrderState::Wait op OrderState::Watch".to_string(),
+                        message:
+                            "state argument must be either OrderState::Wait op OrderState::Watch"
+                                .to_string(),
                     },
                 }),
             }
         }
 
         match limit {
-            1..=100 => {},
-            _ => return Err(ResponseError {
-                state: ResponseErrorState::InvalidParameter,
-                error: ResponseErrorBody {
-                    name: "invalid_parameter".to_string(),
-                    message: "limit argument must be between 1 and 100".to_string(),
-                },
-            }),
+            1..=100 => {}
+            _ => {
+                return Err(ResponseError {
+                    state: ResponseErrorState::InvalidParameter,
+                    error: ResponseErrorBody {
+                        name: "invalid_parameter".to_string(),
+                        message: "limit argument must be between 1 and 100".to_string(),
+                    },
+                })
+            }
         }
-        
-        let res = Self::request_get_orders_opened(market_id, states, page, limit, order_by)
-            .await?;
+
+        let res = Self::request_get_orders_opened(market_id, states, page, limit, order_by).await?;
         let res_serialized = res
             .text()
             .await
@@ -244,7 +250,8 @@ impl OrderInfo {
             .append_pair("order_by", &order_by.to_string());
 
         for state in states {
-            url.query_pairs_mut().append_pair("states", &state.to_string());
+            url.query_pairs_mut()
+                .append_pair("states", &state.to_string());
         }
 
         let url = url.as_str().replace("states", "states[]");
@@ -285,7 +292,8 @@ impl OrderInfo {
         }
 
         for state in states {
-            url.query_pairs_mut().append_pair("states", &state.to_string());
+            url.query_pairs_mut()
+                .append_pair("states", &state.to_string());
         }
 
         let url = url.as_str().replace("states", "states[]");

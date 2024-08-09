@@ -28,7 +28,7 @@ impl TransactionInfo {
             .text()
             .await
             .map_err(crate::response::response_error_from_reqwest)?;
-        
+
         if res_serialized.contains("error") {
             return Err(serde_json::from_str(&res_serialized)
                 .map(crate::response::response_error)
