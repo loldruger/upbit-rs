@@ -182,14 +182,14 @@ impl From<&str> for OrderState {
 /// >> *  `OrderSide::BID` 매수<br>
 /// >> *  `OrderSide::ASK` 매도<br>
 ///
-/// > `price` price that how much you want to buy<br>
-/// > `price_desired` price that you want to bid at<br>
+/// > `price` is how much amount of currency you want to buy<br>
+/// > `price_desired` is that you want to bid at<br>
 /// > `ord_type`
 /// >> *  `OrderType::LIMIT` 지정가 주문<br>
 /// >> *  `OrderType::PRICE` 시장가 주문(매수)<br>
 /// >> *  `OrderType::MARKET` 시장가 주문(매도)<br>
 ///
-/// > `identifier` (optional) specific identifier you have tagged<br>
+/// > `identifier` (optional) arbitrary identifier you want<br>
 /// # Response
 /// ```json
 /// {
@@ -256,7 +256,6 @@ pub async fn order_by_price(
 /// - parameters
 /// > `uuid` uuid of order to cancel <br>
 ///
-/// * One of the two parameter must be input. Error when both parameter are entered or neither parameter are entered.
 /// # Response
 /// ```json
 /// {
@@ -306,9 +305,8 @@ pub async fn cancel_order_by_uuid(uuid: &str) -> Result<OrderInfo, ResponseError
 /// let order_info = api_exchange::cancel_order_by_identfiier("test_identfier").await;
 /// ```
 /// - parameters
-/// > `identifier` specific identifier you have tagged<br>
+/// > `identifier` arbitrary identifier you want<br>
 ///
-/// * One of the two parameter must be input. Error when both parameter are entered or neither parameter are entered.
 /// # Response
 /// ```json
 /// {
@@ -351,7 +349,7 @@ pub async fn cancel_order_by_identifier(identifier: &str) -> Result<OrderInfo, R
     OrderInfo::cancel_order_by_identifier(identifier).await
 }
 
-/// 내가 보유한 자산 리스트를 보여줍니다. (inquire your account info)
+/// 내가 보유한 자산 리스트를 보여줍니다. (look up your account info)
 ///
 /// # Example
 /// ```
@@ -504,7 +502,7 @@ pub async fn get_order_chance(market_id: &str) -> Result<OrderChance, ResponseEr
     OrderChance::get_order_chance(market_id).await
 }
 
-/// 주문 UUID 를 통해 개별 주문건을 조회한다. (inquire each order status via order UUID.)
+/// 주문 UUID 를 통해 개별 주문건을 조회한다. (look up each order status via order UUID.)
 ///
 /// # Example
 /// ```
@@ -513,7 +511,6 @@ pub async fn get_order_chance(market_id: &str) -> Result<OrderChance, ResponseEr
 /// - parameters
 /// > `uuid` uuid of order to cancel <br>
 ///
-/// * One of the two parameter must be input. Error when both parameter are entered or neither parameter are entered.
 /// # Response
 /// ```json
 /// {
@@ -574,7 +571,7 @@ pub async fn get_order_status_by_uuid(uuid: &str) -> Result<OrderStatus, Respons
     OrderStatus::get_order_status_by_uuid(uuid).await
 }
 
-/// 주문 UUID 를 통해 개별 주문건을 조회한다. (inquire each order status via order UUID.)
+/// 주문 Identifier 를 통해 개별 주문건을 조회한다. (look up each order status via order identifier.)
 ///
 /// # Example
 /// ```
@@ -583,7 +580,6 @@ pub async fn get_order_status_by_uuid(uuid: &str) -> Result<OrderStatus, Respons
 /// - parameters
 /// > `identifier` arbitrary identifier you want<br>
 ///
-/// * One of the two parameter must be input. Error when both parameter are entered or neither parameter are entered.
 /// # Response
 /// ```json
 /// {
@@ -646,7 +642,7 @@ pub async fn get_order_status_by_identifier(
     OrderStatus::get_order_status_by_identifier(identifier).await
 }
 
-/// 주문 리스트를 조회한다. (inquire every order status.)
+/// (deprecated) 주문 리스트를 조회한다. (look up every order status.)
 ///
 /// # Example
 /// ```
@@ -698,11 +694,11 @@ pub async fn list_order_status() -> Result<Vec<OrderInfo>, ResponseError> {
     OrderInfo::get_order_state_list().await
 }
 
-/// 주문 리스트를 조회한다. (inquire every order status.)
+/// 주문 리스트를 조회한다. (look up order status list.)
 ///
 /// # Example
 /// ```
-/// let order_status_list = api_exchange::get_order_status_by_uuids(
+/// let order_status_list = api_exchange::get_order_status_list_by_uuids(
 ///     "KRW-ETH",
 ///     &["d60dfc8a-db0a-4087-9974-fed6433eb8f1"],
 ///     OrderBy::Desc
@@ -710,7 +706,7 @@ pub async fn list_order_status() -> Result<Vec<OrderInfo>, ResponseError> {
 /// ```
 /// - parameters
 /// > `market_id` ex) KRW-ETH<br>
-/// > `uuids` arbitrary uuids you want<br>
+/// > `uuids` array of uuids<br>
 /// > `order_by`
 /// >> *  `OrderBy::Asc` 오름차순<br>
 /// >> *  `OrderBy::Desc` 내림차순<br>
@@ -754,19 +750,19 @@ pub async fn list_order_status() -> Result<Vec<OrderInfo>, ResponseError> {
 /// | locked | 거래에 사용중인 비용 | NumberString |
 /// | executed_volume | 체결된 양 | NumberString |
 /// | trades_count | 해당 주문에 걸린 체결 수 | Integer |
-pub async fn get_order_status_by_uuids(
+pub async fn get_order_status_list_by_uuids(
     market_id: &str,
     uuids: &[&str],
     order_by: OrderBy,
 ) -> Result<Vec<OrderInfo>, ResponseError> {
-    OrderInfo::get_order_status_by_uuids(market_id, uuids, order_by).await
+    OrderInfo::get_order_status_list_by_uuids(market_id, uuids, order_by).await
 }
 
-/// 주문 리스트를 조회한다. (inquire every order status.)
+/// 주문 리스트를 조회한다. (look up order status list.)
 ///
 /// # Example
 /// ```
-/// let order_status_list = api_exchange::get_order_status_by_identifiers(
+/// let order_status_list = api_exchange::get_order_status_list_by_identifiers(
 ///     "KRW-ETH",
 ///     &["test_identifier"],
 ///     OrderBy::Desc
@@ -774,7 +770,7 @@ pub async fn get_order_status_by_uuids(
 /// ```
 /// - parameters
 /// > `market_id` ex) KRW-ETH<br>
-/// > `identifiers` arbitrary identifiers you want<br>
+/// > `identifiers` specific identifiers you have tagged<br>
 /// > `order_by`
 /// >> *  `OrderBy::Asc` 오름차순<br>
 /// >> *  `OrderBy::Desc` 내림차순<br>
@@ -823,14 +819,14 @@ pub async fn get_order_status_by_identifiers(
     identifiers: &[&str],
     order_by: OrderBy,
 ) -> Result<Vec<OrderInfo>, ResponseError> {
-    OrderInfo::get_order_status_by_identifiers(market_id, identifiers, order_by).await
+    OrderInfo::get_order_status_list_by_identifiers(market_id, identifiers, order_by).await
 }
 
-/// 주문 리스트를 조회한다. (inquire every order status.)
+/// 주문 리스트를 조회한다. (look up every order status.)
 ///
 /// # Example
 /// ```
-/// let order_status_list = OrderInfo::request_get_orders_opened(
+/// let order_status_list = OrderInfo::get_order_status_list_opened(
 ///     "KRW-ETH",
 ///     &[OrderState::Wait], // Only OrderState::Wait or OrderState::Watch have to be input
 ///     1,
@@ -889,21 +885,21 @@ pub async fn get_order_status_by_identifiers(
 /// | locked | 거래에 사용중인 비용 | NumberString |
 /// | executed_volume | 체결된 양 | NumberString |
 /// | trades_count | 해당 주문에 걸린 체결 수 | Integer |
-pub async fn get_order_status_opened(
+pub async fn get_order_status_list_opened(
     market_id: &str,
     states: &[OrderState],
     page: u8,
     limit: u8,
     order_by: OrderBy,
 ) -> Result<Vec<OrderInfo>, ResponseError> {
-    OrderInfo::get_order_status_opened(market_id, states, page, limit, order_by).await
+    OrderInfo::get_order_status_list_opened(market_id, states, page, limit, order_by).await
 }
 
-/// 주문 리스트를 조회한다. (inquire every order status.)
+/// 주문 리스트를 조회한다. (look up every order status.)
 ///
 /// # Example
 /// ```
-/// let order_status_list = OrderInfo::request_get_orders_closed(
+/// let order_status_list = OrderInfo::get_order_status_list_closed(
 ///     "KRW-ETH",
 ///     &[OrderState::Done], // Only OrderState::Done or OrderState::Cancel have to be input
 ///     None,
@@ -914,9 +910,10 @@ pub async fn get_order_status_opened(
 /// ```
 /// - parameters
 /// > `market_id` ex) KRW-ETH<br>
-/// > `states` Array of OrderState
+/// > `states` Array of OrderState one of these below
 /// >> *  `OrderState::Done` 완료<br>
 /// >> *  `OrderState::Cancel` 취소<br>
+/// 
 /// > `start_time` (optional) start time of the order<br>
 /// > `end_time` (optional) end time of the order<br>
 /// > `page` page number. 1~ <br>
@@ -965,7 +962,7 @@ pub async fn get_order_status_opened(
 /// | locked | 거래에 사용중인 비용 | NumberString |
 /// | executed_volume | 체결된 양 | NumberString |
 /// | trades_count | 해당 주문에 걸린 체결 수 | Integer |
-pub async fn get_order_status_closed(
+pub async fn get_order_status_list_closed(
     market_id: &str,
     states: &[OrderState],
     start_time: Option<&str>,
@@ -973,7 +970,7 @@ pub async fn get_order_status_closed(
     limit: u16,
     order_by: OrderBy,
 ) -> Result<Vec<OrderInfo>, ResponseError> {
-    OrderInfo::get_order_status_closed(market_id, states, start_time, end_time, limit, order_by)
+    OrderInfo::get_order_status_list_closed(market_id, states, start_time, end_time, limit, order_by)
         .await
 }
 

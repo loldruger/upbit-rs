@@ -13,7 +13,7 @@ use super::{
 };
 
 impl TransactionInfo {
-    pub async fn get_deposit_list(
+    pub async fn get_deposit_info_list(
         currency: &str,
         state: DepositState,
         uuids: Option<&[&str]>,
@@ -22,7 +22,7 @@ impl TransactionInfo {
         page: u32,
         order_by: OrderBy,
     ) -> Result<Vec<Self>, ResponseError> {
-        let res = Self::request_deposit_list(currency, state, uuids, txids, limit, page, order_by)
+        let res = Self::request_deposit_info_list(currency, state, uuids, txids, limit, page, order_by)
             .await?;
         let res_serialized = res
             .text()
@@ -70,7 +70,7 @@ impl TransactionInfo {
             .map_err(crate::response::response_error_from_json)
     }
 
-    async fn request_deposit_list(
+    async fn request_deposit_info_list(
         currency: &str,
         state: DepositState,
         uuids: Option<&[&str]>,
@@ -138,7 +138,7 @@ mod tests {
         crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
 
-        let res = TransactionInfo::request_deposit_list(
+        let res = TransactionInfo::request_deposit_info_list(
             "KRW",
             DepositState::Accepted,
             None,

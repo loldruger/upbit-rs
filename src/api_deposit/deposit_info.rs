@@ -166,11 +166,11 @@ mod tests {
     use crate::response::TransactionInfo;
 
     #[tokio::test]
-    async fn test_get_deposit_info() {
+    async fn test_get_deposit_info_by_currency() {
         crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
 
-        let res = TransactionInfo::request_deposit_by_currency("KRW-ETH")
+        let res = TransactionInfo::request_deposit_by_currency("KRW")
             .await
             .unwrap();
         let res_serialized = res

@@ -26,7 +26,7 @@ pub struct CandleChartDay {
 }
 
 impl CandleChartDay {
-    pub async fn request_candle(
+    pub async fn get_candle_day_list(
         market_id: &str,
         count: i32,
         last_candle_time: Option<String>,

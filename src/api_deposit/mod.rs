@@ -144,7 +144,6 @@ impl From<&str> for DepositState {
 ///     "fee": "0.0",
 ///     "transaction_type": "default"
 ///   }
-///   #....
 /// ]
 /// ```
 /// # Response Description
@@ -170,20 +169,17 @@ pub async fn get_deposit_info_list(
     page: u32,
     order_by: OrderBy,
 ) -> Result<Vec<TransactionInfo>, ResponseError> {
-    TransactionInfo::get_deposit_list(currency, state, uuids, txids, limit, page, order_by).await
+    TransactionInfo::get_deposit_info_list(currency, state, uuids, txids, limit, page, order_by).await
 }
 
 /// 개별 입금 조회.
 ///
 /// # Example
 /// ```rust
-/// let deposit_result = api_deposit::get_deposit_info(Some("KRW"), None, None).await;
-/// let deposit_result = api_deposit::get_deposit_info(None, Some("9f432943-54e0-40b7-825f-b6fec8b42b79"), None).await;
+/// let deposit_result = api_deposit::get_deposit_info_by_currency("KRW").await;
 /// ```
 /// - parameters
 /// > `currency` ex) KRW, BTC, ETH etc. <br>
-/// > `uuid` uuid<br>
-/// > `txid` txid<br>
 /// # Response
 /// ```json
 /// [
@@ -222,12 +218,90 @@ pub async fn get_deposit_info_by_currency(
     TransactionInfo::get_deposit_info_by_currency(currency).await
 }
 
+/// 개별 입금 조회.
+///
+/// # Example
+/// ```rust
+/// let deposit_result = api_deposit::get_deposit_info_by_uuid("9f432943-54e0-40b7-825f-b6fec8b42b79"), None).await;
+/// ```
+/// - parameters
+/// > `uuid` uuid<br>
+/// # Response
+/// ```json
+/// [
+///   {
+///     "type": "deposit",
+///     "uuid": "94332e99-3a87-4a35-ad98-28b0c969f830",
+///     "currency": "KRW",
+///     "txid": "9e37c537-6849-4c8b-a134-57313f5dfc5a",
+///     "state": "ACCEPTED",
+///     "created_at": "2017-12-08T15:38:02+09:00",
+///     "done_at": "2017-12-08T15:38:02+09:00",
+///     "amount": "100000.0",
+///     "fee": "0.0",
+///     "transaction_type": "default"
+///   }
+/// ]
+/// ```
+/// # Response Description
+/// | field                  | description                   | type         |
+/// |:-----------------------|:------------------------------|:-------------|
+/// | type | 입출금 종류 | String
+/// | uuid | 입금의 고유 아이디 | String
+/// | currency | 화폐를 의미하는 영문 대문자 코드 | String
+/// | net_type | 입금 네트워크 | String
+/// | txid | 입금의 트랜잭션 아이디 | String
+/// | state | 입금 상태<br> - WAITING : 대기중<br> - PROCESSING : 진행중<br> - DONE : 완료<br> - FAILED : 실패<br> - CANCELLED : 취소됨<br> - REJECTED : 거절됨 | String
+/// | created_at | 입금 생성 시간 | DateString
+/// | done_at | 입금 완료 시간 | DateString
+/// | amount | 입금 금액/수량 | NumberString
+/// | fee | 입금 수수료 | NumberString
+/// | transaction_type | 입금 유형<br> default : 일반입금<br>internal : 바로입금 | String
 pub async fn get_deposit_info_by_uuid(
     uuid: &str,
 ) -> Result<TransactionInfo, ResponseError> {
     TransactionInfo::get_deposit_info_by_uuid(uuid).await
 }
 
+/// 개별 입금 조회.
+///
+/// # Example
+/// ```rust
+/// let deposit_result = api_deposit::get_deposit_info_by_txid("9e37c537-6849-4c8b-a134-57313f5dfc5a").await;
+/// ```
+/// - parameters
+/// > `txid` txid<br>
+/// # Response
+/// ```json
+/// [
+///   {
+///     "type": "deposit",
+///     "uuid": "94332e99-3a87-4a35-ad98-28b0c969f830",
+///     "currency": "KRW",
+///     "txid": "9e37c537-6849-4c8b-a134-57313f5dfc5a",
+///     "state": "ACCEPTED",
+///     "created_at": "2017-12-08T15:38:02+09:00",
+///     "done_at": "2017-12-08T15:38:02+09:00",
+///     "amount": "100000.0",
+///     "fee": "0.0",
+///     "transaction_type": "default"
+///   }
+/// ]
+/// ```
+/// # Response Description
+/// | field                  | description                   | type         |
+/// |:-----------------------|:------------------------------|:-------------|
+/// | type | 입출금 종류 | String
+/// | uuid | 입금의 고유 아이디 | String
+/// | currency | 화폐를 의미하는 영문 대문자 코드 | String
+/// | net_type | 입금 네트워크 | String
+/// | txid | 입금의 트랜잭션 아이디 | String
+/// | state | 입금 상태<br> - WAITING : 대기중<br> - PROCESSING : 진행중<br> - DONE : 완료<br> - FAILED : 실패<br> - CANCELLED : 취소됨<br> - REJECTED : 거절됨 | String
+/// | created_at | 입금 생성 시간 | DateString
+/// | done_at | 입금 완료 시간 | DateString
+/// | amount | 입금 금액/수량 | NumberString
+/// | fee | 입금 수수료 | NumberString
+/// | transaction_type | 입금 유형<br> default : 일반입금<br>internal : 바로입금 | String
 pub async fn get_deposit_info_by_txid(
     txid: &str,
 ) -> Result<TransactionInfo, ResponseError> {
@@ -243,8 +317,8 @@ pub async fn get_deposit_info_by_txid(
 /// - parameters
 /// > `amount` amount of deposit <br>
 /// > `two_factor_type`
-/// >> * `TwoFactorType::Kakao` Two factor identification via kakao <br>
-/// >> * `TwoFactorType::Naver` Two factor identification via naver <br>
+/// >> * `TwoFactorType::Kakao` indicates to use two factor identification via kakao <br>
+/// >> * `TwoFactorType::Naver` indicates to use two factor identification via naver <br>
 /// # Response
 /// ```json
 /// {
@@ -317,7 +391,7 @@ pub async fn get_coin_address_info(
 ///
 /// # Example
 /// ```
-/// let coin_address_info_list = api_deposit::get_coin_address_info().await;
+/// let coin_address_info_list = api_deposit::get_coin_address_info_list().await;
 /// ```
 /// # Response
 /// ```json
@@ -327,8 +401,7 @@ pub async fn get_coin_address_info(
 ///        "net_type": "ETH",
 ///        "deposit_address": "0xe13ca9a87a5ab313ebf59f984e7e42690409120d",
 ///        "secondary_address": null
-///     },
-///     ...
+///     }
 /// ]
 /// ```
 /// # Response Description

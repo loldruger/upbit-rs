@@ -22,12 +22,12 @@ use super::{
 };
 
 impl OrderInfo {
-    pub async fn get_order_status_by_uuids(
+    pub async fn get_order_status_list_by_uuids(
         market_id: &str,
         uuids: &[&str],
         order_by: OrderBy,
     ) -> Result<Vec<Self>, ResponseError> {
-        let res = Self::request_get_orders_by_uuids(market_id, uuids, order_by).await?;
+        let res = Self::request_get_order_list_by_uuids(market_id, uuids, order_by).await?;
         let res_serialized = res
             .text()
             .await
@@ -43,7 +43,7 @@ impl OrderInfo {
         Self::deserialize_order_status_response(&res_serialized)
     }
 
-    pub async fn get_order_status_by_identifiers(
+    pub async fn get_order_status_list_by_identifiers(
         market_id: &str,
         identifiers: &[&str],
         order_by: OrderBy,
@@ -64,7 +64,7 @@ impl OrderInfo {
         Self::deserialize_order_status_response(&res_serialized)
     }
 
-    pub async fn get_order_status_opened(
+    pub async fn get_order_status_list_opened(
         market_id: &str,
         states: &[OrderState],
         page: u8,
@@ -100,7 +100,7 @@ impl OrderInfo {
             }
         }
 
-        let res = Self::request_get_orders_opened(market_id, states, page, limit, order_by).await?;
+        let res = Self::request_get_order_list_opened(market_id, states, page, limit, order_by).await?;
         let res_serialized = res
             .text()
             .await
@@ -116,7 +116,7 @@ impl OrderInfo {
         Self::deserialize_order_status_response(&res_serialized)
     }
 
-    pub async fn get_order_status_closed(
+    pub async fn get_order_status_list_closed(
         market_id: &str,
         states: &[OrderState],
         start_time: Option<&str>,
@@ -176,7 +176,7 @@ impl OrderInfo {
             .map_err(crate::response::response_error_from_reqwest)
     }
 
-    async fn request_get_orders_by_uuids(
+    async fn request_get_order_list_by_uuids(
         market_id: &str,
         uuids: &[&str],
         order_by: OrderBy,
@@ -232,7 +232,7 @@ impl OrderInfo {
             .map_err(crate::response::response_error_from_reqwest)
     }
 
-    async fn request_get_orders_opened(
+    async fn request_get_order_list_opened(
         market_id: &str,
         states: &[OrderState],
         page: u8,
@@ -442,7 +442,7 @@ mod tests {
         let uuid = order_to_get_uuid().await;
 
         let res =
-            OrderInfo::request_get_orders_by_uuids("KRW-ETH", &[uuid.as_str()], OrderBy::Desc)
+            OrderInfo::request_get_order_list_by_uuids("KRW-ETH", &[uuid.as_str()], OrderBy::Desc)
                 .await
                 .unwrap();
         let res_serialized = res
@@ -526,7 +526,7 @@ mod tests {
         crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
 
-        let res = OrderInfo::request_get_orders_opened(
+        let res = OrderInfo::request_get_order_list_opened(
             "KRW-ETH",
             &[OrderState::Wait],
             1,

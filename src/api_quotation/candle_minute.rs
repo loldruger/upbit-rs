@@ -37,7 +37,7 @@ pub struct CandleChartMinuteSource {
 }
 
 impl CandleChartMinute {
-    pub async fn request_candle(
+    pub async fn get_candle_minute_list(
         market_id: &str,
         to: Option<String>,
         count: i32,

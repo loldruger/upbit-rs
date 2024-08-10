@@ -80,7 +80,7 @@ async fn test_get_order_status_by_uuids() {
     upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
     upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
 
-    let order_status = upbit::api_exchange::get_order_status_by_uuids(
+    let order_status = upbit::api_exchange::get_order_status_list_by_uuids(
         "KRW-ETH",
         &["d60dfc8a-db0a-4087-9974-fed6433eb8f1"],
         OrderBy::Desc,
@@ -95,7 +95,7 @@ async fn test_get_order_status_opened() {
     upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
     upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
 
-    let order_open = upbit::api_exchange::get_order_status_opened(
+    let order_open = upbit::api_exchange::get_order_status_list_opened(
         "KRW-ETH",
         &[OrderState::Wait],
         1,
@@ -112,7 +112,7 @@ async fn test_get_order_status_closed() {
     upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
     upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
 
-    let order_closed = upbit::api_exchange::get_order_status_closed(
+    let order_closed = upbit::api_exchange::get_order_status_list_closed(
         "KRW-ETH",
         &[OrderState::Done],
         None,
@@ -131,37 +131,37 @@ async fn test_get_candle_of_minute() {
     upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
 
     let candle_1 =
-        upbit::api_quotation::get_candle_minute("KRW-ETH", None, 1, CandleMinute::Min1).await;
+        upbit::api_quotation::get_candle_minute_list("KRW-ETH", None, 1, CandleMinute::Min1).await;
 
     assert!(candle_1.is_ok());
 
     let candle_3 =
-        upbit::api_quotation::get_candle_minute("KRW-ETH", None, 1, CandleMinute::Min3).await;
+        upbit::api_quotation::get_candle_minute_list("KRW-ETH", None, 1, CandleMinute::Min3).await;
 
     assert!(candle_3.is_ok());
 
     let candle_5 =
-        upbit::api_quotation::get_candle_minute("KRW-ETH", None, 1, CandleMinute::Min5).await;
+        upbit::api_quotation::get_candle_minute_list("KRW-ETH", None, 1, CandleMinute::Min5).await;
 
     assert!(candle_5.is_ok());
 
     let candle_10 =
-        upbit::api_quotation::get_candle_minute("KRW-ETH", None, 1, CandleMinute::Min10).await;
+        upbit::api_quotation::get_candle_minute_list("KRW-ETH", None, 1, CandleMinute::Min10).await;
 
     assert!(candle_10.is_ok());
 
     let candle_15 =
-        upbit::api_quotation::get_candle_minute("KRW-ETH", None, 1, CandleMinute::Min15).await;
+        upbit::api_quotation::get_candle_minute_list("KRW-ETH", None, 1, CandleMinute::Min15).await;
 
     assert!(candle_15.is_ok());
 
     let candle_30 =
-        upbit::api_quotation::get_candle_minute("KRW-ETH", None, 1, CandleMinute::Min30).await;
+        upbit::api_quotation::get_candle_minute_list("KRW-ETH", None, 1, CandleMinute::Min30).await;
 
     assert!(candle_30.is_ok());
 
     let candle_60 =
-        upbit::api_quotation::get_candle_minute("KRW-ETH", None, 1, CandleMinute::Min60).await;
+        upbit::api_quotation::get_candle_minute_list("KRW-ETH", None, 1, CandleMinute::Min60).await;
 
     assert!(candle_60.is_ok());
 
@@ -175,7 +175,7 @@ async fn test_get_candle_of_day() {
     upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
     upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
 
-    let candle = upbit::api_quotation::get_candle_day("KRW-ETH", 1, None, None).await;
+    let candle = upbit::api_quotation::get_candle_day_list("KRW-ETH", 1, None, None).await;
 
     assert!(candle.is_ok())
 }
@@ -185,7 +185,7 @@ async fn test_get_candle_of_week() {
     upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
     upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
 
-    let candle = upbit::api_quotation::get_candle_week("KRW-ETH", 1, None).await;
+    let candle = upbit::api_quotation::get_candle_week_list("KRW-ETH", 1, None).await;
 
     assert!(candle.is_ok())
 }
@@ -195,7 +195,7 @@ async fn test_get_candle_of_month() {
     upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
     upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
 
-    let candle = upbit::api_quotation::get_candle_month("KRW-ETH", 1, None).await;
+    let candle = upbit::api_quotation::get_candle_month_list("KRW-ETH", 1, None).await;
 
     assert!(candle.is_ok())
 }
@@ -205,7 +205,7 @@ async fn test_get_market_state() {
     upbit::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
     upbit::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_ACCESS_KEY not set"));
 
-    let state = upbit::api_quotation::get_market_state(true).await;
+    let state = upbit::api_quotation::get_market_state_list(true).await;
 
     assert!(state.is_ok())
 }

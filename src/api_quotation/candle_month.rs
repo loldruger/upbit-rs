@@ -23,7 +23,7 @@ pub struct CandleChartMonth {
 }
 
 impl CandleChartMonth {
-    pub async fn request_candle(
+    pub async fn get_candle_month_list(
         market_id: &str,
         count: i32,
         last_candle_time: Option<String>,

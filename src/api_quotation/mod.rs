@@ -350,7 +350,7 @@ pub async fn get_trade_recent_list(
 ///
 /// # Example
 /// ```
-/// let market_state = api_quotation::get_market_state(true).await;
+/// let market_state = api_quotation::get_market_state_list(true).await;
 /// ```
 /// - parameters
 /// > `is_detailed` 유의종목 필드과 같은 상세 정보 노출 여부(선택 파라미터) <br>
@@ -361,8 +361,7 @@ pub async fn get_trade_recent_list(
 ///         "market": "KRW-BTC",
 ///         "korean_name": "비트코인",
 ///         "english_name": "Bitcoin"
-///     },
-///     ...
+///     }
 /// ]
 /// ```
 /// # Response Description
@@ -372,15 +371,15 @@ pub async fn get_trade_recent_list(
 /// | korean_name | 거래 대상 디지털 자산 한글명 | String |
 /// | english_name | 거래 대상 디지털 자산 영문명 | String |
 /// | market_warning | 유의 종목 여부 <br> NONE: (해당 사항 없음), CAUTION(투자유의) | String |
-pub async fn get_market_state(is_detailed: bool) -> Result<Vec<MarketState>, ResponseError> {
-    MarketState::get_market_state(is_detailed).await
+pub async fn get_market_state_list(is_detailed: bool) -> Result<Vec<MarketState>, ResponseError> {
+    MarketState::get_market_state_list(is_detailed).await
 }
 
-/// 분봉 캔들 데이터를 요청한다. (inquire minute-unit candle data.)
+/// 분봉 캔들 데이터를 요청한다. (look up minute-unit candle data.)
 ///
 /// # Example
 /// ```
-/// let candle_of_minute = api_quotation::get_candle_minute("KRW-ETH", None, 10, CandleMinute::Min30).await;
+/// let candle_of_minute = api_quotation::get_candle_minute_list("KRW-ETH", None, 10, CandleMinute::Min30).await;
 /// ```
 /// - parameters
 /// > `market_id` ex) KRW-ETH<br>
@@ -430,20 +429,20 @@ pub async fn get_market_state(is_detailed: bool) -> Result<Vec<MarketState>, Res
 /// | candle_acc_trade_price | 누적 거래 금액 | Double |
 /// | candle_acc_trade_volume | 누적 거래량 | Double |
 /// | unit | 분 단위(유닛) | Integer |
-pub async fn get_candle_minute(
+pub async fn get_candle_minute_list(
     market_id: &str,
     to: Option<String>,
     count: i32,
     candle_minute: CandleMinute,
 ) -> Result<Vec<CandleChartMinute>, ResponseError> {
-    CandleChartMinute::request_candle(market_id, to, count, candle_minute).await
+    CandleChartMinute::get_candle_minute_list(market_id, to, count, candle_minute).await
 }
 
-/// 일봉 캔들 데이터를 요청한다. (inquire day-unit candle data.)
+/// 일봉 캔들 데이터를 요청한다. (look up day-unit candle data.)
 ///
 /// # Example
 /// ```
-/// let candle_of_day = api_quotation::get_candle_day("KRW-ETH", 10, None, None).await;
+/// let candle_of_day = api_quotation::get_candle_day_list("KRW-ETH", 10, None, None).await;
 /// ```
 /// - parameters
 /// > `market_id` ex) KRW-ETH<br>
@@ -490,20 +489,20 @@ pub async fn get_candle_minute(
 /// | change_price | 전일 종가 대비 변화 금액 | Double |
 /// | change_rate | 전일 종가 대비 변화량 | Double |
 /// | converted_trade_price | 종가 환산 화폐 단위로 환산된 가격(요청에 convertingPriceUnit 파라미터 없을 시 해당 필드 포함되지 않음.) | Double |
-pub async fn get_candle_day(
+pub async fn get_candle_day_list(
     market_id: &str,
     count: i32,
     last_candle_time: Option<String>,
     price_unit: Option<String>,
 ) -> Result<Vec<CandleChartDay>, ResponseError> {
-    CandleChartDay::request_candle(market_id, count, last_candle_time, price_unit).await
+    CandleChartDay::get_candle_day_list(market_id, count, last_candle_time, price_unit).await
 }
 
-/// 주봉 캔들 데이터를 요청한다. (inquire week-unit candle data.)
+/// 주봉 캔들 데이터를 요청한다. (look up week-unit candle data.)
 ///
 /// # Example
 /// ```
-/// let candle_of_week = api_quotation::get_candle_week("KRW-ETH", 10, None).await;
+/// let candle_of_week = api_quotation::get_candle_week_list("KRW-ETH", 10, None).await;
 /// ```
 /// - parameters
 /// > `market_id` ex) KRW-ETH<br>
@@ -544,19 +543,19 @@ pub async fn get_candle_day(
 /// | candle_acc_trade_price | 누적 거래 금액 | Double |
 /// | candle_acc_trade_volume | 누적 거래량 | Double |
 /// | first_day_of_period | 캔들 기간의 가장 첫 날 | String |
-pub async fn get_candle_week(
+pub async fn get_candle_week_list(
     market_id: &str,
     count: i32,
     last_candle_time: Option<String>,
 ) -> Result<Vec<CandleChartWeek>, ResponseError> {
-    CandleChartWeek::request_candle(market_id, count, last_candle_time).await
+    CandleChartWeek::get_candle_week_list(market_id, count, last_candle_time).await
 }
 
-/// 월봉 캔들 데이터를 요청한다. (inquire month-unit candle data.)
+/// 월봉 캔들 데이터를 요청한다. (look up month-unit candle data.)
 ///
 /// # Example
 /// ```
-/// let candle_of_month = api_quotation::get_candle_month("KRW-ETH", 10, None).await;
+/// let candle_of_month = api_quotation::get_candle_month_list("KRW-ETH", 10, None).await;
 /// ```
 /// - parameters
 /// > `market_id` ex) KRW-ETH<br>
@@ -597,10 +596,10 @@ pub async fn get_candle_week(
 /// | candle_acc_trade_price | 누적 거래 금액 | Double |
 /// | candle_acc_trade_volume | 누적 거래량 | Double |
 /// | first_day_of_period | 캔들 기간의 가장 첫 날 | String |
-pub async fn get_candle_month(
+pub async fn get_candle_month_list(
     market_id: &str,
     count: i32,
     last_candle_time: Option<String>,
 ) -> Result<Vec<CandleChartMonth>, ResponseError> {
-    CandleChartMonth::request_candle(market_id, count, last_candle_time).await
+    CandleChartMonth::get_candle_month_list(market_id, count, last_candle_time).await
 }

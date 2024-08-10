@@ -42,7 +42,7 @@ pub struct MarketStateSource {
 }
 
 impl MarketState {
-    pub async fn get_market_state(is_detailed: bool) -> Result<Vec<Self>, ResponseError> {
+    pub async fn get_market_state_list(is_detailed: bool) -> Result<Vec<Self>, ResponseError> {
         let res = Self::request(is_detailed).await?;
         let res_serialized = res
             .text()
@@ -95,7 +95,7 @@ mod tests {
     use crate::api_quotation::MarketState;
 
     #[tokio::test]
-    async fn test_get_market_state() {
+    async fn test_get_market_state_list() {
         crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
 
