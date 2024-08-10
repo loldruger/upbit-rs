@@ -55,7 +55,7 @@ impl From<&str> for SnapshotChangeType {
 }
 
 /// Kind of minute unit of minute candle chart
-#[derive(Clone, Copy)]
+#[derive(Debug, Clone, Copy)]
 pub enum CandleMinute {
     /// Into() coerces it into u8 sized 1
     Min1,
@@ -75,17 +75,33 @@ pub enum CandleMinute {
     Min240,
 }
 
-impl From<CandleMinute> for u8 {
-    fn from(value: CandleMinute) -> Self {
+impl From<u8> for CandleMinute {
+    fn from(value: u8) -> Self {
         match value {
-            CandleMinute::Min1 => 1,
-            CandleMinute::Min3 => 3,
-            CandleMinute::Min5 => 5,
-            CandleMinute::Min10 => 10,
-            CandleMinute::Min15 => 15,
-            CandleMinute::Min30 => 30,
-            CandleMinute::Min60 => 60,
-            CandleMinute::Min240 => 240,
+            1 => CandleMinute::Min1,
+            3 => CandleMinute::Min3,
+            5 => CandleMinute::Min5,
+            10 => CandleMinute::Min10,
+            15 => CandleMinute::Min15,
+            30 => CandleMinute::Min30,
+            60 => CandleMinute::Min60,
+            240 => CandleMinute::Min240,
+            a @ _ => panic!("Unexpected value: {}", a),
+        }
+    }
+}
+
+impl Display for CandleMinute {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            CandleMinute::Min1 => write!(f, "1"),
+            CandleMinute::Min3 => write!(f, "3"),
+            CandleMinute::Min5 => write!(f, "5"),
+            CandleMinute::Min10 => write!(f, "10"),
+            CandleMinute::Min15 => write!(f, "15"),
+            CandleMinute::Min30 => write!(f, "30"),
+            CandleMinute::Min60 => write!(f, "60"),
+            CandleMinute::Min240 => write!(f, "240"),
         }
     }
 }
@@ -102,16 +118,16 @@ impl Display for UrlAssociates {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             UrlAssociates::UrlCandleMinute(minute) => {
-                write!(f, "{URL_CANDLE_MINUTE}{}", Into::<u8>::into(*minute))
+                write!(f, "{URL_CANDLE_MINUTE}{}", CandleMinute::from(*minute))
             }
             UrlAssociates::UrlCandleDay => {
-                write!(f, "{}", URL_CANDLE_DAY)
+                write!(f, "{URL_CANDLE_DAY}")
             }
             UrlAssociates::UrlCandleWeek => {
-                write!(f, "{}", URL_CANDLE_WEEK)
+                write!(f, "{URL_CANDLE_WEEK}")
             }
             UrlAssociates::UrlCandleMonth => {
-                write!(f, "{}", URL_CANDLE_MONTH)
+                write!(f, "{URL_CANDLE_MONTH}")
             }
         }
     }
