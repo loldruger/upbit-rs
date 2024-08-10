@@ -4,9 +4,9 @@ use super::super::constant::{URL_SERVER, URL_TRADES_TICKS};
 
 use reqwest::header::ACCEPT;
 use reqwest::{Response, Url};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct TradeRecent {
     market: String,
     trade_date_utc: String,

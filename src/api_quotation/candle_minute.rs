@@ -4,9 +4,9 @@ use super::{
 
 use reqwest::header::ACCEPT;
 use reqwest::{Response, Url};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct CandleChartMinute {
     pub market: String,
     pub candle_date_time_utc: chrono::NaiveDateTime,

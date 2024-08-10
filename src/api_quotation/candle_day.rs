@@ -5,9 +5,9 @@ use super::UrlAssociates;
 
 use reqwest::header::ACCEPT;
 use reqwest::{Response, Url};
-use serde::Deserialize;
+use serde::{Serialize, Deserialize};
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct CandleChartDay {
     market: String,
     candle_date_time_utc: String,

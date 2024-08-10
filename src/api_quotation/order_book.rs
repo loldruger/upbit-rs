@@ -4,9 +4,9 @@ use super::super::constant::{URL_ORDERBOOK, URL_SERVER};
 
 use reqwest::header::ACCEPT;
 use reqwest::{Response, Url};
-use serde::Deserialize;
+use serde::{Serialize, Deserialize};
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct OrderBookInfo {
     market: String,
     timestamp: i64,
@@ -15,7 +15,7 @@ pub struct OrderBookInfo {
     orderbook_units: Vec<OrderBookUnit>,
 }
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct OrderBookUnit {
     ask_price: f64,
     bid_price: f64,

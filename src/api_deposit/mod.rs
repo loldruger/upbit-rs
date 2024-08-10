@@ -5,6 +5,7 @@ use crate::{
     response::{CoinAddressGen, CoinAddressResponse, ResponseError, TransactionInfo},
 };
 
+use serde::{Deserialize, Serialize};
 #[cfg(feature = "sqlx-type")]
 use sqlx::Type;
 
@@ -16,7 +17,7 @@ mod deposit_info_list;
 mod deposit_krw;
 
 /// List of kind of Deposit state
-#[derive(Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub enum DepositState {
     /// ???
     Done,

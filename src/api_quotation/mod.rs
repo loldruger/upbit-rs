@@ -15,7 +15,7 @@ pub use candle_month::CandleChartMonth;
 pub use candle_week::CandleChartWeek;
 pub use market_state::MarketState;
 pub use order_book::OrderBookInfo;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 pub use ticker_snapshot::TickerSnapshot;
 pub use trade_recent::TradeRecent;
 
@@ -26,7 +26,7 @@ use crate::response::ResponseError;
 use sqlx::Type;
 
 /// Kind of change of ticker snapshot
-#[derive(Deserialize, Debug, Copy, Clone)]
+#[derive(Serialize, Deserialize, Debug, Copy, Clone)]
 
 #[cfg_attr(
     feature = "sqlx-type",

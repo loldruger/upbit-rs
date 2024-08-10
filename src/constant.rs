@@ -99,7 +99,7 @@ impl From<&str> for OrderBy {
 }
 
 /// Kind of transaction type
-#[derive(Debug, Copy, Clone)]
+#[derive(Serialize, Deserialize, Debug, Copy, Clone)]
 #[cfg_attr(
     feature = "sqlx-type",
     derive(sqlx::Type),
@@ -161,7 +161,7 @@ impl Display for TwoFactorType {
     sqlx(type_name = "transfer_type"),
     sqlx(rename_all = "snake_case")
 )]
-#[derive(Debug, Copy, Clone)]
+#[derive(Serialize, Deserialize, Debug, Copy, Clone)]
 pub enum TransferType {
     /// 출금
     Withdraw,
