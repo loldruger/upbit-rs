@@ -24,12 +24,12 @@ let order_chance = api_exchange::get_order_chance("KRW-ETH").await;
 let order_status = api_exchange::get_order_status(Some("9ca023a5-851b-4fec-9f0a-48cd83c2eaae"), None).await;
 // [deprecated] let order_status_list = api_exchange::get_order_status_list().await;
 let order_status = api_exchange::get_order_status_by_uuid("d60dfc8a-db0a-4087-9974-fed6433eb8f1").await;
-let orders_status_open = api_exchange::get_order_status_by_uuids("KRW-ETH", &["d60dfc8a-db0a-4087-9974-fed6433eb8f1"], OrderBy::Desc)
-let orders_status_closed = api_exchange::get_order_status_closed("KRW-ETH", &[OrderState::Done], None, None, 10, OrderBy::Desc
+let orders_status_open = api_exchange::get_order_status_list_by_uuids("KRW-ETH", &["d60dfc8a-db0a-4087-9974-fed6433eb8f1"], OrderBy::Desc)
+let order_info = upbit::api_exchange::get_order_status_list_opened("KRW-ETH", &[OrderState::Wait], 1, 10, OrderBy::Desc)
+.await;
+let orders_status_closed = api_exchange::get_order_status_list_closed("KRW-ETH", &[OrderState::Done], None, None, 10, OrderBy::Desc
 ).await;
 
-let order_info = upbit::api_exchange::get_order_status_opened("KRW-ETH", &[OrderState::Wait], 1, 10, OrderBy::Desc)
-.await;
 let order_bid = api_exchange::order_by_price("KRW-ETH", OrderSide::Bid, 5000.0, 1_435_085.0, OrderType::Limit, None).await;
 let order_ask = api_exchange::order_by_price("KRW-ETH", OrderSide::Ask, 5000.0, 10_435_085.0, OrderType::Limit, None).await;
 
@@ -56,10 +56,10 @@ let ticker_snapshot = api_quotation::get_ticker_snapshot("KRW-ETH").await;
 let recent_trade_list = api_quotation::get_trade_recent_list("KRW-ETH", None, 3, "0".to_string(), None).await;
 let market_state = api_quotation::get_market_state(true).await;
 
-let chart_of_minute = api_quotation::get_candle_minute("KRW-ETH", None, 50, CandleMinute::Min10).await;
-let chart_of_day = api_quotation::get_candle_day("KRW-ETH", 10, None, None).await;
-let chart_of_week = api_quotation::get_candle_week("KRW-ETH", 10, None).await;
-let chart_of_month = api_quotation::get_candle_month("KRW-ETH", 10, None).await;
+let chart_of_minute = api_quotation::get_candle_minute_list("KRW-ETH", None, 50, CandleMinute::Min10).await;
+let chart_of_day = api_quotation::get_candle_day_list("KRW-ETH", 10, None, None).await;
+let chart_of_week = api_quotation::get_candle_week_list("KRW-ETH", 10, None).await;
+let chart_of_month = api_quotation::get_candle_month_list("KRW-ETH", 10, None).await;
 
 ```
 
