@@ -39,7 +39,7 @@ pub struct CandleChartMinuteSource {
 impl CandleChartMinute {
     pub async fn get_candle_minute_list(
         market_id: &str,
-        to: Option<String>,
+        to: Option<&str>,
         count: i32,
         candle_minute: CandleMinute,
     ) -> Result<Vec<Self>, ResponseError> {
@@ -87,7 +87,7 @@ impl CandleChartMinute {
 
     async fn request(
         market_id: &str,
-        to: Option<String>,
+        to: Option<&str>,
         count: i32,
         candle_minute: CandleMinute,
     ) -> Result<Response, ResponseError> {
@@ -100,7 +100,7 @@ impl CandleChartMinute {
             .append_pair("count", count.to_string().as_str());
 
         if let Some(to) = to {
-            url.query_pairs_mut().append_pair("to", to.as_str());
+            url.query_pairs_mut().append_pair("to", to);
         }
 
         reqwest::Client::new()

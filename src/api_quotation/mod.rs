@@ -447,7 +447,7 @@ pub async fn get_market_state_list(is_detailed: bool) -> Result<Vec<MarketState>
 /// | unit | 분 단위(유닛) | Integer |
 pub async fn get_candle_minute_list(
     market_id: &str,
-    to: Option<String>,
+    to: Option<&str>,
     count: i32,
     candle_minute: CandleMinute,
 ) -> Result<Vec<CandleChartMinute>, ResponseError> {
@@ -508,8 +508,8 @@ pub async fn get_candle_minute_list(
 pub async fn get_candle_day_list(
     market_id: &str,
     count: i32,
-    last_candle_time: Option<String>,
-    price_unit: Option<String>,
+    last_candle_time: Option<&str>,
+    price_unit: Option<&str>,
 ) -> Result<Vec<CandleChartDay>, ResponseError> {
     CandleChartDay::get_candle_day_list(market_id, count, last_candle_time, price_unit).await
 }
@@ -562,7 +562,7 @@ pub async fn get_candle_day_list(
 pub async fn get_candle_week_list(
     market_id: &str,
     count: i32,
-    last_candle_time: Option<String>,
+    last_candle_time: Option<&str>,
 ) -> Result<Vec<CandleChartWeek>, ResponseError> {
     CandleChartWeek::get_candle_week_list(market_id, count, last_candle_time).await
 }
@@ -615,7 +615,7 @@ pub async fn get_candle_week_list(
 pub async fn get_candle_month_list(
     market_id: &str,
     count: i32,
-    last_candle_time: Option<String>,
+    last_candle_time: Option<&str>,
 ) -> Result<Vec<CandleChartMonth>, ResponseError> {
     CandleChartMonth::get_candle_month_list(market_id, count, last_candle_time).await
 }

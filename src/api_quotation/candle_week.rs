@@ -26,7 +26,7 @@ impl CandleChartWeek {
     pub async fn get_candle_week_list(
         market_id: &str,
         count: i32,
-        last_candle_time: Option<String>,
+        last_candle_time: Option<&str>,
     ) -> Result<Vec<Self>, ResponseError> {
         let res = Self::request(market_id, count, last_candle_time).await?;
         let res_serialized = res
@@ -65,7 +65,7 @@ impl CandleChartWeek {
     async fn request(
         market_id: &str,
         count: i32,
-        last_candle_time: Option<String>,
+        last_candle_time: Option<&str>,
     ) -> Result<Response, ResponseError> {
         let url_candle = UrlAssociates::UrlCandleWeek.to_string();
         let mut url = Url::parse(&format!("{URL_SERVER}{url_candle}"))
@@ -76,7 +76,7 @@ impl CandleChartWeek {
 
         if let Some(last_candle_time) = last_candle_time {
             url.query_pairs_mut()
-                .append_pair("to", last_candle_time.as_str());
+                .append_pair("to", last_candle_time);
         }
 
         reqwest::Client::new()
