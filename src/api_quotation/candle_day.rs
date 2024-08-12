@@ -9,20 +9,20 @@ use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct CandleChartDay {
-    market: String,
-    candle_date_time_utc: String,
-    candle_date_time_kst: String,
-    opening_price: f64,
-    high_price: f64,
-    low_price: f64,
-    trade_price: f64,
-    timestamp: i64,
-    candle_acc_trade_price: f64,
-    candle_acc_trade_volume: f64,
-    prev_closing_price: f64,
-    change_price: f64,
-    change_rate: f64,
-    converted_trade_price: Option<f64>,
+    pub market: String,
+    pub candle_date_time_utc: String,
+    pub candle_date_time_kst: String,
+    pub opening_price: f64,
+    pub high_price: f64,
+    pub low_price: f64,
+    pub trade_price: f64,
+    pub timestamp: i64,
+    pub candle_acc_trade_price: f64,
+    pub candle_acc_trade_volume: f64,
+    pub prev_closing_price: f64,
+    pub change_price: f64,
+    pub change_rate: f64,
+    pub converted_trade_price: Option<f64>,
 }
 
 impl CandleChartDay {

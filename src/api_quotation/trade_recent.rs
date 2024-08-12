@@ -8,16 +8,16 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TradeRecent {
-    market: String,
-    trade_date_utc: String,
-    trade_time_utc: String,
-    timestamp: i64,
-    trade_price: f64,
-    trade_volume: f64,
-    prev_closing_price: f64,
-    change_price: f64,
-    ask_bid: String,
-    sequential_id: i64,
+    pub market: String,
+    pub trade_date_utc: String,
+    pub trade_time_utc: String,
+    pub timestamp: i64,
+    pub trade_price: f64,
+    pub trade_volume: f64,
+    pub prev_closing_price: f64,
+    pub change_price: f64,
+    pub ask_bid: String,
+    pub sequential_id: i64,
 }
 
 impl TradeRecent {

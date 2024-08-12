@@ -8,19 +8,19 @@ use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct OrderBookInfo {
-    market: String,
-    timestamp: i64,
-    total_ask_size: f64,
-    total_bid_size: f64,
-    orderbook_units: Vec<OrderBookUnit>,
+    pub market: String,
+    pub timestamp: i64,
+    pub total_ask_size: f64,
+    pub total_bid_size: f64,
+    pub orderbook_units: Vec<OrderBookUnit>,
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct OrderBookUnit {
-    ask_price: f64,
-    bid_price: f64,
-    ask_size: f64,
-    bid_size: f64,
+    pub ask_price: f64,
+    pub bid_price: f64,
+    pub ask_size: f64,
+    pub bid_size: f64,
 }
 
 impl OrderBookInfo {

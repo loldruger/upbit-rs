@@ -7,12 +7,12 @@ use crate::response::ResponseError;
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct MarketState {
-    market: String,
-    korean_name: String,
-    english_name: String,
-    market_warning: Option<String>,
+    pub market: String,
+    pub korean_name: String,
+    pub english_name: String,
+    pub market_warning: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    market_event: Option<MarketEvent>,
+    pub market_event: Option<MarketEvent>,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
