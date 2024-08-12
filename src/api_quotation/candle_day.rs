@@ -10,8 +10,16 @@ use serde::{Serialize, Deserialize};
 #[derive(Serialize, Deserialize, Debug)]
 pub struct CandleChartDay {
     pub market: String,
+    
+    #[cfg(feature = "chrono")]
+    pub candle_date_time_utc: chrono::NaiveDateTime,
+    #[cfg(not(any(feature = "chrono")))]
     pub candle_date_time_utc: String,
+    #[cfg(feature = "chrono")]
+    pub candle_date_time_kst: chrono::NaiveDateTime,
+    #[cfg(not(any(feature = "chrono")))]
     pub candle_date_time_kst: String,
+
     pub opening_price: f64,
     pub high_price: f64,
     pub low_price: f64,
@@ -28,7 +36,7 @@ pub struct CandleChartDay {
 impl CandleChartDay {
     pub async fn get_candle_day_list(
         market_id: &str,
-        count: i32,
+        count: u8,
         last_candle_time: Option<&str>,
         price_unit: Option<&str>,
     ) -> Result<Vec<Self>, ResponseError> {
@@ -71,7 +79,7 @@ impl CandleChartDay {
 
     async fn request(
         market_id: &str,
-        count: i32,
+        count: u8,
         last_candle_time: Option<&str>,
         price_unit: Option<&str>,
     ) -> Result<Response, ResponseError> {

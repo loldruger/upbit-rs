@@ -355,9 +355,9 @@ pub async fn get_ticker_snapshot(markets_id: &[&str]) -> Result<TickerSnapshot, 
 pub async fn get_trade_recent_list(
     market_id: &str,
     hhmmss: Option<&str>,
-    count: i32,
+    count: u32,
     cursor: &str,
-    days_ago: Option<i32>,
+    days_ago: Option<u8>,
 ) -> Result<TradeRecent, ResponseError> {
     TradeRecent::get_trade_recent_list(market_id, hhmmss, count, cursor, days_ago).await
 }
@@ -448,7 +448,7 @@ pub async fn get_market_state_list(is_detailed: bool) -> Result<Vec<MarketState>
 pub async fn get_candle_minute_list(
     market_id: &str,
     to: Option<&str>,
-    count: i32,
+    count: u8,
     candle_minute: CandleMinute,
 ) -> Result<Vec<CandleChartMinute>, ResponseError> {
     CandleChartMinute::get_candle_minute_list(market_id, to, count, candle_minute).await
@@ -467,7 +467,7 @@ pub async fn get_candle_minute_list(
 /// >> * ISO8061 format (yyyy-MM-dd'T'HH:mm:ss'Z' or yyyy-MM-dd HH:mm:ss). <br>
 /// >> * though it is commonly UTC time criteria, you can request KST time using like 2023-01-01T00:00:00+09:00 format. <br>
 ///
-/// > `price_unit` (optional)
+/// > `price_unit` (optional) 종가 환산 화폐 단위 (생략 가능, KRW로 명시할 시 원화 환산 가격을 반환.)<br>
 /// # Response
 /// ```json
 /// [
@@ -507,7 +507,7 @@ pub async fn get_candle_minute_list(
 /// | converted_trade_price | 종가 환산 화폐 단위로 환산된 가격(요청에 convertingPriceUnit 파라미터 없을 시 해당 필드 포함되지 않음.) | Double |
 pub async fn get_candle_day_list(
     market_id: &str,
-    count: i32,
+    count: u8,
     last_candle_time: Option<&str>,
     price_unit: Option<&str>,
 ) -> Result<Vec<CandleChartDay>, ResponseError> {
@@ -561,7 +561,7 @@ pub async fn get_candle_day_list(
 /// | first_day_of_period | 캔들 기간의 가장 첫 날 | String |
 pub async fn get_candle_week_list(
     market_id: &str,
-    count: i32,
+    count: u8,
     last_candle_time: Option<&str>,
 ) -> Result<Vec<CandleChartWeek>, ResponseError> {
     CandleChartWeek::get_candle_week_list(market_id, count, last_candle_time).await
@@ -614,7 +614,7 @@ pub async fn get_candle_week_list(
 /// | first_day_of_period | 캔들 기간의 가장 첫 날 | String |
 pub async fn get_candle_month_list(
     market_id: &str,
-    count: i32,
+    count: u8,
     last_candle_time: Option<&str>,
 ) -> Result<Vec<CandleChartMonth>, ResponseError> {
     CandleChartMonth::get_candle_month_list(market_id, count, last_candle_time).await

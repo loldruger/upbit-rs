@@ -24,9 +24,9 @@ impl TradeRecent {
     pub async fn get_trade_recent_list(
         market_id: &str,
         hhmmss: Option<&str>,
-        count: i32,
+        count: u32,
         cursor: &str,
-        days_ago: Option<i32>,
+        days_ago: Option<u8>,
     ) -> Result<Self, ResponseError> {
         let res = Self::request(market_id, hhmmss, count, cursor, days_ago).await?;
         let res_serialized = res
@@ -70,9 +70,9 @@ impl TradeRecent {
     async fn request(
         market_id: &str,
         hhmmss: Option<&str>,
-        count: i32,
+        count: u32,
         cursor: &str,
-        days_ago: Option<i32>,
+        days_ago: Option<u8>,
     ) -> Result<Response, ResponseError> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_TRADES_TICKS}"))
             .map_err(crate::response::response_error_internal_url_parse_error)?;

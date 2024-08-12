@@ -1,9 +1,6 @@
 upbit-api on rust, with upbit api v1.5.0
 
-
-this crate is dependant on `tokio`
-
-it also requires `openssl-sys` package
+it requires `openssl-sys` package
 
 # Set access key and secret key
 ```rust
@@ -50,7 +47,7 @@ let coin_address_info_list = api_deposit::get_coin_address_info_list().await;
 // api_quotation
 let order_book_info = api_quotation::get_orderbook_info("KRW-ETH").await;
 let ticker_snapshot = api_quotation::get_ticker_snapshot("KRW-ETH").await;
-let recent_trade_list = api_quotation::get_trade_recent_list("KRW-ETH", None, 3, "0".to_string(), None).await;
+let recent_trade_list = api_quotation::get_trade_recent_list("KRW-ETH", None, 3, "0", None).await;
 let market_state = api_quotation::get_market_state(true).await;
 
 let chart_of_minute = api_quotation::get_candle_minute_list("KRW-ETH", None, 50, CandleMinute::Min10).await;

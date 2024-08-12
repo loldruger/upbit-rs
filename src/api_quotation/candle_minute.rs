@@ -9,8 +9,16 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, Debug)]
 pub struct CandleChartMinute {
     pub market: String,
+
+    #[cfg(feature = "chrono")]
+    pub candle_date_time_utc: chrono::NaiveDateTime,
+    #[cfg(not(any(feature = "chrono")))]
     pub candle_date_time_utc: String,
+    #[cfg(feature = "chrono")]
+    pub candle_date_time_kst: chrono::NaiveDateTime,
+    #[cfg(not(any(feature = "chrono")))]
     pub candle_date_time_kst: String,
+
     pub opening_price: f64,
     pub high_price: f64,
     pub low_price: f64,
@@ -40,7 +48,7 @@ impl CandleChartMinute {
     pub async fn get_candle_minute_list(
         market_id: &str,
         to: Option<&str>,
-        count: i32,
+        count: u8,
         candle_minute: CandleMinute,
     ) -> Result<Vec<Self>, ResponseError> {
         let res = Self::request(market_id, to, count, candle_minute).await?;
@@ -61,18 +69,24 @@ impl CandleChartMinute {
                 x.into_iter()
                     .map(|i| Self {
                         market: i.market,
+                        
+                        #[cfg(feature = "chrono")]
+                        candle_date_time_utc: chrono::NaiveDateTime::parse_from_str(
+                            &i.candle_date_time_utc,
+                            "%Y-%m-%dT%H:%M:%S",
+                        )
+                        .unwrap(),
+                        #[cfg(feature = "chrono")]
+                        candle_date_time_kst: chrono::NaiveDateTime::parse_from_str(
+                            &i.candle_date_time_kst,
+                            "%Y-%m-%dT%H:%M:%S",
+                        )
+                        .unwrap(),
+                        #[cfg(not(any(feature = "chrono")))]
                         candle_date_time_utc: i.candle_date_time_utc,
+                        #[cfg(not(any(feature = "chrono")))]
                         candle_date_time_kst: i.candle_date_time_kst,
-                        // candle_date_time_utc: chrono::NaiveDateTime::parse_from_str(
-                        //     &i.candle_date_time_utc,
-                        //     "%Y-%m-%dT%H:%M:%S",
-                        // )
-                        // .unwrap(),
-                        // candle_date_time_kst: chrono::NaiveDateTime::parse_from_str(
-                        //     &i.candle_date_time_kst,
-                        //     "%Y-%m-%dT%H:%M:%S",
-                        // )
-                        // .unwrap(),
+                        
                         opening_price: i.opening_price,
                         high_price: i.high_price,
                         low_price: i.low_price,
@@ -90,7 +104,7 @@ impl CandleChartMinute {
     async fn request(
         market_id: &str,
         to: Option<&str>,
-        count: i32,
+        count: u8,
         candle_minute: CandleMinute,
     ) -> Result<Response, ResponseError> {
         let url_candle = UrlAssociates::UrlCandleMinute(candle_minute).to_string();
