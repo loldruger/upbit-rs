@@ -9,8 +9,8 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, Debug)]
 pub struct CandleChartMinute {
     pub market: String,
-    pub candle_date_time_utc: chrono::NaiveDateTime,
-    pub candle_date_time_kst: chrono::NaiveDateTime,
+    pub candle_date_time_utc: String,
+    pub candle_date_time_kst: String,
     pub opening_price: f64,
     pub high_price: f64,
     pub low_price: f64,
@@ -61,16 +61,18 @@ impl CandleChartMinute {
                 x.into_iter()
                     .map(|i| Self {
                         market: i.market,
-                        candle_date_time_utc: chrono::NaiveDateTime::parse_from_str(
-                            &i.candle_date_time_utc,
-                            "%Y-%m-%dT%H:%M:%S",
-                        )
-                        .unwrap(),
-                        candle_date_time_kst: chrono::NaiveDateTime::parse_from_str(
-                            &i.candle_date_time_kst,
-                            "%Y-%m-%dT%H:%M:%S",
-                        )
-                        .unwrap(),
+                        candle_date_time_utc: i.candle_date_time_utc,
+                        candle_date_time_kst: i.candle_date_time_kst,
+                        // candle_date_time_utc: chrono::NaiveDateTime::parse_from_str(
+                        //     &i.candle_date_time_utc,
+                        //     "%Y-%m-%dT%H:%M:%S",
+                        // )
+                        // .unwrap(),
+                        // candle_date_time_kst: chrono::NaiveDateTime::parse_from_str(
+                        //     &i.candle_date_time_kst,
+                        //     "%Y-%m-%dT%H:%M:%S",
+                        // )
+                        // .unwrap(),
                         opening_price: i.opening_price,
                         high_price: i.high_price,
                         low_price: i.low_price,

@@ -7,7 +7,7 @@ use reqwest::header::ACCEPT;
 use reqwest::{Response, Url};
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct CandleChartMonth {
     pub market: String,
     pub candle_date_time_utc: String,

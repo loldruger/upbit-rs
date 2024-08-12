@@ -177,6 +177,8 @@ async fn test_get_candle_of_day() {
 
     let candle = upbit::api_quotation::get_candle_day_list("KRW-ETH", 1, None, None).await;
 
+    println!("{:?}", candle);
+    
     assert!(candle.is_ok())
 }
 

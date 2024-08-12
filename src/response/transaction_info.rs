@@ -17,8 +17,8 @@ pub struct TransactionInfoDerived {
     pub net_type: Option<String>,
     pub txid: String,
     pub state: DepositState,
-    pub created_at: chrono::NaiveDateTime,
-    pub done_at: Option<chrono::NaiveDateTime>,
+    pub created_at: String,
+    pub done_at: Option<String>,
     pub amount: f64,
     pub fee: f64,
     // pub krw_amount: f64,
@@ -68,17 +68,23 @@ impl TransactionInfoDerivedSource {
         self.state.as_str().into()
     }
     /// Convert [String] created_at value into [chrono::NaiveDateTime]
-    pub fn created_at(&self) -> chrono::NaiveDateTime {
-        chrono::NaiveDateTime::parse_from_str(&self.created_at, "%Y-%m-%dT%H:%M:%S%z").unwrap()
+    pub fn created_at(&self) -> String {
+        self.created_at.clone()
     }
+    // pub fn created_at(&self) -> chrono::NaiveDateTime {
+    //     chrono::NaiveDateTime::parse_from_str(&self.created_at, "%Y-%m-%dT%H:%M:%S%z").unwrap()
+    // }
     /// Convert [String] done_at value into [chrono::NaiveDateTime]
-    pub fn done_at(&self) -> Option<chrono::NaiveDateTime> {
-        chrono::NaiveDateTime::parse_from_str(
-            &self.done_at.clone().or(None)?,
-            "%Y-%m-%dT%H:%M:%S%z",
-        )
-        .ok()
+    pub fn done_at(&self) -> Option<String> {
+        self.done_at.clone().or(None)
     }
+    // pub fn done_at(&self) -> Option<chrono::NaiveDateTime> {
+    //     chrono::NaiveDateTime::parse_from_str(
+    //         &self.done_at.clone().or(None)?,
+    //         "%Y-%m-%dT%H:%M:%S%z",
+    //     )
+    //     .ok()
+    // }
     /// Convert [String] amount value into [f64]
     pub fn amount(&self) -> f64 {
         self.amount.parse().unwrap()
@@ -104,8 +110,8 @@ pub struct TransactionInfo {
     pub net_type: Option<String>,
     pub txid: String,
     pub state: DepositState,
-    pub created_at: chrono::NaiveDateTime,
-    pub done_at: Option<chrono::NaiveDateTime>,
+    pub created_at: String,
+    pub done_at: Option<String>,
     pub amount: f64,
     pub fee: f64,
     pub transaction_type: TransactionType,
@@ -181,17 +187,23 @@ impl TransactionInfoSource {
         self.state.as_str().into()
     }
     /// Convert [String] created_at value into [chrono::NaiveDateTime]
-    pub fn created_at(&self) -> chrono::NaiveDateTime {
-        chrono::NaiveDateTime::parse_from_str(&self.created_at, "%Y-%m-%dT%H:%M:%S%z").unwrap()
+    pub fn created_at(&self) -> String {
+        self.created_at.clone()
     }
+    // pub fn created_at(&self) -> chrono::NaiveDateTime {
+    //     chrono::NaiveDateTime::parse_from_str(&self.created_at, "%Y-%m-%dT%H:%M:%S%z").unwrap()
+    // }
     /// Convert [String] done_at value into [chrono::NaiveDateTime]
-    pub fn done_at(&self) -> Option<chrono::NaiveDateTime> {
-        chrono::NaiveDateTime::parse_from_str(
-            &self.done_at.clone().or(None)?,
-            "%Y-%m-%dT%H:%M:%S%z",
-        )
-        .ok()
+    pub fn done_at(&self) -> Option<String> {
+        self.done_at.clone().or(None)
     }
+    // pub fn done_at(&self) -> Option<chrono::NaiveDateTime> {
+    //     chrono::NaiveDateTime::parse_from_str(
+    //         &self.done_at.clone().or(None)?,
+    //         "%Y-%m-%dT%H:%M:%S%z",
+    //     )
+    //     .ok()
+    // }
     /// Convert [String] amount value into [f64]
     pub fn amount(&self) -> f64 {
         self.amount.parse().unwrap()

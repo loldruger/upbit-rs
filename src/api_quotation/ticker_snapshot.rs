@@ -37,7 +37,7 @@ pub struct TickerSnapshot {
     pub timestamp: i64,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 pub struct TickerSnapshotSource {
     market: String,
     trade_date: String,
