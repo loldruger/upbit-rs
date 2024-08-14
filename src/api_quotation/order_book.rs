@@ -24,7 +24,7 @@ pub struct OrderBookUnit {
 }
 
 impl OrderBookInfo {
-    pub async fn get_orderbook_info(markets_id: &[&str]) -> Result<Self, ResponseError> {
+    pub async fn get_orderbook_info_list(markets_id: &[&str]) -> Result<Vec<Self>, ResponseError> {
         let res = Self::request(markets_id).await?;
         let res_serialized = res
             .text()
@@ -39,33 +39,27 @@ impl OrderBookInfo {
         }
 
         serde_json::from_str(&res_serialized)
-            .map(|mut i: Vec<Self>| {
-                let x = i.pop().ok_or_else(|| crate::response::ResponseError {
-                    state: crate::response::ResponseErrorState::CustomErrorNoDataPresent,
-                    error: crate::response::ResponseErrorBody {
-                        name: "custom_error_no_data_present".to_owned(),
-                        message: "No data present in the response".to_owned(),
-                    },
-                })?;
-
-                Ok(Self {
-                    market: x.market,
-                    timestamp: x.timestamp,
-                    total_ask_size: x.total_ask_size,
-                    total_bid_size: x.total_bid_size,
-                    orderbook_units: x
-                        .orderbook_units
-                        .into_iter()
-                        .map(|unit| OrderBookUnit {
-                            ask_price: unit.ask_price,
-                            bid_price: unit.bid_price,
-                            ask_size: unit.ask_size,
-                            bid_size: unit.bid_size,
-                        })
-                        .collect(),
-                })
+            .map(|i: Vec<Self>| {
+                i.into_iter().map(|x| {
+                    Self {
+                        market: x.market,
+                        timestamp: x.timestamp,
+                        total_ask_size: x.total_ask_size,
+                        total_bid_size: x.total_bid_size,
+                        orderbook_units: x
+                            .orderbook_units
+                            .into_iter()
+                            .map(|unit| OrderBookUnit {
+                                ask_price: unit.ask_price,
+                                bid_price: unit.bid_price,
+                                ask_size: unit.ask_size,
+                                bid_size: unit.bid_size,
+                            })
+                            .collect(),
+                    }
+                }).collect::<Vec<Self>>()
             })
-            .map_err(crate::response::response_error_from_json)?
+            .map_err(crate::response::response_error_from_json)
     }
 
     async fn request(markets_id: &[&str]) -> Result<Response, ResponseError> {

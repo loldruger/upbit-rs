@@ -68,7 +68,7 @@ pub struct TickerSnapshotSource {
 }
 
 impl TickerSnapshot {
-    pub async fn get_ticker_snapshot(markets_id: &[&str]) -> Result<Self, ResponseError> {
+    pub async fn get_ticker_snapshot_list(markets_id: &[&str]) -> Result<Vec<Self>, ResponseError> {
         let res = Self::request(markets_id).await?;
         let res_serialized = res
             .text()
@@ -81,47 +81,41 @@ impl TickerSnapshot {
                 .ok()
                 .unwrap());
         }
-
+ 
         serde_json::from_str(&res_serialized)
-            .map(|mut i: Vec<TickerSnapshotSource>| {
-                let x = i.pop().ok_or_else(|| crate::response::ResponseError {
-                    state: crate::response::ResponseErrorState::CustomErrorNoDataPresent,
-                    error: crate::response::ResponseErrorBody {
-                        name: "custom_error_no_data_present".to_owned(),
-                        message: "No data present in the response".to_owned(),
-                    },
-                })?;
-
-                Ok(Self {
-                    market: x.market,
-                    trade_date: x.trade_date,
-                    trade_time: x.trade_time,
-                    trade_date_kst: x.trade_date_kst,
-                    trade_time_kst: x.trade_time_kst,
-                    trade_timestamp: x.trade_timestamp,
-                    opening_price: x.opening_price,
-                    high_price: x.high_price,
-                    low_price: x.low_price,
-                    trade_price: x.trade_price,
-                    prev_closing_price: x.prev_closing_price,
-                    change: x.change.as_str().into(),
-                    change_price: x.change_price,
-                    change_rate: x.change_rate,
-                    signed_change_price: x.signed_change_price,
-                    signed_change_rate: x.signed_change_rate,
-                    trade_volume: x.trade_volume,
-                    acc_trade_price: x.acc_trade_price,
-                    acc_trade_price_24h: x.acc_trade_price_24h,
-                    acc_trade_volume: x.acc_trade_volume,
-                    acc_trade_volume_24h: x.acc_trade_volume_24h,
-                    highest_52_week_price: x.highest_52_week_price,
-                    highest_52_week_date: x.highest_52_week_date,
-                    lowest_52_week_price: x.lowest_52_week_price,
-                    lowest_52_week_date: x.lowest_52_week_date,
-                    timestamp: x.timestamp,
-                })
+            .map(|i: Vec<TickerSnapshotSource>| {
+                i.into_iter().map(|x| {
+                    Self {
+                        market: x.market,
+                        trade_date: x.trade_date,
+                        trade_time: x.trade_time,
+                        trade_date_kst: x.trade_date_kst,
+                        trade_time_kst: x.trade_time_kst,
+                        trade_timestamp: x.trade_timestamp,
+                        opening_price: x.opening_price,
+                        high_price: x.high_price,
+                        low_price: x.low_price,
+                        trade_price: x.trade_price,
+                        prev_closing_price: x.prev_closing_price,
+                        change: x.change.as_str().into(),
+                        change_price: x.change_price,
+                        change_rate: x.change_rate,
+                        signed_change_price: x.signed_change_price,
+                        signed_change_rate: x.signed_change_rate,
+                        trade_volume: x.trade_volume,
+                        acc_trade_price: x.acc_trade_price,
+                        acc_trade_price_24h: x.acc_trade_price_24h,
+                        acc_trade_volume: x.acc_trade_volume,
+                        acc_trade_volume_24h: x.acc_trade_volume_24h,
+                        highest_52_week_price: x.highest_52_week_price,
+                        highest_52_week_date: x.highest_52_week_date,
+                        lowest_52_week_price: x.lowest_52_week_price,
+                        lowest_52_week_date: x.lowest_52_week_date,
+                        timestamp: x.timestamp,
+                    }
+                }).collect::<Vec<Self>>()
             })
-            .map_err(crate::response::response_error_from_json)?
+            .map_err(crate::response::response_error_from_json)
     }
 
     async fn request(markets_id: &[&str]) -> Result<reqwest::Response, ResponseError> {

@@ -27,7 +27,7 @@ impl TradeRecent {
         count: u32,
         cursor: &str,
         days_ago: Option<u8>,
-    ) -> Result<Self, ResponseError> {
+    ) -> Result<Vec<Self>, ResponseError> {
         let res = Self::request(market_id, hhmmss, count, cursor, days_ago).await?;
         let res_serialized = res
             .text()
@@ -42,29 +42,25 @@ impl TradeRecent {
         }
 
         serde_json::from_str(&res_serialized)
-            .map(|mut i: Vec<Self>| {
-                let x = i.pop().ok_or_else(|| crate::response::ResponseError {
-                    state: crate::response::ResponseErrorState::CustomErrorNoDataPresent,
-                    error: crate::response::ResponseErrorBody {
-                        name: "custom_error_no_data_present".to_owned(),
-                        message: "No data present in the response".to_owned(),
-                    },
-                })?;
-
-                Ok(Self {
-                    market: x.market,
-                    trade_date_utc: x.trade_date_utc,
-                    trade_time_utc: x.trade_time_utc,
-                    timestamp: x.timestamp,
-                    trade_price: x.trade_price,
-                    trade_volume: x.trade_volume,
-                    prev_closing_price: x.prev_closing_price,
-                    change_price: x.change_price,
-                    ask_bid: x.ask_bid,
-                    sequential_id: x.sequential_id,
-                })
+            .map(|i: Vec<Self>| {
+                i.into_iter()
+                    .map(|x| {
+                        Self {
+                            market: x.market,
+                            trade_date_utc: x.trade_date_utc,
+                            trade_time_utc: x.trade_time_utc,
+                            timestamp: x.timestamp,
+                            trade_price: x.trade_price,
+                            trade_volume: x.trade_volume,
+                            prev_closing_price: x.prev_closing_price,
+                            change_price: x.change_price,
+                            ask_bid: x.ask_bid,
+                            sequential_id: x.sequential_id,
+                        }
+                    })
+                    .collect::<Vec<Self>>()
             })
-            .map_err(crate::response::response_error_from_json)?
+            .map_err(crate::response::response_error_from_json)
     }
 
     async fn request(

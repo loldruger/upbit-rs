@@ -229,8 +229,8 @@ impl Display for UrlAssociates {
 /// | bid_price | 매수호가 | Double |
 /// | ask_size | 매도 잔량 | Double |
 /// | bid_size | 매수 잔량 | Double |
-pub async fn get_order_book_info(markets_id: &[&str]) -> Result<OrderBookInfo, ResponseError> {
-    OrderBookInfo::get_orderbook_info(markets_id).await
+pub async fn get_order_book_info_list(markets_id: &[&str]) -> Result<Vec<OrderBookInfo>, ResponseError> {
+    OrderBookInfo::get_orderbook_info_list(markets_id).await
 }
 
 /// 요청 당시 종목의 스냅샷을 반환한다. (Return the snapshot of the ticker at the moment of query.)
@@ -305,8 +305,8 @@ pub async fn get_order_book_info(markets_id: &[&str]) -> Result<OrderBookInfo, R
 /// | lowest_52_week_price | 52주 신저가 | Double |
 /// | lowest_52_week_date | 52주 신저가 달성일 <br> 포맷: yyyy-MM-dd | String |
 /// | timestamp | 타임스탬프 | Long |
-pub async fn get_ticker_snapshot(markets_id: &[&str]) -> Result<TickerSnapshot, ResponseError> {
-    TickerSnapshot::get_ticker_snapshot(markets_id).await
+pub async fn get_ticker_snapshot_list(markets_id: &[&str]) -> Result<Vec<TickerSnapshot>, ResponseError> {
+    TickerSnapshot::get_ticker_snapshot_list(markets_id).await
 }
 
 /// 호가 정보를 조회한다. (Inquiry bid price and offered price.)
@@ -358,7 +358,7 @@ pub async fn get_trade_recent_list(
     count: u32,
     cursor: &str,
     days_ago: Option<u8>,
-) -> Result<TradeRecent, ResponseError> {
+) -> Result<Vec<TradeRecent>, ResponseError> {
     TradeRecent::get_trade_recent_list(market_id, hhmmss, count, cursor, days_ago).await
 }
 
