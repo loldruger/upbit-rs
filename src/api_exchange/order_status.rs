@@ -111,11 +111,8 @@ impl OrderStatus {
                         side: OrderSide::from(object_trades.side.as_str()),
 
                         #[cfg(feature = "chrono")]
-                        created_at: chrono::NaiveDateTime::parse_from_str(
-                            &object_trades.created_at,
-                            "%Y-%m-%dT%H:%M:%S",
-                        )
-                        .unwrap(),
+                        created_at: chrono::DateTime::parse_from_rfc3339(&object_trades.created_at).map(|dt| dt.naive_local()).unwrap(),
+
                         #[cfg(not(any(feature = "chrono")))]
                         created_at: object_trades.created_at,
                     })

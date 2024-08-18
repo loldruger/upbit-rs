@@ -92,7 +92,7 @@ impl OrderInfoSource {
     #[cfg(feature = "chrono")]
     /// Convert [String] type of volume into [chrono::NaiveDateTime]
     pub fn created_at(&self) -> chrono::NaiveDateTime {
-        chrono::NaiveDateTime::parse_from_str(&self.created_at, "%Y-%m-%dT%H:%M:%S%z").unwrap()
+        chrono::DateTime::parse_from_rfc3339(&self.created_at).map(|dt| dt.naive_local()).unwrap()
     }
 
     /// Convert [String] type of volume into [f64]
