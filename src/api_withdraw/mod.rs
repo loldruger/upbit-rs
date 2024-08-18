@@ -62,7 +62,7 @@ impl From<&str> for WithdrawState {
             "failed" => WithdrawState::Failed,
             "canceled" => WithdrawState::Canceled,
             "rejected" => WithdrawState::Rejected,
-            a @ _ => panic!("Unexpected value: {}", a),
+            a => panic!("Unexpected value: {}", a),
         }
     }
 }

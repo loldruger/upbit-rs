@@ -1,3 +1,5 @@
+use crate::api_exchange::OrderSide;
+
 use super::order_info::*;
 use serde::{Deserialize, Serialize};
 
@@ -9,7 +11,11 @@ pub struct ObjectTrades {
     pub price: f64,
     pub volume: f64,
     pub funds: f64,
-    pub side: String,
+    pub side: OrderSide,
+
+    #[cfg(feature = "chrono")]
+    pub created_at: chrono::NaiveDateTime,
+    #[cfg(not(any(feature = "chrono")))]
     pub created_at: String,
 }
 

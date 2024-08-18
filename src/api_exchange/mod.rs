@@ -46,7 +46,7 @@ impl From<&str> for OrderSide {
         match value {
             "bid" => OrderSide::Bid,
             "ask" => OrderSide::Ask,
-            a @ _ => panic!("Unexpected value: {}", a),
+            a => panic!("Unexpected value: {}", a),
         }
     }
 }
@@ -88,7 +88,7 @@ impl From<&str> for OrderType {
             "price" => OrderType::Price,
             "market" => OrderType::Market,
             "best" => OrderType::Best,
-            a @ _ => panic!("Unexpected value: {}", a),
+            a => panic!("Unexpected value: {}", a),
         }
     }
 }
@@ -122,7 +122,7 @@ impl From<&str> for OrderCondition {
         match value {
             "iok" => OrderCondition::IOK,
             "fok" => OrderCondition::FOK,
-            a @ _ => panic!("Unexpected value: {}", a),
+            a => panic!("Unexpected value: {}", a),
         }
     }
 }
@@ -164,7 +164,7 @@ impl From<&str> for OrderState {
             "watch" => OrderState::Watch,
             "done" => OrderState::Done,
             "cancel" => OrderState::Cancel,
-            a @ _ => panic!("Unexpected value: {}", a),
+            a => panic!("Unexpected value: {}", a),
         }
     }
 }
@@ -839,6 +839,7 @@ pub async fn get_order_status_by_identifiers(
 /// > `states` Array of OrderState
 /// >> *  `OrderState::Wait` 대기<br>
 /// >> *  `OrderState::Watch` 주문 중<br>
+/// 
 /// > `page` page number. 1~ <br>
 /// > `limit` number of orders per page. 1~100<br>
 /// > `order_by`

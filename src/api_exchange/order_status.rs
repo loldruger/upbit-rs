@@ -3,6 +3,7 @@ use reqwest::{Response, Url};
 
 use crate::request::RequestWithQuery;
 
+use super::OrderSide;
 use super::{
     super::constant::{URL_ORDER_STATUS, URL_SERVER},
     super::response::{ObjectTrades, OrderInfo, OrderStatus, OrderStatusSource, ResponseError},
@@ -104,10 +105,18 @@ impl OrderStatus {
                     .map(|object_trades| ObjectTrades {
                         market: object_trades.market,
                         uuid: object_trades.uuid,
-                        price: object_trades.price.parse().unwrap_or(0.0),
-                        volume: object_trades.volume.parse().unwrap_or(0.0),
-                        funds: object_trades.funds.parse().unwrap_or(0.0),
-                        side: object_trades.side,
+                        price: object_trades.price.parse().unwrap(),
+                        volume: object_trades.volume.parse().unwrap(),
+                        funds: object_trades.funds.parse().unwrap(),
+                        side: OrderSide::from(object_trades.side.as_str()),
+
+                        #[cfg(feature = "chrono")]
+                        created_at: chrono::NaiveDateTime::parse_from_str(
+                            &object_trades.created_at,
+                            "%Y-%m-%dT%H:%M:%S",
+                        )
+                        .unwrap(),
+                        #[cfg(not(any(feature = "chrono")))]
                         created_at: object_trades.created_at,
                     })
                     .collect(),

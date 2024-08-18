@@ -93,7 +93,7 @@ impl From<&str> for OrderBy {
         match value {
             "asc" => Self::Asc,
             "desc" => Self::Desc,
-            a @ _ => panic!("Unexpected value: {}", a),
+            a => panic!("Unexpected value: {}", a),
         }
     }
 }
@@ -127,7 +127,7 @@ impl From<&str> for TransactionType {
         match value {
             "default" => Self::Default,
             "internal" => Self::Internal,
-            a @ _ => panic!("Unexpected value: {}", a),
+            a => panic!("Unexpected value: {}", a),
         }
     }
 }
@@ -183,7 +183,7 @@ impl From<&str> for TransferType {
         match value {
             "withdraw" => Self::Withdraw,
             "deposit" => Self::Deposit,
-            a @ _ => panic!("Unexpected value: {}", a),
+            a => panic!("Unexpected value: {}", a),
         }
     }
 }
@@ -255,7 +255,7 @@ impl From<&str> for AskType {
             "limit_fok" => Self::LimitFOK,
             "limit_ioc" => Self::LimitIOC,
             "market" => Self::Market,
-            a @ _ => panic!("Unexpected value: {}", a),
+            a => panic!("Unexpected value: {}", a),
         }
     }
 }
@@ -269,7 +269,7 @@ impl From<&str> for BidType {
             "limit_fok" => Self::LimitFOK,
             "limit_ioc" => Self::LimitIOC,
             "price" => Self::Price,
-            a @ _ => panic!("Unexpected value: {}", a),
+            a => panic!("Unexpected value: {}", a),
         }
     }
 }

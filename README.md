@@ -21,7 +21,7 @@ let order_chance = api_exchange::get_order_chance("KRW-ETH").await;
 // [deprecated] let order_status_list = api_exchange::get_order_status_list().await;
 let order_status = api_exchange::get_order_status_by_uuid("d60dfc8a-db0a-4087-9974-fed6433eb8f1").await;
 let orders_status_open = api_exchange::get_order_status_list_by_uuids("KRW-ETH", &["d60dfc8a-db0a-4087-9974-fed6433eb8f1"], OrderBy::Desc)
-let order_info = upbit::api_exchange::get_order_status_list_opened("KRW-ETH", &[OrderState::Wait], 1, 10, OrderBy::Desc).await;
+let order_info = api_exchange::get_order_status_list_opened("KRW-ETH", &[OrderState::Wait], 1, 10, OrderBy::Desc).await;
 let orders_status_closed = api_exchange::get_order_status_list_closed("KRW-ETH", &[OrderState::Done], None, None, 10, OrderBy::Desc).await;
 
 let order_bid = api_exchange::order_by_price("KRW-ETH", OrderSide::Bid, 5000.0, 1_435_085.0, OrderType::Limit, None).await;

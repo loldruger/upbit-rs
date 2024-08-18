@@ -49,7 +49,7 @@ impl From<&str> for SnapshotChangeType {
             "EVEN" => Self::Even,
             "FALL" => Self::Fall,
             "RISE" => Self::Rise,
-            a @ _ => panic!("Unexpected value: {}", a),
+            a => panic!("Unexpected value: {}", a),
         }
     }
 }
@@ -86,7 +86,7 @@ impl From<u8> for CandleMinute {
             30 => CandleMinute::Min30,
             60 => CandleMinute::Min60,
             240 => CandleMinute::Min240,
-            a @ _ => panic!("Unexpected value: {}", a),
+            a => panic!("Unexpected value: {}", a),
         }
     }
 }
@@ -118,7 +118,7 @@ impl Display for UrlAssociates {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             UrlAssociates::UrlCandleMinute(minute) => {
-                write!(f, "{URL_CANDLE_MINUTE}{}", CandleMinute::from(*minute))
+                write!(f, "{URL_CANDLE_MINUTE}{minute}")
             }
             UrlAssociates::UrlCandleDay => {
                 write!(f, "{URL_CANDLE_DAY}")

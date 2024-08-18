@@ -67,7 +67,7 @@ impl From<&str> for DepositState {
             "REFUNDING" => Self::Refunding,
             "REFUNDED" => Self::Refunded,
             "FAILED" => Self::Failed,
-            a @ _ => panic!("Unexpected value: {}", a),
+            a => panic!("Unexpected value: {}", a),
         }
     }
 }

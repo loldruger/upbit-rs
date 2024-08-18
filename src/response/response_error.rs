@@ -18,6 +18,8 @@ pub enum ResponseErrorState {
     InternalDateFormatParseError,
     /// "custom_error_no_data_present"
     CustomErrorNoDataPresent,
+    /// "number parse error"
+    InternalNumParseError,
     /// "JWT 헤더의 페이로드가 올바르지 않습니다."
     ///
     /// "서명에 사용한 페이로드 값을 확인해주세요."
@@ -91,6 +93,7 @@ impl From<&str> for ResponseErrorState {
             "internal_json_parse_error" => Self::InternalJsonParseError,
             "internal_url_parse_error" => Self::InternalUrlParseError,
             "internal_date_format_parse_error" => Self::InternalDateFormatParseError,
+            "internal_num_parse_error" => Self::InternalNumParseError,
             "custom_error_no_data_present" => Self::CustomErrorNoDataPresent,
             "jwt_verification" => Self::JwtVerificationError,
             "expired_access_key" => Self::ExpiredAccessKey,
@@ -150,6 +153,16 @@ pub fn response_error(e: ResponseErrorSource) -> ResponseError {
         error: ResponseErrorBody {
             name: e.error.name,
             message: e.error.message,
+        },
+    }
+}
+
+pub fn response_error_internal_num_parse_error(e: impl std::fmt::Display) -> ResponseError {
+    ResponseError {
+        state: ResponseErrorState::InternalNumParseError,
+        error: ResponseErrorBody {
+            name: "internal_num_parse_error".to_owned(),
+            message: e.to_string(),
         },
     }
 }
