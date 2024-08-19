@@ -13,6 +13,8 @@ pub mod request;
 /// Set of concrete response bodies
 pub mod response;
 
+pub use request::{Request, RequestWithQuery};
+
 /// function for setting secret key
 pub fn set_secret_key(secret_key: &str) {
     envmnt::set("SECRET_KEY", secret_key);
