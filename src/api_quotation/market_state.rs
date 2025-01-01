@@ -10,7 +10,6 @@ pub struct MarketState {
     pub market: String,
     pub korean_name: String,
     pub english_name: String,
-    pub market_warning: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub market_event: Option<MarketEvent>,
 }
@@ -37,7 +36,6 @@ pub struct MarketStateSource {
     market: String,
     korean_name: String,
     english_name: String,
-    market_warning: String,
     market_event: MarketEvent,
 }
 
@@ -63,7 +61,6 @@ impl MarketState {
                         market: i.market,
                         korean_name: i.korean_name,
                         english_name: i.english_name,
-                        market_warning: Some(i.market_warning),
                         market_event: Some(i.market_event),
                     })
                     .collect()
@@ -115,7 +112,6 @@ mod tests {
             "market": "",
             "korean_name": "",
             "english_name": "",
-            "market_warning": "",
             "market_event": {
                 "warning": "",
                 "caution": {

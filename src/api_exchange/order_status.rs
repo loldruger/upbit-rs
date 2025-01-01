@@ -98,6 +98,7 @@ impl OrderStatus {
                     executed_funds: x.order_info.executed_funds(),
                     trades_count: x.order_info.trades_count(),
                     time_in_force: x.order_info.time_in_force(),
+                    identifier: x.order_info.identifier(),
                 },
                 trades: x
                     .trades
@@ -124,6 +125,7 @@ impl OrderStatus {
 
 #[cfg(test)]
 mod tests {
+    use std::time::{SystemTime, UNIX_EPOCH};
     use std::collections::{HashMap, HashSet};
 
     use crate::api_exchange::{OrderSide, OrderType};
@@ -131,6 +133,27 @@ mod tests {
     use super::*;
 
     use serde_json::Value;
+    static mut IDENTIFIER: String = String::new();
+
+    fn format_system_time(time: SystemTime) -> String {
+        let duration = time
+            .duration_since(UNIX_EPOCH)
+            .unwrap_or_else(|_| std::time::Duration::from_secs(0));
+        
+        let secs = duration.as_secs();
+        let minutes = (secs / 60) % 60;
+        let hours = (secs / 3600) % 24;
+        let days = secs / 86400;
+        
+        format!(
+            "{:04}{:02}{:02}{:02}{:02}",
+            1970 + days / 365,      // year
+            (days % 365) / 30 + 1,  // month (approximate)
+            days % 30 + 1,          // day (approximate)
+            hours,
+            minutes
+        )
+    }
 
     #[tokio::test]
     async fn test_get_order_status_by_uuid() {
@@ -253,6 +276,7 @@ mod tests {
             // "executed_funds": "",
             "trades_count": "",
             // "time_in_force": "",
+            "identifier": "",
             "trades": [
                 {
                     "market": "",
@@ -328,23 +352,29 @@ mod tests {
 
         let price = 5000.0;
         let price_desired = 1_435_085.0;
-        let identifier = "test_identifier4".to_string();
 
-        let res = super::super::order_by_price(
-            "KRW-ETH",
-            OrderSide::Bid,
-            price,
-            price_desired,
-            OrderType::Limit,
-            Some(&identifier),
-        )
-        .await;
+        unsafe {
+            IDENTIFIER = format_system_time(SystemTime::now());
 
-        if let Ok(_) = res {
-            identifier
-        } else {
-            panic!("Failed to tag identifier from order_by_price")
+            let res = super::super::order_by_price(
+                "KRW-ETH",
+                OrderSide::Bid,
+                price,
+                price_desired,
+                OrderType::Limit,
+                #[allow(static_mut_refs)]
+                Some(&IDENTIFIER),
+            )
+            .await;
+    
+            if let Ok(_) = res {
+                #[allow(static_mut_refs)]
+                IDENTIFIER.clone()
+            } else {
+                panic!("Failed to tag identifier from order_by_price")
+            }
         }
+
     }
 
     fn compare_keys(

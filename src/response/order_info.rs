@@ -20,8 +20,8 @@ pub struct OrderInfo {
     #[cfg(not(any(feature = "chrono")))]
     pub created_at: String,
 
-    pub volume: f64,
-    pub remaining_volume: f64,
+    pub volume: Option<f64>,
+    pub remaining_volume: Option<f64>,
     pub reserved_fee: f64,
     pub remaining_fee: f64,
     pub paid_fee: f64,
@@ -30,6 +30,7 @@ pub struct OrderInfo {
     pub executed_funds: Option<f64>,
     pub trades_count: i64,
     pub time_in_force: Option<OrderCondition>,
+    pub identifier: Option<String>,
 }
 
 impl Request for OrderInfo {}
@@ -45,8 +46,8 @@ pub struct OrderInfoSource {
     state: String,
     market: String,
     created_at: String,
-    volume: String,
-    remaining_volume: String,
+    volume: Option<String>,
+    remaining_volume: Option<String>,
     reserved_fee: String,
     remaining_fee: String,
     paid_fee: String,
@@ -55,6 +56,7 @@ pub struct OrderInfoSource {
     executed_funds: Option<String>,
     trades_count: i64,
     time_in_force: Option<String>,
+    identifier: Option<String>,
 }
 
 impl OrderInfoSource {
@@ -96,12 +98,12 @@ impl OrderInfoSource {
     }
 
     /// Convert [String] type of volume into [f64]
-    pub fn volume(&self) -> f64 {
-        self.volume.parse().unwrap()
+    pub fn volume(&self) -> Option<f64> {
+        self.volume.as_ref().and_then(|x| x.parse().ok())
     }
     /// Convert [String] type of remaining_volume into [f64]
-    pub fn remaining_volume(&self) -> f64 {
-        self.remaining_volume.parse().unwrap()
+    pub fn remaining_volume(&self) -> Option<f64> {
+        self.remaining_volume.as_ref().and_then(|x| x.parse().ok())
     }
     /// Convert [String] type of reserved_fee into [f64]
     pub fn reserved_fee(&self) -> f64 {
@@ -136,5 +138,9 @@ impl OrderInfoSource {
         self.time_in_force
             .as_ref()
             .map(|x| OrderCondition::from(x.as_str()))
+    }
+
+    pub fn identifier(&self) -> Option<String> {
+        self.identifier.to_owned()
     }
 }

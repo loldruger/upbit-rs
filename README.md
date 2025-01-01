@@ -1,4 +1,4 @@
-upbit-api on rust, with upbit api v1.5.0
+upbit-api on rust, with upbit api v1.5.6
 
 it requires `openssl-sys` package
 

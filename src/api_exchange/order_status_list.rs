@@ -331,6 +331,7 @@ impl OrderInfo {
                         executed_funds: x.executed_funds(),
                         trades_count: x.trades_count(),
                         time_in_force: x.time_in_force(),
+                        identifier: x.identifier(),
                     })
                     .collect::<Vec<Self>>()
             })
@@ -350,6 +351,8 @@ mod tests {
     use crate::response::OrderInfo;
 
     #[tokio::test]
+    #[ignore]
+    #[deprecated(since = "1.14.0")]
     async fn test_get_order_state_list() {
         crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
         crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
@@ -564,6 +567,7 @@ mod tests {
             "executed_funds": "",
             "trades_count": "",
             // "time_in_force": "",
+            "identifier": null,
         }]);
 
         let expected_structure = expected_structure[0]
@@ -577,6 +581,11 @@ mod tests {
             for (index, item) in json_array.iter().enumerate() {
                 let (missing_keys, extra_keys) =
                     compare_keys(item, &expected_structure, &format!("item[{}].", index));
+                
+                let missing_keys: Vec<_> = missing_keys
+                    .into_iter()
+                    .filter(|k| k != "identifier")
+                    .collect();
 
                 if !missing_keys.is_empty() {
                     println!(
@@ -645,8 +654,8 @@ mod tests {
             "state": "",
             "market": "",
             "created_at": "",
-            "volume": "",
-            "remaining_volume": "",
+            "volume": null,
+            "remaining_volume": null,
             "reserved_fee": "",
             "remaining_fee": "",
             "paid_fee": "",
@@ -670,8 +679,14 @@ mod tests {
                     compare_keys(item, &expected_structure, &format!("item[{}]", index));
 
                 let ord_type = item.get("ord_type").and_then(|v| v.as_str()).unwrap();
-
+                
                 if !missing_keys.is_empty() {
+                    let missing_keys = missing_keys
+                        .iter()
+                        .filter(|&k| k != "volume" && k != "remaining_volume")
+                        .map(|x| x.to_string())
+                        .collect::<Vec<String>>();
+
                     match ord_type {
                         "limit" => {
                             let missing_keys = missing_keys

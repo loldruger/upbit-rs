@@ -96,6 +96,7 @@ impl OrderInfo {
                 executed_funds: x.executed_funds(),
                 trades_count: x.trades_count(),
                 time_in_force: x.time_in_force(),
+                identifier: x.identifier(),
             })
             .map_err(crate::response::response_error_from_json)
     }
