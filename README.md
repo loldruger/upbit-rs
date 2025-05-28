@@ -105,7 +105,7 @@ match upbit::init() {
 }
 ```
 
-### 방법 2: 직접 설정
+### 방법 2: Set Keys Manually
 
 ```rust
 use upbit;
@@ -113,8 +113,6 @@ use upbit;
 upbit::set_access_key("your_access_key");
 upbit::set_secret_key("your_secret_key");
 ```
-
-### � 보안 주의사항
 
 ```rust
 use upbit::*;
