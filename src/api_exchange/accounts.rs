@@ -1,5 +1,5 @@
-use reqwest::header::{ACCEPT, AUTHORIZATION};
 use reqwest::Response;
+use reqwest::header::{ACCEPT, AUTHORIZATION};
 
 use crate::request::Request;
 

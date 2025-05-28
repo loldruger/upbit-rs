@@ -3,8 +3,8 @@ use crate::response::ResponseError;
 use super::super::constant::{URL_SERVER, URL_TICKER};
 use super::SnapshotChangeType;
 
-use reqwest::header::ACCEPT;
 use reqwest::Url;
+use reqwest::header::ACCEPT;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -81,11 +81,11 @@ impl TickerSnapshot {
                 .ok()
                 .unwrap());
         }
- 
+
         serde_json::from_str(&res_serialized)
             .map(|i: Vec<TickerSnapshotSource>| {
-                i.into_iter().map(|x| {
-                    Self {
+                i.into_iter()
+                    .map(|x| Self {
                         market: x.market,
                         trade_date: x.trade_date,
                         trade_time: x.trade_time,
@@ -112,8 +112,8 @@ impl TickerSnapshot {
                         lowest_52_week_price: x.lowest_52_week_price,
                         lowest_52_week_date: x.lowest_52_week_date,
                         timestamp: x.timestamp,
-                    }
-                }).collect::<Vec<Self>>()
+                    })
+                    .collect::<Vec<Self>>()
             })
             .map_err(crate::response::response_error_from_json)
     }
@@ -137,7 +137,7 @@ impl TickerSnapshot {
 mod tests {
     use std::collections::HashMap;
 
-    use serde_json::{json, Value};
+    use serde_json::{Value, json};
 
     use super::*;
 

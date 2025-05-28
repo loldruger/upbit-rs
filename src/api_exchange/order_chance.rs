@@ -172,12 +172,13 @@ mod tests {
             .map(|(k, v)| (k.as_str(), v.clone()))
             .collect::<HashMap<&str, Value>>();
 
-        let (missing_keys, extra_keys) = crate::test_utils::compare_keys(&json, &expected_structure, "");
+        let (missing_keys, extra_keys) =
+            crate::test_utils::compare_keys(&json, &expected_structure, "");
 
         crate::test_utils::assert_no_missing_or_extra_keys(
             &missing_keys,
             &extra_keys,
-            "test_get_order_chance"
+            "test_get_order_chance",
         );
     }
 }

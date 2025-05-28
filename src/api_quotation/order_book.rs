@@ -4,7 +4,7 @@ use super::super::constant::{URL_ORDERBOOK, URL_SERVER};
 
 use reqwest::header::ACCEPT;
 use reqwest::{Response, Url};
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct OrderBookInfo {
@@ -40,8 +40,8 @@ impl OrderBookInfo {
 
         serde_json::from_str(&res_serialized)
             .map(|i: Vec<Self>| {
-                i.into_iter().map(|x| {
-                    Self {
+                i.into_iter()
+                    .map(|x| Self {
                         market: x.market,
                         timestamp: x.timestamp,
                         total_ask_size: x.total_ask_size,
@@ -56,8 +56,8 @@ impl OrderBookInfo {
                                 bid_size: unit.bid_size,
                             })
                             .collect(),
-                    }
-                }).collect::<Vec<Self>>()
+                    })
+                    .collect::<Vec<Self>>()
             })
             .map_err(crate::response::response_error_from_json)
     }
@@ -81,7 +81,7 @@ impl OrderBookInfo {
 mod tests {
     use std::collections::HashMap;
 
-    use serde_json::{json, Value};
+    use serde_json::{Value, json};
 
     use crate::api_quotation::order_book::OrderBookInfo;
 

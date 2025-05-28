@@ -112,7 +112,9 @@ impl OrderStatus {
                         side: OrderSide::from(object_trades.side.as_str()),
 
                         #[cfg(feature = "chrono")]
-                        created_at: chrono::DateTime::parse_from_rfc3339(&object_trades.created_at).map(|dt| dt.naive_local()).unwrap(),
+                        created_at: chrono::DateTime::parse_from_rfc3339(&object_trades.created_at)
+                            .map(|dt| dt.naive_local())
+                            .unwrap(),
 
                         #[cfg(not(any(feature = "chrono")))]
                         created_at: object_trades.created_at,
@@ -125,8 +127,8 @@ impl OrderStatus {
 
 #[cfg(test)]
 mod tests {
-    use std::time::{SystemTime, UNIX_EPOCH};
     use std::collections::{HashMap, HashSet};
+    use std::time::{SystemTime, UNIX_EPOCH};
 
     use crate::api_exchange::{OrderSide, OrderType};
 
@@ -139,17 +141,17 @@ mod tests {
         let duration = time
             .duration_since(UNIX_EPOCH)
             .unwrap_or_else(|_| std::time::Duration::from_secs(0));
-        
+
         let secs = duration.as_secs();
         let minutes = (secs / 60) % 60;
         let hours = (secs / 3600) % 24;
         let days = secs / 86400;
-        
+
         format!(
             "{:04}{:02}{:02}{:02}{:02}",
-            1970 + days / 365,      // year
-            (days % 365) / 30 + 1,  // month (approximate)
-            days % 30 + 1,          // day (approximate)
+            1970 + days / 365,     // year
+            (days % 365) / 30 + 1, // month (approximate)
+            days % 30 + 1,         // day (approximate)
             hours,
             minutes
         )
@@ -362,7 +364,7 @@ mod tests {
                 Some(&IDENTIFIER),
             )
             .await;
-    
+
             if let Ok(_) = res {
                 #[allow(static_mut_refs)]
                 IDENTIFIER.clone()
@@ -370,7 +372,6 @@ mod tests {
                 panic!("Failed to tag identifier from order_by_price")
             }
         }
-
     }
 
     fn compare_keys(

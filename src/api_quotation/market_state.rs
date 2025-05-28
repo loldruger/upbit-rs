@@ -87,7 +87,7 @@ impl MarketState {
 mod tests {
     use std::collections::HashMap;
 
-    use serde_json::{json, Value};
+    use serde_json::{Value, json};
 
     use crate::api_quotation::MarketState;
 

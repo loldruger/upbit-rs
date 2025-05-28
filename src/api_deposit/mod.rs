@@ -170,7 +170,8 @@ pub async fn get_deposit_info_list(
     page: u32,
     order_by: OrderBy,
 ) -> Result<Vec<TransactionInfo>, ResponseError> {
-    TransactionInfo::get_deposit_info_list(currency, state, uuids, txids, limit, page, order_by).await
+    TransactionInfo::get_deposit_info_list(currency, state, uuids, txids, limit, page, order_by)
+        .await
 }
 
 /// 개별 입금 조회.
@@ -258,9 +259,7 @@ pub async fn get_deposit_info_by_currency(
 /// | amount | 입금 금액/수량 | NumberString
 /// | fee | 입금 수수료 | NumberString
 /// | transaction_type | 입금 유형<br> default : 일반입금<br>internal : 바로입금 | String
-pub async fn get_deposit_info_by_uuid(
-    uuid: &str,
-) -> Result<TransactionInfo, ResponseError> {
+pub async fn get_deposit_info_by_uuid(uuid: &str) -> Result<TransactionInfo, ResponseError> {
     TransactionInfo::get_deposit_info_by_uuid(uuid).await
 }
 
@@ -303,9 +302,7 @@ pub async fn get_deposit_info_by_uuid(
 /// | amount | 입금 금액/수량 | NumberString
 /// | fee | 입금 수수료 | NumberString
 /// | transaction_type | 입금 유형<br> default : 일반입금<br>internal : 바로입금 | String
-pub async fn get_deposit_info_by_txid(
-    txid: &str,
-) -> Result<TransactionInfo, ResponseError> {
+pub async fn get_deposit_info_by_txid(txid: &str) -> Result<TransactionInfo, ResponseError> {
     TransactionInfo::get_deposit_info_by_txid(txid).await
 }
 

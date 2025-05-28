@@ -1,5 +1,5 @@
-use std::collections::{HashMap, HashSet};
 use serde_json::Value;
+use std::collections::{HashMap, HashSet};
 
 /// JSON 응답과 예상 구조를 비교하여 누락되거나 추가된 키를 찾는 함수
 pub fn compare_keys(
@@ -51,7 +51,10 @@ pub fn compare_keys(
 pub fn setup_test_keys() {
     // .env 파일에서 자동으로 로딩하도록 개선
     if let Err(e) = crate::init_for_test() {
-        panic!("Failed to initialize test keys: {}. Please check your .env file.", e);
+        panic!(
+            "Failed to initialize test keys: {}. Please check your .env file.",
+            e
+        );
     }
 }
 

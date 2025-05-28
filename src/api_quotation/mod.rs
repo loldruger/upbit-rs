@@ -27,7 +27,6 @@ use sqlx::Type;
 
 /// Kind of change of ticker snapshot
 #[derive(Serialize, Deserialize, Debug, Copy, Clone)]
-
 #[cfg_attr(
     feature = "sqlx-type",
     derive(sqlx::Type),
@@ -229,7 +228,9 @@ impl Display for UrlAssociates {
 /// | bid_price | 매수호가 | Double |
 /// | ask_size | 매도 잔량 | Double |
 /// | bid_size | 매수 잔량 | Double |
-pub async fn get_order_book_info_list(markets_id: &[&str]) -> Result<Vec<OrderBookInfo>, ResponseError> {
+pub async fn get_order_book_info_list(
+    markets_id: &[&str],
+) -> Result<Vec<OrderBookInfo>, ResponseError> {
     OrderBookInfo::get_orderbook_info_list(markets_id).await
 }
 
@@ -305,7 +306,9 @@ pub async fn get_order_book_info_list(markets_id: &[&str]) -> Result<Vec<OrderBo
 /// | lowest_52_week_price | 52주 신저가 | Double |
 /// | lowest_52_week_date | 52주 신저가 달성일 <br> 포맷: yyyy-MM-dd | String |
 /// | timestamp | 타임스탬프 | Long |
-pub async fn get_ticker_snapshot_list(markets_id: &[&str]) -> Result<Vec<TickerSnapshot>, ResponseError> {
+pub async fn get_ticker_snapshot_list(
+    markets_id: &[&str],
+) -> Result<Vec<TickerSnapshot>, ResponseError> {
     TickerSnapshot::get_ticker_snapshot_list(markets_id).await
 }
 

@@ -12,7 +12,10 @@ use upbit::{
 fn setup_test_keys() {
     // .env 파일에서 자동으로 키를 로드
     if let Err(e) = upbit::init_for_test() {
-        panic!("Failed to initialize test keys: {}. Please check your .env file.", e);
+        panic!(
+            "Failed to initialize test keys: {}. Please check your .env file.",
+            e
+        );
     }
 }
 

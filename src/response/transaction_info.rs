@@ -50,7 +50,7 @@ pub struct TransactionInfoDerivedSource {
     fee: String,
     // krw_amount: String,
     transaction_type: String,
-    is_cancelable: String
+    is_cancelable: String,
 }
 
 impl TransactionInfoDerivedSource {
@@ -87,7 +87,9 @@ impl TransactionInfoDerivedSource {
 
     #[cfg(feature = "chrono")]
     pub fn created_at(&self) -> chrono::NaiveDateTime {
-        chrono::DateTime::parse_from_rfc3339(&self.created_at).map(|dt| dt.naive_local()).unwrap()
+        chrono::DateTime::parse_from_rfc3339(&self.created_at)
+            .map(|dt| dt.naive_local())
+            .unwrap()
     }
 
     #[cfg(not(any(feature = "chrono")))]
@@ -104,7 +106,7 @@ impl TransactionInfoDerivedSource {
         )
         .ok()
     }
-    
+
     /// Convert [String] amount value into [f64]
     pub fn amount(&self) -> f64 {
         self.amount.parse().unwrap()
@@ -217,7 +219,7 @@ impl TransactionInfoSource {
     pub fn txid(&self) -> String {
         self.txid.clone()
     }
-    
+
     /// Convert [String] state value into [DepositState]
     pub fn state(&self) -> DepositState {
         self.state.as_str().into()
@@ -231,7 +233,9 @@ impl TransactionInfoSource {
 
     #[cfg(feature = "chrono")]
     pub fn created_at(&self) -> chrono::NaiveDateTime {
-        chrono::DateTime::parse_from_rfc3339(&self.created_at).map(|dt| dt.naive_local()).unwrap()
+        chrono::DateTime::parse_from_rfc3339(&self.created_at)
+            .map(|dt| dt.naive_local())
+            .unwrap()
     }
 
     #[cfg(not(any(feature = "chrono")))]

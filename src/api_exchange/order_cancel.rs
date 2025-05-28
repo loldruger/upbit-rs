@@ -1,7 +1,7 @@
 use crate::request::RequestWithQuery;
 use reqwest::{
-    header::{ACCEPT, AUTHORIZATION},
     Response, Url,
+    header::{ACCEPT, AUTHORIZATION},
 };
 
 use super::{

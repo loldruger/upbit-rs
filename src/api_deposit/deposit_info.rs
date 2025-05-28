@@ -10,9 +10,7 @@ use super::{
 };
 
 impl TransactionInfo {
-    pub async fn get_deposit_info_by_currency(
-        currency: &str,
-    ) -> Result<Self, ResponseError> {
+    pub async fn get_deposit_info_by_currency(currency: &str) -> Result<Self, ResponseError> {
         let res = Self::request_deposit_by_currency(currency).await?;
         let res_serialized = res
             .text()
@@ -29,9 +27,7 @@ impl TransactionInfo {
         Self::deserialize_order_status_response(&res_serialized)
     }
 
-    pub async fn get_deposit_info_by_uuid(
-        uuid: &str,
-    ) -> Result<Self, ResponseError> {
+    pub async fn get_deposit_info_by_uuid(uuid: &str) -> Result<Self, ResponseError> {
         let res = Self::request_deposit_by_uuid(uuid).await?;
         let res_serialized = res
             .text()
@@ -48,9 +44,7 @@ impl TransactionInfo {
         Self::deserialize_order_status_response(&res_serialized)
     }
 
-    pub async fn get_deposit_info_by_txid(
-        txid: &str,
-    ) -> Result<Self, ResponseError> {
+    pub async fn get_deposit_info_by_txid(txid: &str) -> Result<Self, ResponseError> {
         let res = Self::request_deposit_by_txid(txid).await?;
         let res_serialized = res
             .text()
@@ -67,9 +61,7 @@ impl TransactionInfo {
         Self::deserialize_order_status_response(&res_serialized)
     }
 
-    async fn request_deposit_by_currency(
-        currency: &str
-    ) -> Result<Response, ResponseError> {
+    async fn request_deposit_by_currency(currency: &str) -> Result<Response, ResponseError> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_DEPOSIT}"))
             .map_err(crate::response::response_error_internal_url_parse_error)?;
 
@@ -86,9 +78,7 @@ impl TransactionInfo {
             .map_err(crate::response::response_error_from_reqwest)
     }
 
-    async fn request_deposit_by_uuid(
-        uuid: &str,
-    ) -> Result<Response, ResponseError> {
+    async fn request_deposit_by_uuid(uuid: &str) -> Result<Response, ResponseError> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_DEPOSIT}"))
             .map_err(crate::response::response_error_internal_url_parse_error)?;
 
@@ -103,12 +93,9 @@ impl TransactionInfo {
             .send()
             .await
             .map_err(crate::response::response_error_from_reqwest)
-
     }
 
-    async fn request_deposit_by_txid(
-        txid: &str,
-    ) -> Result<Response, ResponseError> {
+    async fn request_deposit_by_txid(txid: &str) -> Result<Response, ResponseError> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_DEPOSIT}"))
             .map_err(crate::response::response_error_internal_url_parse_error)?;
 

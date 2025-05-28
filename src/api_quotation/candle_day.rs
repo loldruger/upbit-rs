@@ -5,12 +5,12 @@ use super::UrlAssociates;
 
 use reqwest::header::ACCEPT;
 use reqwest::{Response, Url};
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct CandleChartDay {
     pub market: String,
-    
+
     #[cfg(feature = "chrono")]
     pub candle_date_time_utc: chrono::NaiveDateTime,
     #[cfg(not(any(feature = "chrono")))]
@@ -92,8 +92,7 @@ impl CandleChartDay {
             .append_pair("count", count.to_string().as_str());
 
         if let Some(last_candle_time) = last_candle_time {
-            url.query_pairs_mut()
-                .append_pair("to", last_candle_time);
+            url.query_pairs_mut().append_pair("to", last_candle_time);
         }
 
         if let Some(price_unit) = price_unit {

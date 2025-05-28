@@ -1,6 +1,6 @@
 use reqwest::{
-    header::{ACCEPT, AUTHORIZATION},
     Response, Url,
+    header::{ACCEPT, AUTHORIZATION},
 };
 
 use crate::request::Request;
@@ -59,7 +59,7 @@ impl WithdrawCoinAddress {
 mod tests {
     use std::collections::{HashMap, HashSet};
 
-    use serde_json::{json, Value};
+    use serde_json::{Value, json};
 
     use crate::response::WithdrawCoinAddress;
 

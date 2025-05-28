@@ -18,7 +18,6 @@ use sqlx::Type;
 
 /// Side of order
 #[derive(Serialize, Deserialize, Debug, Copy, Clone, PartialEq, Eq)]
-
 #[cfg_attr(
     feature = "sqlx-type",
     derive(sqlx::Type),
@@ -839,7 +838,7 @@ pub async fn get_order_status_by_identifiers(
 /// > `states` Array of OrderState
 /// >> *  `OrderState::Wait` 대기<br>
 /// >> *  `OrderState::Watch` 주문 중<br>
-/// 
+///
 /// > `page` page number. 1~ <br>
 /// > `limit` number of orders per page. 1~100<br>
 /// > `order_by`
@@ -914,7 +913,7 @@ pub async fn get_order_status_list_opened(
 /// > `states` Array of OrderState one of these below
 /// >> *  `OrderState::Done` 완료<br>
 /// >> *  `OrderState::Cancel` 취소<br>
-/// 
+///
 /// > `start_time` (optional) start time of the order<br>
 /// > `end_time` (optional) end time of the order<br>
 /// > `page` page number. 1~ <br>
@@ -971,8 +970,10 @@ pub async fn get_order_status_list_closed(
     limit: u16,
     order_by: OrderBy,
 ) -> Result<Vec<OrderInfo>, ResponseError> {
-    OrderInfo::get_order_status_list_closed(market_id, states, start_time, end_time, limit, order_by)
-        .await
+    OrderInfo::get_order_status_list_closed(
+        market_id, states, start_time, end_time, limit, order_by,
+    )
+    .await
 }
 
 pub fn price_checker(price: f64) -> f64 {

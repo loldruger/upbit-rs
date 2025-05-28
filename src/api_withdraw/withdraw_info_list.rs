@@ -2,8 +2,8 @@ use std::str::FromStr;
 
 use crate::request::RequestWithQuery;
 use reqwest::{
-    header::{ACCEPT, AUTHORIZATION},
     Response, Url,
+    header::{ACCEPT, AUTHORIZATION},
 };
 
 use super::{
@@ -124,7 +124,7 @@ impl TransactionInfo {
 mod tests {
     use std::collections::HashMap;
 
-    use serde_json::{json, Value};
+    use serde_json::{Value, json};
 
     use crate::{api_withdraw::WithdrawState, constant::OrderBy, response::TransactionInfo};
 

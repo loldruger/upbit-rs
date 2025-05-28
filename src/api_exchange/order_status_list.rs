@@ -1,6 +1,6 @@
 use reqwest::{
-    header::{ACCEPT, AUTHORIZATION},
     Response, Url,
+    header::{ACCEPT, AUTHORIZATION},
 };
 
 use crate::{constant::OrderBy, request::Request};
@@ -96,11 +96,12 @@ impl OrderInfo {
                         name: "invalid_parameter".to_string(),
                         message: "limit argument must be between 1 and 100".to_string(),
                     },
-                })
+                });
             }
         }
 
-        let res = Self::request_get_order_list_opened(market_id, states, page, limit, order_by).await?;
+        let res =
+            Self::request_get_order_list_opened(market_id, states, page, limit, order_by).await?;
         let res_serialized = res
             .text()
             .await
@@ -343,7 +344,7 @@ impl OrderInfo {
 mod tests {
     use std::collections::HashMap;
 
-    use serde_json::{json, Value};
+    use serde_json::{Value, json};
 
     use crate::api_exchange::{OrderSide, OrderState, OrderType};
     #[allow(deprecated)]
@@ -578,7 +579,7 @@ mod tests {
             for (index, item) in json_array.iter().enumerate() {
                 let (missing_keys, extra_keys) =
                     compare_keys(item, &expected_structure, &format!("item[{}].", index));
-                
+
                 let missing_keys: Vec<_> = missing_keys
                     .into_iter()
                     .filter(|k| k != "identifier")
@@ -675,7 +676,7 @@ mod tests {
                     compare_keys(item, &expected_structure, &format!("item[{}]", index));
 
                 let ord_type = item.get("ord_type").and_then(|v| v.as_str()).unwrap();
-                
+
                 if !missing_keys.is_empty() {
                     let missing_keys = missing_keys
                         .iter()

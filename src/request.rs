@@ -6,7 +6,7 @@ use sha2::{Digest, Sha512};
 use uuid::Uuid;
 
 use crate::response::{
-    response_error_internal_hmac_error, response_error_internal_token_encode_error, ResponseError,
+    ResponseError, response_error_internal_hmac_error, response_error_internal_token_encode_error,
 };
 
 pub trait Request {

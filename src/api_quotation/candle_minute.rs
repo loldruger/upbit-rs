@@ -69,7 +69,7 @@ impl CandleChartMinute {
                 x.into_iter()
                     .map(|i| Self {
                         market: i.market,
-                        
+
                         #[cfg(feature = "chrono")]
                         candle_date_time_utc: chrono::NaiveDateTime::parse_from_str(
                             &i.candle_date_time_utc,
@@ -86,7 +86,7 @@ impl CandleChartMinute {
                         candle_date_time_utc: i.candle_date_time_utc,
                         #[cfg(not(any(feature = "chrono")))]
                         candle_date_time_kst: i.candle_date_time_kst,
-                        
+
                         opening_price: i.opening_price,
                         high_price: i.high_price,
                         low_price: i.low_price,

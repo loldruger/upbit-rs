@@ -83,8 +83,7 @@ impl CandleChartWeek {
             .append_pair("count", count.to_string().as_str());
 
         if let Some(last_candle_time) = last_candle_time {
-            url.query_pairs_mut()
-                .append_pair("to", last_candle_time);
+            url.query_pairs_mut().append_pair("to", last_candle_time);
         }
 
         reqwest::Client::new()

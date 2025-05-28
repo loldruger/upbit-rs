@@ -14,7 +14,7 @@ pub struct OrderInfo {
     pub price: Option<f64>,
     pub state: OrderState,
     pub market: String,
-    
+
     #[cfg(feature = "chrono")]
     pub created_at: chrono::NaiveDateTime,
     #[cfg(not(any(feature = "chrono")))]
@@ -94,7 +94,9 @@ impl OrderInfoSource {
     #[cfg(feature = "chrono")]
     /// Convert [String] type of volume into [chrono::NaiveDateTime]
     pub fn created_at(&self) -> chrono::NaiveDateTime {
-        chrono::DateTime::parse_from_rfc3339(&self.created_at).map(|dt| dt.naive_local()).unwrap()
+        chrono::DateTime::parse_from_rfc3339(&self.created_at)
+            .map(|dt| dt.naive_local())
+            .unwrap()
     }
 
     /// Convert [String] type of volume into [f64]

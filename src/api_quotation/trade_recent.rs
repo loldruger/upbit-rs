@@ -44,19 +44,17 @@ impl TradeRecent {
         serde_json::from_str(&res_serialized)
             .map(|i: Vec<Self>| {
                 i.into_iter()
-                    .map(|x| {
-                        Self {
-                            market: x.market,
-                            trade_date_utc: x.trade_date_utc,
-                            trade_time_utc: x.trade_time_utc,
-                            timestamp: x.timestamp,
-                            trade_price: x.trade_price,
-                            trade_volume: x.trade_volume,
-                            prev_closing_price: x.prev_closing_price,
-                            change_price: x.change_price,
-                            ask_bid: x.ask_bid,
-                            sequential_id: x.sequential_id,
-                        }
+                    .map(|x| Self {
+                        market: x.market,
+                        trade_date_utc: x.trade_date_utc,
+                        trade_time_utc: x.trade_time_utc,
+                        timestamp: x.timestamp,
+                        trade_price: x.trade_price,
+                        trade_volume: x.trade_volume,
+                        prev_closing_price: x.prev_closing_price,
+                        change_price: x.change_price,
+                        ask_bid: x.ask_bid,
+                        sequential_id: x.sequential_id,
                     })
                     .collect::<Vec<Self>>()
             })
@@ -99,7 +97,7 @@ impl TradeRecent {
 mod tests {
     use std::collections::HashMap;
 
-    use serde_json::{json, Value};
+    use serde_json::{Value, json};
 
     use crate::api_quotation::TradeRecent;
 

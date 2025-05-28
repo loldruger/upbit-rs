@@ -72,8 +72,8 @@ impl OrderInfo {
     ) -> Result<Response, ResponseError> {
         let mut url = Url::parse(&format!("{URL_SERVER}{URL_ORDER}"))
             .map_err(crate::response::response_error_internal_url_parse_error)?;
-        let price = format!("{:.8}", price);
-        let volume = format!("{:.8}", volume);
+        let price = format!("{price:.8}");
+        let volume = format!("{volume:.8}");
 
         url.query_pairs_mut()
             .append_pair("market", market_id)
