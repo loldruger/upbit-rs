@@ -1,13 +1,5 @@
 # 🚀 Upbit API for Rust
 
-[![Crates.io](https://img.shields.io/crates/v/up### 🔒 보안 주의사항
-
-- **절대로** API 키를 코드에 하드코딩하지 마세요
-- `.env` 파일은 버전 관리 시스템에 커밋하지 마세요
-- 프로덕션과 테스트 환경의 키를 분리하세요
-- 정기적으로 API 키를 재발급하세요
-- API 키는 타인과 절대 공유하지 마세요
-
 ## 📚 사용법
 
 ### 방법 1: 환경 변수 자동 초기화 (권장)
@@ -60,13 +52,7 @@ upbit::set_access_key("your_access_key");
 upbit::set_secret_key("your_secret_key");
 ```
 
-## 🔧 API 사용 예제g)](https://crates.io/crates/upbit)
-[![Documentation](https://docs.rs/upbit/badge.svg)](https://docs.rs/upbit)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-Rust로 구현된 Upbit API 클라이언트 라이브러리입니다. Upbit API v1.5.6을 지원합니다.
-
-## 🛠 사전 요구사항
+## 🛠 Requirement
 
 이 라이브러리는 `openssl-sys` 패키지가 필요합니다.
 
@@ -85,7 +71,7 @@ brew install openssl pkg-config
 
 ```toml
 [dependencies]
-upbit = "1.14.0"
+upbit = "1.15.0"
 ```
 
 ## 🔧 설정
@@ -98,14 +84,12 @@ upbit = "1.14.0"
 cp .env.example .env
 ```
 
-2. `.env` 파일에 실제 API 키를 입력하세요:
+2. `.env`:
 
 ```env
-# 프로덕션 환경
 UPBIT_ACCESS_KEY="your_actual_access_key"
 UPBIT_SECRET_KEY="your_actual_secret_key"
 
-# 테스트 환경
 TEST_ACCESS_KEY="your_test_access_key"
 TEST_SECRET_KEY="your_test_secret_key"
 ```
@@ -115,7 +99,6 @@ TEST_SECRET_KEY="your_test_secret_key"
 ```rust
 use upbit;
 
-// .env 파일에서 자동으로 키를 로드
 match upbit::init() {
     Ok(()) => println!("Upbit API initialized successfully"),
     Err(e) => eprintln!("Failed to initialize: {}", e),
@@ -133,10 +116,6 @@ upbit::set_secret_key("your_secret_key");
 
 ### � 보안 주의사항
 
-- **절대로** API 키를 코드에 하드코딩하지 마세요
-- `.env` 파일은 버전 관리 시스템에 커밋하지 마세요
-- 프로덕션과 테스트 환경의 키를 분리하세요
-- 정기적으로 API 키를 재발급하세요
 ```rust
 use upbit::*;
 
