@@ -3,10 +3,14 @@ name = "upbit"
 version = "1.15.0"
 edition = "2024"
 authors = ["sy september <loldruger@gmail.com>"]
-description = "rust_upbit_api for upbit api version v1.5.7"
+description = "Rust wrapper for Upbit API v1.5.7 with comprehensive trading functionality"
 repository = "https://github.com/loldruger/rust-upbit-api.git"
 documentation = "https://docs.rs/upbit/latest/upbit/index.html"
 license = "MIT"
+keywords = ["upbit", "cryptocurrency", "trading", "api", "bitcoin"]
+categories = ["api-bindings", "web-programming::http-client"]
+readme = "README.md"
+homepage = "https://github.com/loldruger/rust-upbit-api"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
