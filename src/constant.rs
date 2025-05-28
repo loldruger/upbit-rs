@@ -277,7 +277,7 @@ impl From<&str> for BidType {
 // pub enum Currency {
 //     KRW,
 //     BTC,
-//     USDT,
+//     USDT
 // }
 
 // pub enum CurrencyCrypto {

@@ -100,8 +100,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_withdraw_info() {
-        crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
-        crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
+        crate::test_utils::setup_test_keys();
 
         let res = TransactionInfo::request_get_withdraw_info(Some("ETH"), None, None)
             .await
@@ -128,7 +127,8 @@ mod tests {
             "done_at": "",
             "amount": "",
             "fee": "",
-            "transaction_type": ""
+            "transaction_type": "",
+            "is_cancelable": "",
         });
 
         let expected_structure = expected_structure

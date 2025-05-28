@@ -105,8 +105,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_trade_recent_list() {
-        crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
-        crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
+        crate::test_utils::setup_test_keys();
 
         let res = TradeRecent::request("KRW-ETH", Some("120101"), 1, "0", None)
             .await

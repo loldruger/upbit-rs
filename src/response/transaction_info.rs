@@ -32,6 +32,7 @@ pub struct TransactionInfoDerived {
     pub fee: f64,
     // pub krw_amount: f64,
     pub transaction_type: TransactionType,
+    pub is_cancelable: bool,
 }
 
 /// Raw derived withdraw info from serialized data
@@ -49,6 +50,7 @@ pub struct TransactionInfoDerivedSource {
     fee: String,
     // krw_amount: String,
     transaction_type: String,
+    is_cancelable: String
 }
 
 impl TransactionInfoDerivedSource {
@@ -116,6 +118,12 @@ impl TransactionInfoDerivedSource {
     /// Convert [String] transaction_type value into [WithdrawType]
     pub fn transaction_type(&self) -> TransactionType {
         self.transaction_type.as_str().into()
+    }
+
+    /// Check if transaction is cancelable
+    /// Returns true if it is cancelable, false otherwise
+    pub fn is_cancelable(&self) -> bool {
+        self.is_cancelable == "true"
     }
 }
 

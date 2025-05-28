@@ -157,8 +157,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_order_status_by_uuid() {
-        crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
-        crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
+        crate::test_utils::setup_test_keys();
 
         let uuid = order_to_get_uuid().await;
 
@@ -239,8 +238,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_order_status_by_identifier() {
-        crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
-        crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
+        crate::test_utils::setup_test_keys();
 
         let identifier = order_to_get_identifier().await;
 
@@ -323,8 +321,7 @@ mod tests {
     }
 
     async fn order_to_get_uuid() -> String {
-        crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
-        crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
+        crate::test_utils::setup_test_keys();
 
         let price = 5000.0;
         let price_desired = 1_435_085.0;
@@ -347,8 +344,7 @@ mod tests {
     }
 
     async fn order_to_get_identifier() -> String {
-        crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
-        crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
+        crate::test_utils::setup_test_keys();
 
         let price = 5000.0;
         let price_desired = 1_435_085.0;

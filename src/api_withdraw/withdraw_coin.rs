@@ -56,6 +56,7 @@ impl TransactionInfoDerived {
                     fee: x.fee(),
                     // krw_amount: x.krw_amount(),
                     transaction_type: x.transaction_type(),
+                    is_cancelable: x.is_cancelable(),
                 }
             })
             .map_err(crate::response::response_error_from_json)
@@ -108,8 +109,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_withdraw_coin() {
-        crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
-        crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
+        crate::test_utils::setup_test_keys();
 
         let res = TransactionInfoDerived::request_withdraw_coin(
             "ETH",

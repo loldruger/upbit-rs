@@ -66,8 +66,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_coin_address_info() {
-        crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
-        crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
+        crate::test_utils::setup_test_keys();
 
         let res = CoinAddressResponse::request("ETH", "ETH").await.unwrap();
         let res_serialized = res

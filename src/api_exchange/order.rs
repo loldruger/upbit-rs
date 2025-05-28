@@ -203,8 +203,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_order_bid_by_price() {
-        crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
-        crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
+        crate::test_utils::setup_test_keys();
 
         let volume = (5000.0 + 1.) / price_checker(1_435_085.0);
         let price = price_checker(1_435_085.0);
@@ -278,8 +277,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_order_ask_by_price() {
-        crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
-        crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
+        crate::test_utils::setup_test_keys();
 
         let volume = (5000.0 + 1.) / price_checker(3_435_085.0);
         let price = price_checker(3_435_085.0);
@@ -353,8 +351,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_order_bid_at_market_price() {
-        crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
-        crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
+        crate::test_utils::setup_test_keys();
 
         let price = price_checker(5000.0);
 
@@ -432,8 +429,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_order_ask_at_market_price() {
-        crate::set_access_key(&std::env::var("TEST_ACCESS_KEY").expect("TEST_ACCESS_KEY not set"));
-        crate::set_secret_key(&std::env::var("TEST_SECRET_KEY").expect("TEST_SECRET_KEY not set"));
+        crate::test_utils::setup_test_keys();
 
         let volume = 0.0015;
 
